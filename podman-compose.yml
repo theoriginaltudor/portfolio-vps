@@ -48,7 +48,6 @@ services:
       # Mount our custom config file. The :Z is important for SELinux on some systems.
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:Z
     depends_on:
-      - aspnet-api
       - nextjs-app
     restart: always
 
