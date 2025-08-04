@@ -1,6 +1,17 @@
 version: "3.8"
 
 services:
+  # 0. Proto Generation Service
+  proto-gen:
+    image: node:20
+    container_name: proto_gen
+    working_dir: /workspace
+    volumes:
+      - ./aspnet-api/Protos:/workspace/protos
+      - ./nextjs-app:/workspace/nextjs-app
+    command: >
+      sh -c "npm install -g ts-proto && npx ts-proto /workspace/protos/*.proto --outDir /workspace/nextjs-app/protos"
+    # Only runs once, not a long-running service
   # 1. The PostgreSQL Database with pgvector
   postgres:
     image: ankane/pgvector:latest # A popular image with pgvector pre-installed
@@ -20,6 +31,7 @@ services:
       context: ./aspnet-api # Tells podman to build the Dockerfile in this folder
     container_name: aspnet_api
     depends_on:
+      - proto-gen # Ensure proto generation happens first
       - postgres # Ensures the database is started first
     environment:
       # Pass the connection string to your app
@@ -33,6 +45,7 @@ services:
       context: ./nextjs-app
     container_name: nextjs_frontend
     depends_on:
+      - proto-gen # Ensure proto generation happens first
       - aspnet-api
     restart: always
     # No 'ports' section. Only Nginx talks to this service.
