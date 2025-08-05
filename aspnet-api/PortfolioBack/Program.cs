@@ -17,6 +17,7 @@ builder.Services.AddDbContext<PortfolioDbContext>(options =>
 
 // Add custom services
 builder.Services.AddScoped<IProjectSearchService, ProjectSearchService>();
+builder.Services.AddScoped<DataTransferService>();
 
 var app = builder.Build();
 
