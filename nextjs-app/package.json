@@ -7,7 +7,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "generate-prod-types": "npx openapi-typescript http://aspnet-api:5000/swagger/v1/swagger.json --output ./types/swagger-types.ts",
     "generate-types": "npx openapi-typescript http://localhost:5258/swagger/v1/swagger.json --output ./types/swagger-types.ts"
   },
   "dependencies": {
