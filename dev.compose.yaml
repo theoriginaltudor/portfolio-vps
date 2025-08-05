@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: ankane/pgvector:latest
+    container_name: postgres_dev
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      # Expose PostgreSQL to host for development access
+      - "5432:5432"
+    volumes:
+      # Use the SAME volume as production to ensure data consistency
+      - pg_data:/var/lib/postgresql/data
+      # Optional: Mount init scripts for seeding data
+      # - ./database/init:/docker-entrypoint-initdb.d:ro
+    restart: always
+
+volumes:
+  # Use the same volume name as production
+  pg_data:
