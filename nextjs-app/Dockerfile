@@ -9,6 +9,9 @@ RUN npm install
 # Copy the rest of the source code
 COPY . .
 
+# Generate TypeScript types from API swagger before building
+RUN npm run generate-prod-types
+
 # Build the production application
 RUN npm run build
 
