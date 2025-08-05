@@ -27,7 +27,7 @@ public class PortfolioDbContext : DbContext
       entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
       entity.Property(e => e.Description).IsRequired().HasMaxLength(500);
       entity.Property(e => e.LongDescription).HasColumnType("text");
-      entity.Property(e => e.Embedding).HasColumnType("vector");
+      entity.Property(e => e.Embedding).HasColumnType("json");
       entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
     });
 
