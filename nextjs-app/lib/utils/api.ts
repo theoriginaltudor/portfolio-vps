@@ -20,8 +20,8 @@ async function apiCall<TOperation extends keyof operations>(
     operations[TOperation]["responses"][200]["content"]["application/json"]
   >
 > {
+  const url = getApiUrl(endpoint);
   try {
-    const url = getApiUrl(endpoint);
     const response = await fetch(url, {
       headers: {
         Accept: "application/json",
@@ -33,7 +33,7 @@ async function apiCall<TOperation extends keyof operations>(
     if (!response.ok) {
       return {
         ok: false,
-        error: `HTTP ${response.status}: ${response.statusText}`,
+        error: `HTTP ${response.status}: ${response.statusText} (URL: ${url})`,
         status: response.status,
       };
     }
@@ -46,7 +46,9 @@ async function apiCall<TOperation extends keyof operations>(
   } catch (error) {
     return {
       ok: false,
-      error: error instanceof Error ? error.message : "Unknown error",
+      error: `${
+        error instanceof Error ? error.message : "Unknown error"
+      } (URL: ${url})`,
       status: 0,
     };
   }
