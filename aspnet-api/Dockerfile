@@ -8,7 +8,7 @@ RUN dotnet restore PortfolioBack/PortfolioBack.csproj
 
 # Copy everything else and build
 COPY PortfolioBack/ ./PortfolioBack/
-RUN dotnet publish PortfolioBack/PortfolioBack.csproj -c release -o /app --no-restore
+RUN dotnet publish PortfolioBack/PortfolioBack.csproj -c Release -o /app
 
 # Stage 2: Create the final, small image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
