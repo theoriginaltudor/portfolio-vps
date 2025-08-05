@@ -3,12 +3,12 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 # Copy csproj and restore as distinct layers
-COPY *.csproj .
-RUN dotnet restore
+COPY PortfolioBack/*.csproj ./PortfolioBack/
+RUN dotnet restore PortfolioBack/PortfolioBack.csproj
 
 # Copy everything else and build
-COPY . .
-RUN dotnet publish -c release -o /app --no-restore
+COPY PortfolioBack/ ./PortfolioBack/
+RUN dotnet publish PortfolioBack/PortfolioBack.csproj -c release -o /app --no-restore
 
 # Stage 2: Create the final, small image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
