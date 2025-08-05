@@ -1,7 +1,7 @@
 import { apiCall } from "@/lib/utils/api";
 
 export default async function ServerTestPage() {
-  const result = await apiCall<"GetWeatherForecast">("/weatherforecast", {
+  const result = await apiCall("/WeatherForecast", {
     cache: "no-store",
   });
 

@@ -1,4 +1,4 @@
-import { operations } from "@/types/swagger-types";
+import { paths } from "@/types/swagger-types";
 import { getApiUrl } from "./get-api";
 
 type ApiResponse<T> =
@@ -12,23 +12,68 @@ type ApiResponse<T> =
       status: number;
     };
 
-async function apiCall<TOperation extends keyof operations>(
-  endpoint: string,
-  options?: RequestInit
-): Promise<
-  ApiResponse<
-    operations[TOperation]["responses"][200]["content"]["application/json"]
-  >
-> {
+export type ApiEndpoint = keyof paths;
+
+type ApiResponseData<TEndpoint extends ApiEndpoint> = paths[TEndpoint] extends {
+  post: {
+    responses: { 200: { content: { "application/json": infer T } } };
+  };
+}
+  ? T
+  : paths[TEndpoint] extends {
+      get: {
+        responses: { 200: { content: { "application/json": infer T } } };
+      };
+    }
+  ? T
+  : unknown;
+
+type ApiRequestOptions<TEndpoint extends ApiEndpoint> =
+  paths[TEndpoint] extends {
+    post: {
+      requestBody?: {
+        content: {
+          "application/json": infer TBody;
+        };
+      };
+    };
+  }
+    ? Omit<RequestInit, "method"> & {
+        method?: "POST";
+        body?: TBody;
+      }
+    : paths[TEndpoint] extends {
+        get: unknown;
+      }
+    ? Omit<RequestInit, "method"> & {
+        method?: "GET";
+      }
+    : RequestInit;
+
+export const apiCall = async <TEndpoint extends ApiEndpoint>(
+  endpoint: TEndpoint,
+  options?: ApiRequestOptions<TEndpoint>
+): Promise<ApiResponse<ApiResponseData<TEndpoint>>> => {
   const url = getApiUrl(endpoint);
   try {
-    const response = await fetch(url, {
+    const requestOptions: RequestInit = {
       headers: {
         Accept: "application/json",
         ...options?.headers,
       },
       ...options,
-    });
+    };
+
+    // Handle body serialization for POST requests
+    if (options?.body && typeof options.body !== "string") {
+      requestOptions.body = JSON.stringify(options.body);
+      requestOptions.headers = {
+        ...requestOptions.headers,
+        "Content-Type": "application/json",
+      };
+    }
+
+    const response = await fetch(url, requestOptions);
 
     if (!response.ok) {
       return {
@@ -52,7 +97,4 @@ async function apiCall<TOperation extends keyof operations>(
       status: 0,
     };
   }
-}
-
-export { apiCall };
-export type { ApiResponse };
+};
