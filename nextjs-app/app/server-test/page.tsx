@@ -1,8 +1,17 @@
+import { apiCall } from "@/lib/utils/api";
+
 export default async function ServerTestPage() {
-  const res = await fetch("http://aspnet-api:5000/weatherforecast", {
+  const result = await apiCall<"GetWeatherForecast">("/weatherforecast", {
     cache: "no-store",
   });
-  const data = await res.json();
+
+  console.log("Response from API:", result);
+
+  if (!result.ok) {
+    throw new Error(`Failed to fetch data from API: ${result.error}`);
+  }
+
+  const data = result.data; // This is now properly typed!
 
   return (
     <main>

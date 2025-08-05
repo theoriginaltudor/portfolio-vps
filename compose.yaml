@@ -28,6 +28,9 @@ services:
     container_name: nextjs_frontend
     depends_on:
       - aspnet-api
+    environment:
+      NEXT_PUBLIC_API_URL: "http://aspnet-api:5000"
+      NODE_ENV: "production"
     restart: always
 
   nginx:
