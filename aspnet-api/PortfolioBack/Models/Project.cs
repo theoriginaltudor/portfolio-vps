@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Pgvector;
 
 namespace PortfolioBack.Models;
 
@@ -20,7 +21,7 @@ public class Project
 
   public string? LongDescription { get; set; }
 
-  public float[]? Embedding { get; set; }
+  public Vector? Embedding { get; set; }
 
   public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

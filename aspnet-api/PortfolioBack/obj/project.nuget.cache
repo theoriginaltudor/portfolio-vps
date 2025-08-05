@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "/v6XqRBISlI=",
+  "dgSpecHash": "lSi41e0SLvs=",
   "success": true,
   "projectFilePath": "/Users/tc/PersonalProj/portfolio-vps/aspnet-api/PortfolioBack/PortfolioBack.csproj",
   "expectedPackageFiles": [
@@ -36,6 +36,8 @@
     "/Users/tc/.nuget/packages/mono.texttemplating/3.0.0/mono.texttemplating.3.0.0.nupkg.sha512",
     "/Users/tc/.nuget/packages/npgsql/9.0.0/npgsql.9.0.0.nupkg.sha512",
     "/Users/tc/.nuget/packages/npgsql.entityframeworkcore.postgresql/9.0.0/npgsql.entityframeworkcore.postgresql.9.0.0.nupkg.sha512",
+    "/Users/tc/.nuget/packages/pgvector/0.3.1/pgvector.0.3.1.nupkg.sha512",
+    "/Users/tc/.nuget/packages/pgvector.entityframeworkcore/0.2.2/pgvector.entityframeworkcore.0.2.2.nupkg.sha512",
     "/Users/tc/.nuget/packages/swashbuckle.aspnetcore/7.2.0/swashbuckle.aspnetcore.7.2.0.nupkg.sha512",
     "/Users/tc/.nuget/packages/swashbuckle.aspnetcore.swagger/7.2.0/swashbuckle.aspnetcore.swagger.7.2.0.nupkg.sha512",
     "/Users/tc/.nuget/packages/swashbuckle.aspnetcore.swaggergen/7.2.0/swashbuckle.aspnetcore.swaggergen.7.2.0.nupkg.sha512",

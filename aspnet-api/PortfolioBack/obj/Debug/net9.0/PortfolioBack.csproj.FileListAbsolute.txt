@@ -123,3 +123,6 @@
 /Users/tc/PersonalProj/portfolio-vps/aspnet-api/PortfolioBack/obj/Debug/net9.0/PortfolioBack.pdb
 /Users/tc/PersonalProj/portfolio-vps/aspnet-api/PortfolioBack/obj/Debug/net9.0/PortfolioBack.genruntimeconfig.cache
 /Users/tc/PersonalProj/portfolio-vps/aspnet-api/PortfolioBack/obj/Debug/net9.0/ref/PortfolioBack.dll
+/Users/tc/PersonalProj/portfolio-vps/aspnet-api/PortfolioBack/bin/Debug/net9.0/Pgvector.dll
+/Users/tc/PersonalProj/portfolio-vps/aspnet-api/PortfolioBack/bin/Debug/net9.0/Pgvector.EntityFrameworkCore.dll
+/Users/tc/PersonalProj/portfolio-vps/aspnet-api/PortfolioBack/obj/Debug/net9.0/EFCoreNpgsqlPgvector.cs

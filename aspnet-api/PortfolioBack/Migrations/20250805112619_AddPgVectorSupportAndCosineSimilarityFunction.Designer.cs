@@ -2,9 +2,9 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using Pgvector;
 using PortfolioBack.Data;
 
 #nullable disable
@@ -12,16 +12,17 @@ using PortfolioBack.Data;
 namespace PortfolioBack.Migrations
 {
     [DbContext(typeof(PortfolioDbContext))]
-    partial class PortfolioDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250805112619_AddPgVectorSupportAndCosineSimilarityFunction")]
+    partial class AddPgVectorSupportAndCosineSimilarityFunction
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "9.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "vector");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("PortfolioBack.Models.Project", b =>
@@ -42,8 +43,8 @@ namespace PortfolioBack.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
-                    b.Property<Vector>("Embedding")
-                        .HasColumnType("vector(768)");
+                    b.PrimitiveCollection<float[]>("Embedding")
+                        .HasColumnType("json");
 
                     b.Property<string>("LongDescription")
                         .HasColumnType("text");

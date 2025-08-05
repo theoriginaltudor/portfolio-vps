@@ -12,6 +12,7 @@
           "Microsoft.EntityFrameworkCore.Design": "9.0.0",
           "Microsoft.EntityFrameworkCore.Tools": "9.0.0",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.0",
+          "Pgvector.EntityFrameworkCore": "0.2.2",
           "Swashbuckle.AspNetCore": "7.2.0"
         },
         "runtime": {
@@ -495,6 +496,29 @@
           }
         }
       },
+      "Pgvector/0.3.1": {
+        "dependencies": {
+          "Npgsql": "9.0.0"
+        },
+        "runtime": {
+          "lib/net6.0/Pgvector.dll": {
+            "assemblyVersion": "0.3.1.0",
+            "fileVersion": "0.3.1.0"
+          }
+        }
+      },
+      "Pgvector.EntityFrameworkCore/0.2.2": {
+        "dependencies": {
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.0",
+          "Pgvector": "0.3.1"
+        },
+        "runtime": {
+          "lib/net8.0/Pgvector.EntityFrameworkCore.dll": {
+            "assemblyVersion": "0.2.2.0",
+            "fileVersion": "0.2.2.0"
+          }
+        }
+      },
       "Swashbuckle.AspNetCore/7.2.0": {
         "dependencies": {
           "Microsoft.Extensions.ApiDescription.Server": "6.0.5",
@@ -842,6 +866,20 @@
       "sha512": "sha512-ObngKFRLMBAeMqQzK7SC0Q6WZtWw0imPmEkVPo12yLVF3fioz2TN+w0mhNMJ5cVd/sLB2u+jei0bmA9sDMtkMw==",
       "path": "npgsql.entityframeworkcore.postgresql/9.0.0",
       "hashPath": "npgsql.entityframeworkcore.postgresql.9.0.0.nupkg.sha512"
+    },
+    "Pgvector/0.3.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-XeuF5F5krjjv9/Mlt9vtl5Sd7B6ps82XhsA98qP5G6KAjL2bDPr+nvXTTXrJoKiwdE+R5VXoq1t0hWFkgbMyZw==",
+      "path": "pgvector/0.3.1",
+      "hashPath": "pgvector.0.3.1.nupkg.sha512"
+    },
+    "Pgvector.EntityFrameworkCore/0.2.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-U4C48O+f31y7lWlUY+fsZrOZAvzI8rCsQb/sEWF3MfGYX/153uQingO2/8YoXeLGx00Wl9na8zl89gehXtMbFg==",
+      "path": "pgvector.entityframeworkcore/0.2.2",
+      "hashPath": "pgvector.entityframeworkcore.0.2.2.nupkg.sha512"
     },
     "Swashbuckle.AspNetCore/7.2.0": {
       "type": "package",

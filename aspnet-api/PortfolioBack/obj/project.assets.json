@@ -737,6 +737,34 @@
           }
         }
       },
+      "Pgvector/0.3.1": {
+        "type": "package",
+        "dependencies": {
+          "Npgsql": "8.0.3"
+        },
+        "compile": {
+          "lib/net6.0/Pgvector.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0/Pgvector.dll": {}
+        }
+      },
+      "Pgvector.EntityFrameworkCore/0.2.2": {
+        "type": "package",
+        "dependencies": {
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "8.0.0",
+          "Pgvector": "0.3.1"
+        },
+        "compile": {
+          "lib/net8.0/Pgvector.EntityFrameworkCore.dll": {}
+        },
+        "runtime": {
+          "lib/net8.0/Pgvector.EntityFrameworkCore.dll": {}
+        },
+        "build": {
+          "build/netstandard2.0/Pgvector.EntityFrameworkCore.targets": {}
+        }
+      },
       "Swashbuckle.AspNetCore/7.2.0": {
         "type": "package",
         "dependencies": {
@@ -2789,6 +2817,39 @@
         "postgresql.png"
       ]
     },
+    "Pgvector/0.3.1": {
+      "sha512": "XeuF5F5krjjv9/Mlt9vtl5Sd7B6ps82XhsA98qP5G6KAjL2bDPr+nvXTTXrJoKiwdE+R5VXoq1t0hWFkgbMyZw==",
+      "type": "package",
+      "path": "pgvector/0.3.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.txt",
+        "README.md",
+        "icon.png",
+        "lib/net462/Pgvector.dll",
+        "lib/net6.0/Pgvector.dll",
+        "lib/netstandard2.0/Pgvector.dll",
+        "pgvector.0.3.1.nupkg.sha512",
+        "pgvector.nuspec"
+      ]
+    },
+    "Pgvector.EntityFrameworkCore/0.2.2": {
+      "sha512": "U4C48O+f31y7lWlUY+fsZrOZAvzI8rCsQb/sEWF3MfGYX/153uQingO2/8YoXeLGx00Wl9na8zl89gehXtMbFg==",
+      "type": "package",
+      "path": "pgvector.entityframeworkcore/0.2.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.txt",
+        "README.md",
+        "build/netstandard2.0/Pgvector.EntityFrameworkCore.targets",
+        "icon.png",
+        "lib/net8.0/Pgvector.EntityFrameworkCore.dll",
+        "pgvector.entityframeworkcore.0.2.2.nupkg.sha512",
+        "pgvector.entityframeworkcore.nuspec"
+      ]
+    },
     "Swashbuckle.AspNetCore/7.2.0": {
       "sha512": "vJv19UpWm6OOgnS9QLDnWARNVasXUfj8SFvlG7UVALm4nBnfwRnEky7C0veSDqMUmBeMPC6Ec3d6G1ts/J04Uw==",
       "type": "package",
@@ -3270,6 +3331,7 @@
       "Microsoft.EntityFrameworkCore.Design >= 9.0.0",
       "Microsoft.EntityFrameworkCore.Tools >= 9.0.0",
       "Npgsql.EntityFrameworkCore.PostgreSQL >= 9.0.0",
+      "Pgvector.EntityFrameworkCore >= 0.2.2",
       "Swashbuckle.AspNetCore >= 7.2.0"
     ]
   },
@@ -3335,6 +3397,10 @@
           "Npgsql.EntityFrameworkCore.PostgreSQL": {
             "target": "Package",
             "version": "[9.0.0, )"
+          },
+          "Pgvector.EntityFrameworkCore": {
+            "target": "Package",
+            "version": "[0.2.2, )"
           },
           "Swashbuckle.AspNetCore": {
             "target": "Package",

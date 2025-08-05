@@ -1,6 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using PortfolioBack.Data;
+using PortfolioBack.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +12,11 @@ builder.Services.AddSwaggerGen();
 
 // Add Entity Framework
 builder.Services.AddDbContext<PortfolioDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"),
+        o => o.UseVector()));
+
+// Add custom services
+builder.Services.AddScoped<IProjectSearchService, ProjectSearchService>();
 
 var app = builder.Build();
 

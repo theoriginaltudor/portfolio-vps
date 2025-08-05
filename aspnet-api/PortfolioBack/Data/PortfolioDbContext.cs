@@ -14,9 +14,18 @@ public class PortfolioDbContext : DbContext
   public DbSet<ProjectSkill> ProjectSkills { get; set; }
   public DbSet<ProjectAsset> ProjectAssets { get; set; }
 
+  protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+  {
+    base.OnConfiguring(optionsBuilder);
+    optionsBuilder.UseNpgsql(o => o.UseVector());
+  }
+
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
     base.OnModelCreating(modelBuilder);
+
+    // Enable pgvector extension
+    modelBuilder.HasPostgresExtension("vector");
 
     // Configure Project entity
     modelBuilder.Entity<Project>(entity =>
@@ -27,7 +36,7 @@ public class PortfolioDbContext : DbContext
       entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
       entity.Property(e => e.Description).IsRequired().HasMaxLength(500);
       entity.Property(e => e.LongDescription).HasColumnType("text");
-      entity.Property(e => e.Embedding).HasColumnType("json");
+      entity.Property(e => e.Embedding).HasColumnType("vector(768)");
       entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
     });
 
