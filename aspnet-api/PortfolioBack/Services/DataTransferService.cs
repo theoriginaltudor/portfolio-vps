@@ -303,7 +303,7 @@ public class ProjectDto
   public string Slug { get; set; } = string.Empty;
   public string Title { get; set; } = string.Empty;
   public string Description { get; set; } = string.Empty;
-  public string? LongDescription { get; set; }
+  public string LongDescription { get; set; } = string.Empty;
   public float[]? Embedding { get; set; }
   public DateTime? CreatedAt { get; set; }
 }

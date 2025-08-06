@@ -19,7 +19,8 @@ public class Project
   [StringLength(500)]
   public string Description { get; set; } = string.Empty;
 
-  public string? LongDescription { get; set; }
+  [Required]
+  public string LongDescription { get; set; } = string.Empty;
 
   public Vector? Embedding { get; set; }
 
