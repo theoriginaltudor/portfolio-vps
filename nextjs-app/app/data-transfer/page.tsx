@@ -4,24 +4,20 @@ import { cn } from "@/lib/utils/client";
 
 export default async function DataTransferPage() {
   const supabase = await createClient();
-  const { data, error } = await supabase.from("articles").select("*");
+  const { data, error } = await supabase
+    .from("articles_skills")
+    .select("skills(name), articles(slug)");
 
   if (error) {
-    console.error("Error fetching articles:", error);
-    return <div>Error fetching articles</div>;
+    console.error("Error fetching images:", error);
+    return <div>Error fetching images</div>;
   }
 
-  const response = await apiCall("/api/DataTransfer/projects", {
+  const { ok } = await apiCall("/api/DataTransfer/project-skills", {
     method: "POST",
-    body: data.map((article) => ({
-      slug: article.slug,
-      title: article.title,
-      description: article.description,
-      longDescription: article.long_description,
-      embedding: article.embedding
-        ? (JSON.parse(article.embedding) as number[])
-        : undefined,
-      createdAt: new Date().toISOString(),
+    body: data.map((skill) => ({
+      skillName: skill.skills?.name,
+      projectSlug: skill.articles?.slug,
     })),
     headers: {
       "Content-Type": "application/json",
@@ -31,8 +27,8 @@ export default async function DataTransferPage() {
   return (
     <main>
       <h1>API Response</h1>
-      <pre className={cn("text-red-600", { "text-green-600": response.ok })}>
-        {response.ok ? "Success" : "Error"}
+      <pre className={cn("text-red-600", { "text-green-600": ok })}>
+        {ok ? "Success" : "Error"}
       </pre>
     </main>
   );
