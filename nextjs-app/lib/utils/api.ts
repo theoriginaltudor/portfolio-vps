@@ -38,7 +38,7 @@ type ApiRequestOptions<TEndpoint extends ApiEndpoint> =
       };
     };
   }
-    ? Omit<RequestInit, "method"> & {
+    ? Omit<RequestInit, "method" | "body"> & {
         method?: "POST";
         body?: TBody;
       }
@@ -56,21 +56,25 @@ export const apiCall = async <TEndpoint extends ApiEndpoint>(
 ): Promise<ApiResponse<ApiResponseData<TEndpoint>>> => {
   const url = getApiUrl(endpoint);
   try {
+    const { body, headers, ...restOptions } = options || {};
+
     const requestOptions: RequestInit = {
       headers: {
         Accept: "application/json",
-        ...options?.headers,
+        ...headers,
       },
-      ...options,
+      ...restOptions,
     };
 
     // Handle body serialization for POST requests
-    if (options?.body && typeof options.body !== "string") {
-      requestOptions.body = JSON.stringify(options.body);
+    if (body && typeof body !== "string") {
+      requestOptions.body = JSON.stringify(body);
       requestOptions.headers = {
         ...requestOptions.headers,
         "Content-Type": "application/json",
       };
+    } else if (body && typeof body === "string") {
+      requestOptions.body = body;
     }
 
     const response = await fetch(url, requestOptions);
