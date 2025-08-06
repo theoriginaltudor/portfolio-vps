@@ -15,9 +15,14 @@ builder.Services.AddDbContext<PortfolioDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"),
         o => o.UseVector()));
 
+
 // Add custom services
 builder.Services.AddScoped<IProjectSearchService, ProjectSearchService>();
 builder.Services.AddScoped<DataTransferService>();
+builder.Services.AddScoped<ProjectService>();
+builder.Services.AddScoped<SkillService>();
+builder.Services.AddScoped<ProjectAssetService>();
+builder.Services.AddScoped<ProjectSkillService>();
 
 var app = builder.Build();
 

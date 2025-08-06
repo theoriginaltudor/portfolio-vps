@@ -129,21 +129,4 @@ public class DataTransferController : ControllerBase
       return StatusCode(500, new { message = "Internal server error during transfer", error = ex.Message });
     }
   }
-
-  [HttpGet("status")]
-  public IActionResult GetTransferStatus()
-  {
-    return Ok(new
-    {
-      message = "Data transfer service is ready",
-      timestamp = DateTime.UtcNow,
-      endpoints = new[]
-        {
-                "POST /api/datatransfer/projects",
-                "POST /api/datatransfer/skills",
-                "POST /api/datatransfer/project-skills",
-                "POST /api/datatransfer/project-assets"
-            }
-    });
-  }
 }
