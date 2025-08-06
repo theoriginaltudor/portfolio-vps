@@ -16,6 +16,72 @@ public class DataTransferService
     _logger = logger;
   }
 
+  /// <summary>
+  /// Transfers image blobs to the server's images directory.
+  /// </summary>
+  /// <param name="images">A list of dictionaries, each mapping a file path to a blob (byte[]).</param>
+  /// <returns>TransferResult with success, count, and errors.</returns>
+  public async Task<TransferResult> TransferImagesAsync(IEnumerable<Dictionary<string, byte[]>> images)
+  {
+    var transferredCount = 0;
+    var errors = new List<string>();
+    try
+    {
+      // Determine the images directory (relative to the backend root)
+      var imagesDir = Path.Combine(AppContext.BaseDirectory, "images");
+      if (!Directory.Exists(imagesDir))
+      {
+        Directory.CreateDirectory(imagesDir);
+      }
+
+      foreach (var imageDict in images)
+      {
+        foreach (var kvp in imageDict)
+        {
+          var relativePath = kvp.Key.TrimStart('/', '\\');
+          var blob = kvp.Value;
+          try
+          {
+            // Ensure subdirectories exist
+            var fullPath = Path.Combine(imagesDir, relativePath);
+            var dir = Path.GetDirectoryName(fullPath);
+            if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
+            {
+              Directory.CreateDirectory(dir);
+            }
+            await File.WriteAllBytesAsync(fullPath, blob);
+            transferredCount++;
+            _logger.LogInformation("Transferred image to {Path}", fullPath);
+          }
+          catch (Exception ex)
+          {
+            _logger.LogError(ex, "Failed to transfer image: {Path}", relativePath);
+            errors.Add($"Image '{relativePath}': {ex.Message}");
+          }
+        }
+      }
+
+      return new TransferResult
+      {
+        Success = errors.Count == 0,
+        TransferredCount = transferredCount,
+        Errors = errors,
+        Message = $"Transferred {transferredCount} images with {errors.Count} errors"
+      };
+    }
+    catch (Exception ex)
+    {
+      _logger.LogError(ex, "Failed during images transfer");
+      return new TransferResult
+      {
+        Success = false,
+        TransferredCount = 0,
+        Errors = new List<string> { ex.Message },
+        Message = "Images transfer failed"
+      };
+    }
+  }
+
   public async Task<TransferResult> TransferProjectsAsync(IEnumerable<ProjectDto> projects)
   {
     var transferredCount = 0;

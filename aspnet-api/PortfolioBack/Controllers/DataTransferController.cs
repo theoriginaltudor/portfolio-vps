@@ -18,6 +18,38 @@ public class DataTransferController : ControllerBase
     _logger = logger;
   }
 
+  /// <summary>
+  /// Transfers images to the server's images directory.
+  /// Expects a JSON array of objects, each mapping a string (path) to a base64-encoded byte array.
+  /// </summary>
+  [HttpPost("images")]
+  public async Task<IActionResult> TransferImages([FromBody] List<Dictionary<string, byte[]>> images)
+  {
+    try
+    {
+      if (images == null || !images.Any())
+      {
+        return BadRequest("No images provided for transfer");
+      }
+
+      _logger.LogInformation("Starting transfer of {Count} images", images.Sum(d => d.Count));
+
+      var result = await _dataTransferService.TransferImagesAsync(images);
+
+      if (result.Success)
+      {
+        return Ok(result);
+      }
+
+      return BadRequest(result);
+    }
+    catch (Exception ex)
+    {
+      _logger.LogError(ex, "Unexpected error during images transfer");
+      return StatusCode(500, new { message = "Internal server error during transfer", error = ex.Message });
+    }
+  }
+
   [HttpPost("projects")]
   public async Task<IActionResult> TransferProjects([FromBody] List<ProjectDto> projects)
   {
