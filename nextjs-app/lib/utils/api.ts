@@ -1,17 +1,6 @@
 import { paths } from "@/types/swagger-types";
 import { getApiUrl } from "./get-api";
 
-type ApiResponse<T> =
-  | {
-      ok: true;
-      data: T;
-    }
-  | {
-      ok: false;
-      error: string;
-      status: number;
-    };
-
 export type ApiEndpoint = keyof paths;
 
 type ApiResponseData<TEndpoint extends ApiEndpoint> = paths[TEndpoint] extends {
@@ -53,7 +42,7 @@ type ApiRequestOptions<TEndpoint extends ApiEndpoint> =
 export const apiCall = async <TEndpoint extends ApiEndpoint>(
   endpoint: TEndpoint,
   options?: ApiRequestOptions<TEndpoint>
-): Promise<ApiResponse<ApiResponseData<TEndpoint>>> => {
+) => {
   const url = getApiUrl(endpoint);
   try {
     const { body, headers, ...restOptions } = options || {};
@@ -87,7 +76,7 @@ export const apiCall = async <TEndpoint extends ApiEndpoint>(
       };
     }
 
-    const data = await response.json();
+    const data = (await response.json()) as ApiResponseData<TEndpoint>;
     return {
       ok: true,
       data,
