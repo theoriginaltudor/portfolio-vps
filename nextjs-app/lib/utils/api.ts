@@ -32,6 +32,19 @@ type ApiRequestOptions<TEndpoint extends ApiEndpoint> =
         body?: TBody;
       }
     : paths[TEndpoint] extends {
+        post: {
+          requestBody?: {
+            content: {
+              "multipart/form-data": infer TBody;
+            };
+          };
+        };
+      }
+    ? Omit<RequestInit, "method" | "body"> & {
+        method?: "POST";
+        body?: TBody | FormData;
+      }
+    : paths[TEndpoint] extends {
         get: unknown;
       }
     ? Omit<RequestInit, "method"> & {
@@ -55,8 +68,12 @@ export const apiCall = async <TEndpoint extends ApiEndpoint>(
       ...restOptions,
     };
 
-    // Handle body serialization for POST requests
-    if (body && typeof body !== "string") {
+    // Handle body serialization for different content types
+    if (body instanceof FormData) {
+      // For FormData, let the browser set the Content-Type header (including boundary)
+      requestOptions.body = body;
+    } else if (body && typeof body === "object") {
+      // For JSON objects, serialize and set Content-Type
       requestOptions.body = JSON.stringify(body);
       requestOptions.headers = {
         ...requestOptions.headers,
