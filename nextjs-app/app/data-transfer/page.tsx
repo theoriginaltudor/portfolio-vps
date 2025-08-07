@@ -4,24 +4,43 @@ import { cn } from "@/lib/utils/client";
 
 export default async function DataTransferPage() {
   const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("articles_skills")
-    .select("skills(name), articles(slug)");
+  const { data: images, error: imagesError } = await supabase
+    .from("images")
+    .select("path");
 
-  if (error) {
-    console.error("Error fetching images:", error);
+  if (imagesError) {
+    console.error("Error fetching images:", imagesError);
     return <div>Error fetching images</div>;
   }
 
-  const { ok } = await apiCall("/api/DataTransfer/project-skills", {
+  const blobList: FormData = new FormData();
+  console.log(`Fetched ${images.length} images from Supabase`);
+
+  await Promise.all(
+    images.map(async (image) => {
+      const { data, error } = await supabase.storage
+        .from("portfolio-images")
+        .download(image.path);
+
+      if (error) {
+        console.error("Error downloading image:", error);
+        return;
+      }
+
+      const file = new File([data], image.path);
+      console.log(`Adding file to FormData: ${image.path}, size: ${file.size}`);
+
+      blobList.append("files", file, image.path);
+    })
+  );
+
+  console.log(
+    `FormData entries count: ${Array.from(blobList.entries()).length}`
+  );
+
+  const { ok, error, status } = await apiCall("/api/DataTransfer/images", {
     method: "POST",
-    body: data.map((skill) => ({
-      skillName: skill.skills?.name,
-      projectSlug: skill.articles?.slug,
-    })),
-    headers: {
-      "Content-Type": "application/json",
-    },
+    body: blobList,
   });
 
   return (
@@ -30,6 +49,12 @@ export default async function DataTransferPage() {
       <pre className={cn("text-red-600", { "text-green-600": ok })}>
         {ok ? "Success" : "Error"}
       </pre>
+      {error && (
+        <div>
+          <p>Error: {error}</p>
+          <p>Status: {status}</p>
+        </div>
+      )}
     </main>
   );
 }

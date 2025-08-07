@@ -21,32 +21,67 @@ public class DataTransferService
   /// </summary>
   /// <param name="files">A list of uploaded files.</param>
   /// <returns>TransferResult with success, count, and errors.</returns>
-  public async Task<TransferResult> TransferImagesAsync([FromForm] IEnumerable<IFormFile> files)
+  public async Task<TransferResult> TransferImagesAsync(IEnumerable<IFormFile> files)
   {
     var transferredCount = 0;
     var errors = new List<string>();
     try
     {
+      _logger.LogInformation("TransferImagesAsync called with {FileCount} files", files?.Count() ?? 0);
+
+      if (files == null)
+      {
+        _logger.LogWarning("Files parameter is null");
+        return new TransferResult
+        {
+          Success = false,
+          TransferredCount = 0,
+          Errors = new List<string> { "No files provided" },
+          Message = "No files provided"
+        };
+      }
+
       // Determine the images directory (relative to the backend root)
       var imagesDir = Path.Combine(AppContext.BaseDirectory, "images");
+      _logger.LogInformation("Images directory: {ImagesDir}", imagesDir);
+
       if (!Directory.Exists(imagesDir))
       {
         Directory.CreateDirectory(imagesDir);
+        _logger.LogInformation("Created images directory");
       }
 
       foreach (var file in files)
       {
         try
         {
-          var filePath = Path.Combine(imagesDir, file.FileName);
-          using (var stream = new FileStream(filePath, FileMode.Create))
+          _logger.LogInformation("Processing file: {FileName}, Size: {Size} bytes", file.FileName, file.Length);
+
+          // Handle file paths that might contain directory separators
+          // Remove leading slash if present to ensure relative path behavior
+          var fileName = file.FileName.TrimStart('/');
+          var fullFilePath = Path.Combine(imagesDir, fileName);
+
+          _logger.LogInformation("Sanitized filename: {FileName} -> Full path: {FullPath}", fileName, fullFilePath);
+
+          // Create directory structure if the filename contains path separators
+          var fileDirectory = Path.GetDirectoryName(fullFilePath);
+          if (!string.IsNullOrEmpty(fileDirectory) && !Directory.Exists(fileDirectory))
+          {
+            Directory.CreateDirectory(fileDirectory);
+            _logger.LogInformation("Created directory: {Directory}", fileDirectory);
+          }
+
+          using (var stream = new FileStream(fullFilePath, FileMode.Create))
           {
             await file.CopyToAsync(stream);
           }
           transferredCount++;
+          _logger.LogInformation("Successfully saved file: {FileName} to {FilePath}", file.FileName, fullFilePath);
         }
         catch (Exception ex)
         {
+          _logger.LogError(ex, "Failed to save file: {FileName}", file.FileName);
           errors.Add($"Failed to save {file.FileName}: {ex.Message}");
         }
       }

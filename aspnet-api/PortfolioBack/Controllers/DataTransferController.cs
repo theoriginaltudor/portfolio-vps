@@ -24,7 +24,7 @@ public class DataTransferController : ControllerBase
   /// </summary>
   [HttpPost("images")]
   [RequestSizeLimit(52428800)] // 50MB limit, adjust as needed
-  public async Task<IActionResult> TransferImages(List<IFormFile> files)
+  public async Task<IActionResult> TransferImages([FromForm] List<IFormFile> files)
   {
     try
     {
