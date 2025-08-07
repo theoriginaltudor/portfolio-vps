@@ -1,4 +1,5 @@
 using System;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PortfolioBack.Data;
 using PortfolioBack.Models;
@@ -20,7 +21,7 @@ public class DataTransferService
   /// </summary>
   /// <param name="files">A list of uploaded files.</param>
   /// <returns>TransferResult with success, count, and errors.</returns>
-  public async Task<TransferResult> TransferImagesAsync(IEnumerable<IFormFile> files)
+  public async Task<TransferResult> TransferImagesAsync([FromForm] IEnumerable<IFormFile> files)
   {
     var transferredCount = 0;
     var errors = new List<string>();
