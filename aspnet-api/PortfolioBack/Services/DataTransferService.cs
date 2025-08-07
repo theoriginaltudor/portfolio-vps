@@ -15,13 +15,12 @@ public class DataTransferService
     _context = context;
     _logger = logger;
   }
-
   /// <summary>
-  /// Transfers image blobs to the server's images directory.
+  /// Transfers uploaded image files to the server's images directory.
   /// </summary>
-  /// <param name="images">A list of dictionaries, each mapping a file path to a blob (byte[]).</param>
+  /// <param name="files">A list of uploaded files.</param>
   /// <returns>TransferResult with success, count, and errors.</returns>
-  public async Task<TransferResult> TransferImagesAsync(IEnumerable<Dictionary<string, byte[]>> images)
+  public async Task<TransferResult> TransferImagesAsync(IEnumerable<IFormFile> files)
   {
     var transferredCount = 0;
     var errors = new List<string>();
@@ -34,30 +33,20 @@ public class DataTransferService
         Directory.CreateDirectory(imagesDir);
       }
 
-      foreach (var imageDict in images)
+      foreach (var file in files)
       {
-        foreach (var kvp in imageDict)
+        try
         {
-          var relativePath = kvp.Key.TrimStart('/', '\\');
-          var blob = kvp.Value;
-          try
+          var filePath = Path.Combine(imagesDir, file.FileName);
+          using (var stream = new FileStream(filePath, FileMode.Create))
           {
-            // Ensure subdirectories exist
-            var fullPath = Path.Combine(imagesDir, relativePath);
-            var dir = Path.GetDirectoryName(fullPath);
-            if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
-            {
-              Directory.CreateDirectory(dir);
-            }
-            await File.WriteAllBytesAsync(fullPath, blob);
-            transferredCount++;
-            _logger.LogInformation("Transferred image to {Path}", fullPath);
+            await file.CopyToAsync(stream);
           }
-          catch (Exception ex)
-          {
-            _logger.LogError(ex, "Failed to transfer image: {Path}", relativePath);
-            errors.Add($"Image '{relativePath}': {ex.Message}");
-          }
+          transferredCount++;
+        }
+        catch (Exception ex)
+        {
+          errors.Add($"Failed to save {file.FileName}: {ex.Message}");
         }
       }
 
@@ -81,6 +70,7 @@ public class DataTransferService
       };
     }
   }
+  // Old image transfer implementation removed.
 
   public async Task<TransferResult> TransferProjectsAsync(IEnumerable<ProjectDto> projects)
   {

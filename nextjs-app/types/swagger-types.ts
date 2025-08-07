@@ -22,15 +22,9 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/json": {
-                        [key: string]: string;
-                    }[];
-                    "text/json": {
-                        [key: string]: string;
-                    }[];
-                    "application/*+json": {
-                        [key: string]: string;
-                    }[];
+                    "multipart/form-data": {
+                        files?: string[];
+                    };
                 };
             };
             responses: {

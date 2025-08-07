@@ -20,21 +20,22 @@ public class DataTransferController : ControllerBase
 
   /// <summary>
   /// Transfers images to the server's images directory.
-  /// Expects a JSON array of objects, each mapping a string (path) to a base64-encoded byte array.
+  /// Expects a multipart/form-data request with files.
   /// </summary>
   [HttpPost("images")]
-  public async Task<IActionResult> TransferImages([FromBody] List<Dictionary<string, byte[]>> images)
+  [RequestSizeLimit(52428800)] // 50MB limit, adjust as needed
+  public async Task<IActionResult> TransferImages(List<IFormFile> files)
   {
     try
     {
-      if (images == null || !images.Any())
+      if (files == null || !files.Any())
       {
-        return BadRequest("No images provided for transfer");
+        return BadRequest("No files uploaded.");
       }
 
-      _logger.LogInformation("Starting transfer of {Count} images", images.Sum(d => d.Count));
+      _logger.LogInformation("Starting transfer of {Count} images", files.Count);
 
-      var result = await _dataTransferService.TransferImagesAsync(images);
+      var result = await _dataTransferService.TransferImagesAsync(files);
 
       if (result.Success)
       {
