@@ -1,0 +1,49 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [main] # Adjust branch name if needed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: unnecessary
+          if_key_exists: replace
+
+      - name: Adding Known Hosts
+        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy with rsync
+        run: |
+          rsync -avz \
+            --exclude '.git/' \
+            --exclude '.github/' \
+            --exclude '.env' \
+            --exclude 'nextjs-app/.env.local' \
+            --exclude 'nextjs-app/node_modules/' \
+            --exclude 'nextjs-app/.next/' \
+            --exclude 'nextjs-app/package-lock.json' \
+            --exclude 'aspnet-api/images' \
+            --exclude 'aspnet-api/PortfolioBack/bin/' \
+            --exclude 'aspnet-api/PortfolioBack/obj/' \
+            --exclude 'aspnet-api/PortfolioBack/*.dll' \
+            compose.yaml portfolio-vps.sln README.md \
+            aspnet-api/ nextjs-app/ nginx/ \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}
+
+      - name: Execute remote commands
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            cd ${{ secrets.DEPLOY_PATH }}
+            # Optionally restore/build dependencies here
+            # cd nextjs-app && npm ci && cd ..
+            # cd aspnet-api/PortfolioBack && dotnet restore && cd ../..
+            podman-compose -f compose.yaml up --build --abort-on-container-exit
+          EOF
