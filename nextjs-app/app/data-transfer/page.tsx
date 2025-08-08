@@ -3,18 +3,109 @@ import { transferBlobToApi } from "@/lib/server-actions/transfer-images-to-api";
 import { transferProjectSkillsToApi } from "@/lib/server-actions/transfer-project-skills-to-api";
 import { transferProjectsToApi } from "@/lib/server-actions/transfer-projects-to-api";
 import { transferSkillsToApi } from "@/lib/server-actions/transfer-skill-to-api";
+import { cn } from "@/lib/utils/client";
 import React from "react";
 
+type TransferResult = {
+  name: string;
+  status: "success" | "error";
+  message: string;
+  statusCode?: number;
+};
+
 export default async function DataTransferPage() {
-  await transferSkillsToApi();
-  await transferProjectsToApi();
-  await transferProjectSkillsToApi();
-  await transferImagesToApi();
-  await transferBlobToApi();
+  const results: TransferResult[] = [];
+
+  async function runAction(
+    name: string,
+    action: () => Promise<
+      | { ok: boolean; error?: string; status?: number; data?: unknown }
+      | undefined
+    >
+  ) {
+    try {
+      const response = await action();
+      if (response && typeof response === "object" && "ok" in response) {
+        if (response.ok) {
+          results.push({
+            name,
+            status: "success",
+            message: "Success",
+            statusCode: response.status,
+          });
+        } else {
+          results.push({
+            name,
+            status: "error",
+            message: response.error || "Unknown error",
+            statusCode: response.status,
+          });
+        }
+      } else {
+        results.push({ name, status: "success", message: "Success" });
+      }
+    } catch (e: unknown) {
+      let message = "Unknown error";
+      function hasMessage(obj: unknown): obj is { message: string } {
+        return (
+          typeof obj === "object" &&
+          obj !== null &&
+          "message" in obj &&
+          typeof (obj as { message: unknown }).message === "string"
+        );
+      }
+      if (hasMessage(e)) {
+        message = e.message;
+      } else if (typeof e === "string") {
+        message = e;
+      } else {
+        message = JSON.stringify(e);
+      }
+      results.push({ name, status: "error", message });
+    }
+  }
+
+  await runAction("Skills", transferSkillsToApi);
+  await runAction("Projects", transferProjectsToApi);
+  await runAction("Project Skills", transferProjectSkillsToApi);
+  await runAction("Images", transferImagesToApi);
+  await runAction("Blobs", transferBlobToApi);
+
   return (
-    <main>
-      <h1>Data Transfer</h1>
-      <p>This is a generic server component page in Next.js.</p>
+    <main className="max-w-2xl mx-auto py-8 px-4">
+      <h1 className="text-3xl font-bold mb-2">Data Transfer</h1>
+      <p className="mb-8 text-gray-600">
+        This is a generic server component page in Next.js.
+      </p>
+      <div className="mt-8">
+        <h2 className="text-xl font-semibold mb-4">Transfer Results</h2>
+        <ul className="space-y-3">
+          {results.map((r) => (
+            <li
+              key={r.name}
+              className={cn(
+                "flex items-center gap-3 p-3 rounded-lg border font-medium",
+                r.status === "success"
+                  ? "bg-green-50 text-green-800 border-green-200"
+                  : "bg-red-50 text-red-700 border-red-200"
+              )}
+            >
+              <span className="text-xl">
+                {r.status === "success" ? "✅" : "❌"}
+              </span>
+              <span className="flex-1">{r.name}</span>
+              <span className="text-sm">
+                {r.message}
+                {typeof r.statusCode === "number" ? (
+                  <span className="ml-2 text-xs text-gray-400">
+                    [{r.statusCode}]
+                  </span>
+                ) : null}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
     </main>
   );
 }
