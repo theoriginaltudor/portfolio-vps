@@ -22,7 +22,7 @@ services:
       ConnectionStrings__DefaultConnection: "Host=postgres; Port=5432; Database=${POSTGRES_DB}; Username=${POSTGRES_USER}; Password=${POSTGRES_PASSWORD}"
     restart: always
     volumes:
-      - ./aspnet-api/images:/app/images
+  - ./aspnet-api/images:/app/images
 
   nextjs-app:
     build:
@@ -42,7 +42,8 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:Z
+  - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:Z
+  - ./aspnet-api/images:/usr/share/nginx/html/images:ro
     depends_on:
       - nextjs-app
     restart: always
