@@ -11,6 +11,7 @@ type TransferResult = {
   status: "success" | "error";
   message: string;
   statusCode?: number;
+  count?: number;
 };
 
 export default async function DataTransferPage() {
@@ -27,11 +28,18 @@ export default async function DataTransferPage() {
       const response = await action();
       if (response && typeof response === "object" && "ok" in response) {
         if (response.ok) {
+          const count =
+            typeof response.data === "object" &&
+            response.data &&
+            "count" in response.data
+              ? (response.data as { count?: number }).count
+              : undefined;
           results.push({
             name,
             status: "success",
-            message: "Success",
+            message: count != null ? `Success (sent ${count})` : "Success",
             statusCode: response.status,
+            count: count,
           });
         } else {
           results.push({
@@ -75,7 +83,7 @@ export default async function DataTransferPage() {
     <main className="max-w-2xl mx-auto py-8 px-4">
       <h1 className="text-3xl font-bold mb-2">Data Transfer</h1>
       <p className="mb-8 text-gray-600">
-        This is a generic server component page in Next.js.
+        Runs data transfer tasks and summarizes results.
       </p>
       <div className="mt-8">
         <h2 className="text-xl font-semibold mb-4">Transfer Results</h2>
@@ -94,10 +102,10 @@ export default async function DataTransferPage() {
                 {r.status === "success" ? "✅" : "❌"}
               </span>
               <span className="flex-1">{r.name}</span>
-              <span className="text-sm">
-                {r.message}
+              <span className="text-sm flex items-center gap-2">
+                <span>{r.message}</span>
                 {typeof r.statusCode === "number" ? (
-                  <span className="ml-2 text-xs text-gray-400">
+                  <span className="text-xs text-gray-400">
                     [{r.statusCode}]
                   </span>
                 ) : null}

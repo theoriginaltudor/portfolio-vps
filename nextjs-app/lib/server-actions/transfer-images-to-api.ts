@@ -13,19 +13,23 @@ export async function transferBlobToApi() {
   }
 
   const blobList: FormData = new FormData();
+  let downloaded = 0;
+  let failed = 0;
   await Promise.all(
-    images.map(async (image: { path: string }) => {
+    (images ?? []).map(async (image: { path: string }) => {
       const { data, error } = await supabase.storage
         .from("portfolio-images")
         .download(image.path);
 
       if (error) {
         console.error("Error downloading image:", error);
+        failed += 1;
         return;
       }
 
       const file = new File([data], image.path);
       blobList.append("files", file, image.path);
+      downloaded += 1;
     })
   );
 
@@ -34,5 +38,5 @@ export async function transferBlobToApi() {
     body: blobList,
   });
 
-  return { ok, error, status };
+  return { ok, error, status, data: { count: downloaded, failed } };
 }

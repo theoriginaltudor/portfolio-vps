@@ -16,7 +16,7 @@ export async function transferProjectsToApi() {
     status,
   } = await apiCall("/api/DataTransfer/projects", {
     method: "POST",
-    body: (data || []).map((article) => ({
+    body: (data ?? []).map((article) => ({
       slug: article.slug,
       title: article.title,
       description: article.description,
@@ -31,5 +31,5 @@ export async function transferProjectsToApi() {
     },
   });
 
-  return { ok, error: apiError, status };
+  return { ok, error: apiError, status, data: { count: (data ?? []).length } };
 }

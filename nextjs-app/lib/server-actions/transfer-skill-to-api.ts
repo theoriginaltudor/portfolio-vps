@@ -16,7 +16,7 @@ export async function transferSkillsToApi() {
     status,
   } = await apiCall("/api/DataTransfer/skills", {
     method: "POST",
-    body: data.map((skill) => ({
+    body: (data ?? []).map((skill) => ({
       name: skill.name,
     })),
     headers: {
@@ -24,5 +24,5 @@ export async function transferSkillsToApi() {
     },
   });
 
-  return { ok, error: apiError, status };
+  return { ok, error: apiError, status, data: { count: (data ?? []).length } };
 }

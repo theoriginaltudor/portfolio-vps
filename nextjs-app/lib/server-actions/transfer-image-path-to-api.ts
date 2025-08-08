@@ -18,7 +18,7 @@ export async function transferImagesToApi() {
     status,
   } = await apiCall("/api/DataTransfer/project-assets", {
     method: "POST",
-    body: data.map((image) => ({
+    body: (data ?? []).map((image) => ({
       projectSlug: image.articles?.slug,
       path: image.path,
     })),
@@ -27,5 +27,5 @@ export async function transferImagesToApi() {
     },
   });
 
-  return { ok, error: apiError, status };
+  return { ok, error: apiError, status, data: { count: (data ?? []).length } };
 }
