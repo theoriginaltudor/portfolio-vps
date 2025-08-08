@@ -10,7 +10,11 @@ export async function transferProjectsToApi() {
     return { ok: false, error: error.message, status: 500 };
   }
 
-  const response = await apiCall("/api/DataTransfer/projects", {
+  const {
+    ok,
+    error: apiError,
+    status,
+  } = await apiCall("/api/DataTransfer/projects", {
     method: "POST",
     body: (data || []).map((article) => ({
       slug: article.slug,
@@ -27,5 +31,5 @@ export async function transferProjectsToApi() {
     },
   });
 
-  return response;
+  return { ok, error: apiError, status };
 }
