@@ -2,12 +2,20 @@ import { Tables } from "@/types/database.types";
 import { usePathname } from "next/navigation";
 import { useCallback, useState } from "react";
 import { detachSkill } from "./actions/detach-skill";
-import { addExistingSkill, addNewSkill as addNewSkillServer } from "./actions/add-skill";
+import {
+  addExistingSkill,
+  addNewSkill as addNewSkillServer,
+} from "./actions/add-skill";
 
-export const useUpdateSkills = (initialSkills: Tables<"skills">[], articleId: number) => {
+export const useUpdateSkills = (
+  initialSkills: Tables<"skills">[],
+  articleId: number
+) => {
   const path = usePathname();
   const [list, setList] = useState<Tables<"skills">[]>(initialSkills);
-  const [removeError, setRemoveError] = useState<boolean | undefined>(undefined);
+  const [removeError, setRemoveError] = useState<boolean | undefined>(
+    undefined
+  );
   const [addError, setAddError] = useState<boolean | undefined>(undefined);
 
   const removeSkill = useCallback(
@@ -61,12 +69,20 @@ export const useUpdateSkills = (initialSkills: Tables<"skills">[], articleId: nu
       if (!response.success) {
         setList((prev) => prev.filter((skill) => skill.id !== -1));
       } else {
-        const newSkill = { id: response.id, name: skillName };
-        setList((prev) => prev.map((skill) => (skill.id === -1 ? newSkill : skill)));
+        if (typeof response.id === "number") {
+          const newSkill = { id: response.id, name: skillName };
+          setList((prev) =>
+            prev.map((skill) => (skill.id === -1 ? newSkill : skill))
+          );
+        } else {
+          // handle error: response.id is not a number
+          setAddError(true);
+          setList((prev) => prev.filter((skill) => skill.id !== -1));
+        }
       }
     },
     [articleId, path]
   );
 
   return { list, removeSkill, addSkill, addNewSkill, removeError, addError };
-}
+};
