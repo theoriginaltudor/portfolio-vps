@@ -3,6 +3,7 @@ nextjs-app/.env.local
 nextjs-app/node_modules/
 nextjs-app/.next/
 nextjs-app/package-lock.json
+aspnet-api/images
 aspnet-api/PortfolioBack/bin/
 aspnet-api/PortfolioBack/obj/
 aspnet-api/PortfolioBack/*.dll
