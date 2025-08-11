@@ -14,6 +14,7 @@ RUN dotnet publish PortfolioBack/PortfolioBack.csproj -c Release -o /app
 FROM mcr.microsoft.com/dotnet/sdk:9.0
 WORKDIR /app
 COPY --from=build /app ./
+COPY --from=build /src/PortfolioBack/PortfolioBack.csproj /app/PortfolioBack.csproj
 
 # Copy entrypoint script
 COPY entrypoint.sh /app/entrypoint.sh
