@@ -36,23 +36,21 @@ jobs:
             --exclude 'aspnet-api/PortfolioBack/*.dll' \
             compose.yaml portfolio-vps.sln README.md \
             aspnet-api/ nextjs-app/ nginx/ \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}
+            ${{ vars.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ vars.DEPLOY_PATH }}
 
       - name: Execute remote commands
         run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            cd ${{ secrets.DEPLOY_PATH }}
+          ssh ${{ vars.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            cd ${{ vars.DEPLOY_PATH }}
             # Create .env file
-            echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" > .env
-            echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
+            echo "POSTGRES_DB=${{ vars.POSTGRES_DB }}" > .env
+            echo "POSTGRES_USER=${{ vars.POSTGRES_USER }}" >> .env
             echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
             # Create nextjs-app/.env.local file
             echo "GOOGLE_GENERATIVE_AI_API_KEY=${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}" > nextjs-app/.env.local
-            echo "NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}" >> nextjs-app/.env.local
-            echo "NEXT_PUBLIC_SUPABASE_PROJECT_ID=${{ secrets.NEXT_PUBLIC_SUPABASE_PROJECT_ID }}" >> nextjs-app/.env.local
+            echo "NEXT_PUBLIC_SUPABASE_URL=${{ vars.NEXT_PUBLIC_SUPABASE_URL }}" >> nextjs-app/.env.local
+            echo "NEXT_PUBLIC_SUPABASE_PROJECT_ID=${{ vars.NEXT_PUBLIC_SUPABASE_PROJECT_ID }}" >> nextjs-app/.env.local
             echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" >> nextjs-app/.env.local
-            echo "SUPABASE_USER=${{ secrets.SUPABASE_USER }}" >> nextjs-app/.env.local
-            echo "SUPABASE_PASSWORD=${{ secrets.SUPABASE_PASSWORD }}" >> nextjs-app/.env.local
             echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" >> nextjs-app/.env.local
             # Optionally restore/build dependencies here
             # cd nextjs-app && npm ci && cd ..
