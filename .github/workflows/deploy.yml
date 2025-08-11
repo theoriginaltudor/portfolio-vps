@@ -56,5 +56,5 @@ jobs:
             # cd nextjs-app && npm ci && cd ..
             # cd aspnet-api/PortfolioBack && dotnet restore && cd ../..
             sudo docker compose -f compose.yaml down
-            sudo docker compose -f compose.yaml up --build --abort-on-container-exit -d
+            sudo docker compose -f compose.yaml up --build -d
           EOF
