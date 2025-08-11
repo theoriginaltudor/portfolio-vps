@@ -55,5 +55,5 @@ jobs:
             # Optionally restore/build dependencies here
             # cd nextjs-app && npm ci && cd ..
             # cd aspnet-api/PortfolioBack && dotnet restore && cd ../..
-            docker compose -f compose.yaml up --build --abort-on-container-exit
+            sudo docker compose -f compose.yaml up --build --abort-on-container-exit
           EOF
