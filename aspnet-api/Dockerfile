@@ -10,8 +10,8 @@ RUN dotnet restore PortfolioBack/PortfolioBack.csproj
 COPY PortfolioBack/ ./PortfolioBack/
 RUN dotnet publish PortfolioBack/PortfolioBack.csproj -c Release -o /app
 
-# Stage 2: Create the final, small image
-FROM mcr.microsoft.com/dotnet/aspnet:9.0
+## Use SDK image for final stage to allow migrations at runtime
+FROM mcr.microsoft.com/dotnet/sdk:9.0
 WORKDIR /app
 COPY --from=build /app ./
 
