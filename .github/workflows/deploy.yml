@@ -34,8 +34,8 @@ jobs:
             --exclude 'aspnet-api/PortfolioBack/bin/' \
             --exclude 'aspnet-api/PortfolioBack/obj/' \
             --exclude 'aspnet-api/PortfolioBack/*.dll' \
-            compose.yaml portfolio-vps.sln README.md \
-            aspnet-api/ nextjs-app/ nginx/ \
+            compose.yaml portfolio-vps.sln \
+            aspnet-api nextjs-app nginx \
             ${{ vars.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ vars.DEPLOY_PATH }}
 
       - name: Execute remote commands
