@@ -11,3 +11,5 @@
 - [ ] make the avatar in projects route clickable to navigate to the chat page
 - [/] start working on authenticated edit mode
 - [ ] add Streaming functionality
+- [ ] change images to use server images, not supabase
+- [ ] change DB queries to own API
