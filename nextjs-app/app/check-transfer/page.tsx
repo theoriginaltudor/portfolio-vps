@@ -1,4 +1,5 @@
 import { apiCall } from "@/lib/utils/api";
+import { getImageUrl } from "@/lib/utils/get-url";
 import Image from "next/image";
 
 export default async function CheckTransferPage() {
@@ -76,7 +77,7 @@ export default async function CheckTransferPage() {
                     </pre>
                     {"path" in item && typeof item.path === "string" && (
                       <Image
-                        src={item.path}
+                        src={getImageUrl(item.path)}
                         alt="altname"
                         width={100}
                         height={100}

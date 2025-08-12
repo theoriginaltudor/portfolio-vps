@@ -1,5 +1,5 @@
 import { paths } from "@/types/swagger-types";
-import { getApiUrl } from "./get-api";
+import { getApiUrl } from "./get-url";
 
 export type ApiEndpoint = keyof paths;
 
