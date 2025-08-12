@@ -1,4 +1,5 @@
 import { apiCall } from "@/lib/utils/api";
+import Image from "next/image";
 
 export default async function CheckTransferPage() {
   const endpoints = [
@@ -73,6 +74,15 @@ export default async function CheckTransferPage() {
                     <pre className="bg-gray-100 dark:bg-gray-900 p-3 rounded-lg text-sm mt-2 text-gray-800 dark:text-gray-100 max-h-96 overflow-auto">
                       {JSON.stringify(item, null, 2)}
                     </pre>
+                    {"path" in item && typeof item.path === "string" && (
+                      <Image
+                        src={item.path}
+                        alt="altname"
+                        width={100}
+                        height={100}
+                        className="mt-2"
+                      />
+                    )}
                   </details>
                 ))
               ) : (
