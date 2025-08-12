@@ -33,7 +33,6 @@ services:
       - aspnet-api
     environment:
       NEXT_PUBLIC_API_URL: "http://aspnet-api:5000"
-      NEXT_PUBLIC_IMAGE_URL: "http://localhost:80/images"
       NODE_ENV: "production"
     restart: always
 
