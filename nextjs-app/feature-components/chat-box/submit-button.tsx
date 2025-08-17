@@ -9,8 +9,7 @@ const SubmitButton: React.FC<{ disabled: boolean }> = ({ disabled }) => {
   const { setLoading } = useSubmittingStore();
   useEffect(() => {
     setLoading(pending);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pending]);
+  }, [pending, setLoading]);
 
   return (
     <button
