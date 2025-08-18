@@ -39,7 +39,7 @@ export default async function RootLayout({
                 className="hidden md:flex"
                 {...(user ? { user } : {})}
               />
-              <MobileNav />
+              <MobileNav {...(user ? { user } : {})} />
             </div>
             <div className="flex-1 flex flex-col">{children}</div>
           </div>

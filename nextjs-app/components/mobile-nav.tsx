@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Drawer } from "@/components/ui/drawer";
 import { Menu } from "lucide-react";
 import { NavigationMenu } from "@/components/navigation-menu";
+import { User } from "@supabase/supabase-js";
 
-export const MobileNav = () => {
+export const MobileNav = ({ user }: { user?: User | undefined }) => {
   const [open, setOpen] = React.useState(false);
   return (
     <div className="md:hidden">
@@ -22,6 +23,7 @@ export const MobileNav = () => {
         <NavigationMenu
           className="flex flex-col items-center gap-6 w-full"
           onNavigate={() => setOpen(false)}
+          {...(user ? { user } : {})}
         />
       </Drawer>
     </div>
