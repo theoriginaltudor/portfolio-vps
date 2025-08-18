@@ -10,7 +10,7 @@ export default async function CheckTransferPage() {
     "/api/Skill",
   ] as const;
 
-  await apiCall("/api/DataTransfer/project-assets");
+  //await apiCall("/api/DataTransfer/project-assets");
 
   // Call all endpoints in parallel
   const results = await Promise.all(
