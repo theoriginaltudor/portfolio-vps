@@ -14,3 +14,4 @@
 - [ ] change images to use server images, not supabase
 - [ ] change DB queries to own API
 - [ ] add rate limiting to the API
+- [ ] update DB with new table for AI generated questions for the articles that have been embedded, which are connected to the articles table with an id
