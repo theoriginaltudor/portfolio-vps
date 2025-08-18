@@ -8,9 +8,9 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    ports:
-      # Expose PostgreSQL to host for development access
-      - "5432:5432"
+    #ports:
+    # Expose PostgreSQL to host for development access
+    # - "5432:5432"
     volumes:
       # Use the SAME volume as production to ensure data consistency
       - pg_data:/var/lib/postgresql/data
@@ -18,20 +18,20 @@ services:
       # - ./database/init:/docker-entrypoint-initdb.d:ro
     restart: always
 
-  # aspnet-api:
-  #   build:
-  #     context: ./aspnet-api
-  #   container_name: aspnet_api
-  #   depends_on:
-  #     - postgres
-  #   environment:
-  #     ConnectionStrings__DefaultConnection: "Host=postgres; Port=5432; Database=${POSTGRES_DB}; Username=${POSTGRES_USER}; Password=${POSTGRES_PASSWORD}"
-  #   restart: always
-  #   volumes:
-  #     - ./aspnet-api/images:/app/images
-  #   ports:
-  #     - "8000:5000"
-  #   entrypoint: ["/app/entrypoint.sh"]
+  aspnet-api:
+    build:
+      context: ./aspnet-api
+    container_name: aspnet_api
+    depends_on:
+      - postgres
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=postgres; Port=5432; Database=${POSTGRES_DB}; Username=${POSTGRES_USER}; Password=${POSTGRES_PASSWORD}"
+    restart: always
+    volumes:
+      - ./aspnet-api/images:/app/images
+    ports:
+      - "8000:5000"
+    entrypoint: ["/app/entrypoint.sh"]
 
   nginx:
     image: docker.io/library/nginx:latest

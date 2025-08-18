@@ -67,7 +67,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         {project.long_description}
       </ArticleBody>
 
-      {imageUrls.length > 1 && <ProjectImageCarousel images={imageUrls} />}
+      {imageUrls.length > 1 && (
+        <ProjectImageCarousel images={imageUrls} edit={editMode} />
+      )}
     </main>
   );
 }

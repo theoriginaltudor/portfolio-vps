@@ -8,13 +8,16 @@ import {
   CarouselNext,
 } from "@/components/ui/carousel";
 import { SlideWithPair } from "./slide-with-pair";
+import { PlusCircleIcon } from "lucide-react";
 
 interface ProjectImageCarouselProps {
   images: string[];
+  edit?: boolean;
 }
 
 export const ProjectImageCarousel: React.FC<ProjectImageCarouselProps> = ({
   images,
+  edit,
 }) => {
   if (!images || images.length === 0) return null;
 
@@ -48,6 +51,15 @@ export const ProjectImageCarousel: React.FC<ProjectImageCarouselProps> = ({
                   />
                 </CarouselItem>
               ))}
+          {edit && (
+            <CarouselItem className="basis-full">
+              <div className="h-full w-full  flex items-center justify-center">
+                <button className="flex bg-gray-600 items-center justify-center h-96 w-96 rounded-3xl cursor-pointer hover:bg-gray-700 transition-colors">
+                  <PlusCircleIcon className="w-20 h-20" />
+                </button>
+              </div>
+            </CarouselItem>
+          )}
         </CarouselContent>
         <CarouselPrevious className="hidden md:flex" />
         <CarouselNext className="hidden md:flex" />
