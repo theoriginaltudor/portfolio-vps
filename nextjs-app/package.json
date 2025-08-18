@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "generate-types": "npx openapi-typescript http://localhost:5258/swagger/v1/swagger.json --output ./types/swagger-types.ts"
+    "generate-types": "npx openapi-typescript http://localhost:5258/swagger/v1/swagger.json --output ./types/swagger-types.ts",
+    "generate-supabase-types": "npx supabase gen types typescript --project-id gqweweuqqlxttuuxhmyi --schema public > types/database.types.ts"
   },
   "dependencies": {
     "@ai-sdk/google": "^1.2.22",
