@@ -13,3 +13,4 @@
 - [ ] add Streaming functionality
 - [ ] change images to use server images, not supabase
 - [ ] change DB queries to own API
+- [ ] add rate limiting to the API
