@@ -10,7 +10,7 @@
 - [ ] make a chat page where you can just talk with the LLM, asking questions and it will talk about the data in the articles plus give a link to them
 - [ ] make the avatar in projects route clickable to navigate to the chat page
 - [/] start working on authenticated edit mode
-- [ ] add Streaming functionality
+- [ ] add Streaming functionality with suspense and use
 - [ ] change images to use server images, not supabase
 - [ ] change DB queries to own API
 - [ ] add rate limiting to the API
