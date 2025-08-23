@@ -25,14 +25,25 @@ services:
       - ./aspnet-api/images:/app/images
     entrypoint: ["/app/entrypoint.sh"]
 
-  nextjs-app:
+  # nextjs-app:
+  #   build:
+  #     context: ./nextjs-app
+  #   container_name: nextjs_frontend
+  #   depends_on:
+  #     - aspnet-api
+  #   environment:
+  #     NEXT_PUBLIC_API_URL: "http://aspnet-api:5000"
+  #     NODE_ENV: "production"
+  #   restart: always
+
+  remix-app:
     build:
-      context: ./nextjs-app
-    container_name: nextjs_frontend
+      context: ./remix-app
+    container_name: remix_app
     depends_on:
       - aspnet-api
     environment:
-      NEXT_PUBLIC_API_URL: "http://aspnet-api:5000"
+      API_URL: "http://aspnet-api:5000"
       NODE_ENV: "production"
     restart: always
 
@@ -46,7 +57,7 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:Z
       - ./aspnet-api/images:/usr/share/nginx/html/images:ro
     depends_on:
-      - nextjs-app
+      - remix-app
     restart: always
 
 volumes:
