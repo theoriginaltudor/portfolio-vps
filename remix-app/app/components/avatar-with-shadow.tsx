@@ -1,17 +1,11 @@
-"use client";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { cn } from "@/lib/utils/client";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { cn } from "../../lib/utils";
 import { useMemo } from "react";
 import { unstable_ViewTransition as ViewTransition } from "react";
-import { createClient } from "@/lib/supabase/client";
-import { useSubmittingStore } from "@/feature-components/chat-box/submitting-store";
 
 interface AvatarWithShadowProps {
   size?: "big" | "small";
 }
-
-const supabase = createClient();
 
 export const AvatarWithShadow: React.FC<AvatarWithShadowProps> = ({
   size = "big",

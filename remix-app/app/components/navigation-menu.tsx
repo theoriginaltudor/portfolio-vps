@@ -1,12 +1,10 @@
-"use client";
-import * as React from "react";
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu";
-import { cn } from "@/lib/utils/client";
 import Link from "next/link";
 import { User as UserIcon, LogOut } from "lucide-react";
 import { User } from "@supabase/supabase-js";
 import { logoutUser } from "@/app/login/actions";
 import { usePathname } from "next/navigation";
+import { cn } from "lib/utils";
 
 export const NavigationMenu = ({
   className,

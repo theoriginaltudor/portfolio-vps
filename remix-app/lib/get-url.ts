@@ -1,0 +1,14 @@
+import type { ApiEndpoint } from "./api";
+
+const getApiUrl = (endpoint: ApiEndpoint) => {
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5258";
+  return `${baseUrl}${endpoint.startsWith("/") ? endpoint : "/" + endpoint}`;
+};
+
+const getImageUrl = (path: string) => {
+  const baseUrl =
+    process.env.NEXT_PUBLIC_IMAGE_URL || "http://localhost:80/images";
+  return `${baseUrl}${path.startsWith("/") ? path : "/" + path}`;
+};
+
+export { getApiUrl, getImageUrl };

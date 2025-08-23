@@ -1,9 +1,9 @@
 "use client";
 import * as React from "react";
-import { Button } from "@/components/ui/button";
-import { Drawer } from "@/components/ui/drawer";
+import { Button } from "./ui/button";
+import { Drawer } from "./ui/drawer";
 import { Menu } from "lucide-react";
-import { NavigationMenu } from "@/components/navigation-menu";
+import { NavigationMenu } from "./navigation-menu";
 import { User } from "@supabase/supabase-js";
 
 export const MobileNav = ({ user }: { user?: User | undefined }) => {
