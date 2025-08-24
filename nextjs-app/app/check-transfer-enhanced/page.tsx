@@ -1,6 +1,7 @@
 import { entityApi, apiBatch } from "@/lib/utils/api-enhanced";
 import { getImageUrl } from "@/lib/utils/get-url";
 import Image from "next/image";
+import ApiDemoComponent from "@/components/api-demo";
 
 /**
  * Enhanced check transfer page demonstrating the improved API utilities
@@ -29,20 +30,21 @@ export default async function CheckTransferEnhancedPage() {
   return (
     <main className="flex flex-col items-center min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
       <h1 className="text-4xl font-bold mb-10 tracking-wide text-gray-900 dark:text-gray-100">
-        Enhanced Check Transfer
+        Enhanced API Utilities
       </h1>
       
-      <div className="mb-8 p-4 bg-blue-50 dark:bg-blue-900 rounded-lg">
+      {/* Interactive Demo Component */}
+      <div className="w-full max-w-6xl mb-12">
+        <ApiDemoComponent />
+      </div>
+      
+      <div className="mb-8 p-4 bg-blue-50 dark:bg-blue-900 rounded-lg max-w-4xl">
         <h2 className="text-lg font-semibold mb-2 text-blue-800 dark:text-blue-200">
-          API Enhancements
+          Static API Results (Server-Side)
         </h2>
-        <ul className="text-blue-700 dark:text-blue-300 text-sm space-y-1">
-          <li>✅ Better type safety with specialized functions</li>
-          <li>✅ Separated concerns (GET vs POST vs Upload)</li>
-          <li>✅ Standardized error handling</li>
-          <li>✅ Reduced code duplication</li>
-          <li>✅ Enhanced maintainability</li>
-        </ul>
+        <p className="text-blue-700 dark:text-blue-300 text-sm">
+          These results are fetched server-side using the enhanced API utilities:
+        </p>
       </div>
 
       {/* Batch Results Section */}
