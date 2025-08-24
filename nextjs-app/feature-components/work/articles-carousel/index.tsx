@@ -6,23 +6,31 @@ import {
   CarouselNext,
 } from "@/components/ui/carousel";
 import Link from "next/link";
+import { components } from "@/types/swagger-types";
+import { Slide } from "@/components/slide";
 import { getArticlesImage } from "./get-articles-images";
 
-import type { SupabaseClient } from "@supabase/supabase-js";
-import { Tables } from "@/types/database.types";
-import { Slide } from "@/components/slide";
-
 interface ArticlesCarouselProps {
-  articles: Pick<Tables<"articles">, "id" | "slug" | "title" | "description">[];
-  supabaseClient: SupabaseClient;
+  articles: components["schemas"]["Project"][];
 }
 
-export const ArticlesCarousel = async ({
-  articles,
-  supabaseClient,
-}: ArticlesCarouselProps) => {
-  const articleIds = articles.map((a) => a.id);
-  const imagePaths = await getArticlesImage({ articleIds, supabaseClient });
+export const ArticlesCarousel = async ({ articles }: ArticlesCarouselProps) => {
+  let imagePaths: Pick<
+    components["schemas"]["ProjectAsset"],
+    "path" | "projectId"
+  >[] = [];
+  if (
+    articles.length > 0 &&
+    articles[0]?.projectAssets &&
+    articles[0].projectAssets.length > 0
+  ) {
+    imagePaths = articles.map((project) => ({
+      path: project.projectAssets?.[0].path ?? "",
+      projectId: project.id ?? 0,
+    }));
+  } else {
+    imagePaths = await getArticlesImage();
+  }
 
   return (
     <Carousel
@@ -31,7 +39,7 @@ export const ArticlesCarousel = async ({
     >
       <CarouselContent>
         {articles.map((article) => {
-          const image = imagePaths.find((img) => img.article_id === article.id);
+          const image = imagePaths.find((img) => img.projectId === article.id);
           return (
             <CarouselItem
               key={article.id}
@@ -39,11 +47,10 @@ export const ArticlesCarousel = async ({
             >
               <Link href={`/project/${article.slug}`}>
                 <Slide
-                  id={article.id}
+                  id={article.id ?? 0}
                   title={article.title}
                   description={article.description}
                   imagePath={image?.path}
-                  supabaseClient={supabaseClient}
                 />
               </Link>
             </CarouselItem>

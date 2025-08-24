@@ -1,7 +1,6 @@
 import * as React from "react";
 import Image from "next/image";
 import { unstable_ViewTransition as ViewTransition } from "react";
-import { SupabaseClient } from "@supabase/supabase-js";
 import { getImageUrl } from "@/lib/utils/get-url";
 
 interface SlideProps {
@@ -9,7 +8,6 @@ interface SlideProps {
   imagePath?: string;
   title: string;
   description: string;
-  supabaseClient: SupabaseClient;
 }
 
 export const Slide: React.FC<SlideProps> = async ({
