@@ -1,7 +1,7 @@
 import { ApiEndpoint } from "./api";
 
 const getApiUrl = (endpoint: ApiEndpoint) => {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
   return `${baseUrl}${endpoint.startsWith("/") ? endpoint : "/" + endpoint}`;
 };
 
