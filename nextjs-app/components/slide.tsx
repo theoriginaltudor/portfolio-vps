@@ -2,6 +2,7 @@ import * as React from "react";
 import Image from "next/image";
 import { unstable_ViewTransition as ViewTransition } from "react";
 import { SupabaseClient } from "@supabase/supabase-js";
+import { getImageUrl } from "@/lib/utils/get-url";
 
 interface SlideProps {
   id: number;
@@ -16,14 +17,10 @@ export const Slide: React.FC<SlideProps> = async ({
   title,
   imagePath,
   description,
-  supabaseClient,
 }: SlideProps) => {
   let publicUrl: string | undefined = undefined;
   if (imagePath) {
-    const { data } = supabaseClient.storage
-      .from("portfolio-images")
-      .getPublicUrl(imagePath);
-    publicUrl = data.publicUrl;
+    publicUrl = getImageUrl(imagePath);
   }
 
   return (

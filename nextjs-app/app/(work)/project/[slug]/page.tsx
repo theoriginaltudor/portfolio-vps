@@ -37,7 +37,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     .map((s) => s.skills)
     .filter(Boolean);
 
-  const imageUrls = await buildImageUrls(supabase, images);
+  const imageUrls = await buildImageUrls(images);
 
   if (!imageUrls.length) {
     console.warn("No images found for project:", project.id);

@@ -2,27 +2,19 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils/client";
-import { useMemo } from "react";
 import { unstable_ViewTransition as ViewTransition } from "react";
-import { createClient } from "@/lib/supabase/client";
 import { useSubmittingStore } from "@/feature-components/chat-box/submitting-store";
+import { getImageUrl } from "@/lib/utils/get-url";
 
 interface AvatarWithShadowProps {
   size?: "big" | "small";
 }
 
-const supabase = createClient();
-
 export const AvatarWithShadow: React.FC<AvatarWithShadowProps> = ({
   size = "big",
 }) => {
   const { loading } = useSubmittingStore();
-  const avatarUrl = useMemo(() => {
-    const { data } = supabase.storage
-      .from("portfolio-images")
-      .getPublicUrl("tc1_1.webp");
-    return data.publicUrl;
-  }, []);
+  const avatarUrl = getImageUrl("/tc1_1.webp");
 
   const sizeClass = size === "big" ? "w-64 h-64" : "w-16 h-16";
 
