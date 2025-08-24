@@ -7,6 +7,8 @@ export async function transferBlobToApi() {
     .from("images")
     .select("path");
 
+  images?.push({ path: "/tc1_1.webp" });
+
   if (imagesError) {
     console.error("Error fetching images:", imagesError);
     return { ok: false, error: imagesError.message, status: 500 };
