@@ -19,4 +19,36 @@ public class ProjectSkillService
         .Include(ps => ps.Skill)
         .ToListAsync();
   }
+  public async Task<ProjectSkill?> GetByIdAsync(int projectId, int skillId)
+  {
+    return await _context.ProjectSkills
+      .Include(ps => ps.Project)
+      .Include(ps => ps.Skill)
+      .FirstOrDefaultAsync(ps => ps.ProjectId == projectId && ps.SkillId == skillId);
+  }
+
+  public async Task<ProjectSkill> CreateAsync(ProjectSkill projectSkill)
+  {
+    _context.ProjectSkills.Add(projectSkill);
+    await _context.SaveChangesAsync();
+    return projectSkill;
+  }
+
+  public async Task<ProjectSkill?> UpdateAsync(ProjectSkill projectSkill)
+  {
+    var existing = await _context.ProjectSkills.FindAsync(projectSkill.ProjectId, projectSkill.SkillId);
+    if (existing == null) return null;
+    _context.Entry(existing).CurrentValues.SetValues(projectSkill);
+    await _context.SaveChangesAsync();
+    return existing;
+  }
+
+  public async Task<bool> DeleteAsync(int projectId, int skillId)
+  {
+    var projectSkill = await _context.ProjectSkills.FindAsync(projectId, skillId);
+    if (projectSkill == null) return false;
+    _context.ProjectSkills.Remove(projectSkill);
+    await _context.SaveChangesAsync();
+    return true;
+  }
 }

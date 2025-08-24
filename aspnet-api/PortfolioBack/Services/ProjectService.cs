@@ -19,4 +19,36 @@ public class ProjectService
         .Include(p => p.ProjectAssets)
         .ToListAsync();
   }
+  public async Task<Project?> GetByIdAsync(int id)
+  {
+    return await _context.Projects
+      .Include(p => p.ProjectSkills)
+      .Include(p => p.ProjectAssets)
+      .FirstOrDefaultAsync(p => p.Id == id);
+  }
+
+  public async Task<Project> CreateAsync(Project project)
+  {
+    _context.Projects.Add(project);
+    await _context.SaveChangesAsync();
+    return project;
+  }
+
+  public async Task<Project?> UpdateAsync(Project project)
+  {
+    var existing = await _context.Projects.FindAsync(project.Id);
+    if (existing == null) return null;
+    _context.Entry(existing).CurrentValues.SetValues(project);
+    await _context.SaveChangesAsync();
+    return existing;
+  }
+
+  public async Task<bool> DeleteAsync(int id)
+  {
+    var project = await _context.Projects.FindAsync(id);
+    if (project == null) return false;
+    _context.Projects.Remove(project);
+    await _context.SaveChangesAsync();
+    return true;
+  }
 }
