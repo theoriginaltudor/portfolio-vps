@@ -208,7 +208,9 @@ export interface paths {
         };
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    fields?: string;
+                };
                 header?: never;
                 path?: never;
                 cookie?: never;
@@ -221,9 +223,9 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/plain": components["schemas"]["Project"][];
-                        "application/json": components["schemas"]["Project"][];
-                        "text/json": components["schemas"]["Project"][];
+                        "text/plain": components["schemas"]["ProjectGetDto"][];
+                        "application/json": components["schemas"]["ProjectGetDto"][];
+                        "text/json": components["schemas"]["ProjectGetDto"][];
                     };
                 };
             };
@@ -272,7 +274,9 @@ export interface paths {
         };
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    fields?: string;
+                };
                 header?: never;
                 path: {
                     slug: string;
@@ -287,9 +291,9 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/plain": components["schemas"]["Project"];
-                        "application/json": components["schemas"]["Project"];
-                        "text/json": components["schemas"]["Project"];
+                        "text/plain": components["schemas"]["ProjectGetDto"];
+                        "application/json": components["schemas"]["ProjectGetDto"];
+                        "text/json": components["schemas"]["ProjectGetDto"];
                     };
                 };
             };
@@ -371,7 +375,9 @@ export interface paths {
         };
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    fields?: string;
+                };
                 header?: never;
                 path?: never;
                 cookie?: never;
@@ -384,9 +390,9 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/plain": components["schemas"]["ProjectAsset"][];
-                        "application/json": components["schemas"]["ProjectAsset"][];
-                        "text/json": components["schemas"]["ProjectAsset"][];
+                        "text/plain": components["schemas"]["ProjectAssetGetDto"][];
+                        "application/json": components["schemas"]["ProjectAssetGetDto"][];
+                        "text/json": components["schemas"]["ProjectAssetGetDto"][];
                     };
                 };
             };
@@ -435,7 +441,9 @@ export interface paths {
         };
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    fields?: string;
+                };
                 header?: never;
                 path: {
                     id: number;
@@ -450,9 +458,9 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/plain": components["schemas"]["ProjectAsset"];
-                        "application/json": components["schemas"]["ProjectAsset"];
-                        "text/json": components["schemas"]["ProjectAsset"];
+                        "text/plain": components["schemas"]["ProjectAssetGetDto"];
+                        "application/json": components["schemas"]["ProjectAssetGetDto"];
+                        "text/json": components["schemas"]["ProjectAssetGetDto"];
                     };
                 };
             };
@@ -561,7 +569,9 @@ export interface paths {
         };
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    fields?: string;
+                };
                 header?: never;
                 path?: never;
                 cookie?: never;
@@ -574,9 +584,9 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/plain": components["schemas"]["ProjectSkill"][];
-                        "application/json": components["schemas"]["ProjectSkill"][];
-                        "text/json": components["schemas"]["ProjectSkill"][];
+                        "text/plain": components["schemas"]["ProjectSkillGetDto"][];
+                        "application/json": components["schemas"]["ProjectSkillGetDto"][];
+                        "text/json": components["schemas"]["ProjectSkillGetDto"][];
                     };
                 };
             };
@@ -625,7 +635,9 @@ export interface paths {
         };
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    fields?: string;
+                };
                 header?: never;
                 path: {
                     projectId: number;
@@ -641,9 +653,9 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/plain": components["schemas"]["ProjectSkill"];
-                        "application/json": components["schemas"]["ProjectSkill"];
-                        "text/json": components["schemas"]["ProjectSkill"];
+                        "text/plain": components["schemas"]["ProjectSkillGetDto"];
+                        "application/json": components["schemas"]["ProjectSkillGetDto"];
+                        "text/json": components["schemas"]["ProjectSkillGetDto"];
                     };
                 };
             };
@@ -711,7 +723,9 @@ export interface paths {
         };
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    fields?: string;
+                };
                 header?: never;
                 path?: never;
                 cookie?: never;
@@ -724,9 +738,9 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/plain": components["schemas"]["Skill"][];
-                        "application/json": components["schemas"]["Skill"][];
-                        "text/json": components["schemas"]["Skill"][];
+                        "text/plain": components["schemas"]["SkillGetDto"][];
+                        "application/json": components["schemas"]["SkillGetDto"][];
+                        "text/json": components["schemas"]["SkillGetDto"][];
                     };
                 };
             };
@@ -775,7 +789,9 @@ export interface paths {
         };
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    fields?: string;
+                };
                 header?: never;
                 path: {
                     id: number;
@@ -790,9 +806,9 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/plain": components["schemas"]["Skill"];
-                        "application/json": components["schemas"]["Skill"];
-                        "text/json": components["schemas"]["Skill"];
+                        "text/plain": components["schemas"]["SkillGetDto"];
+                        "application/json": components["schemas"]["SkillGetDto"];
+                        "text/json": components["schemas"]["SkillGetDto"];
                     };
                 };
             };
@@ -865,8 +881,6 @@ export interface components {
             createdAt?: string;
             /** Format: date-time */
             updatedAt?: string | null;
-            projectSkills?: components["schemas"]["ProjectSkill"][] | null;
-            projectAssets?: components["schemas"]["ProjectAsset"][] | null;
         };
         ProjectAsset: {
             /** Format: int32 */
@@ -874,7 +888,6 @@ export interface components {
             path: string;
             /** Format: int32 */
             projectId?: number;
-            project?: components["schemas"]["Project"];
             /** Format: date-time */
             createdAt?: string;
             /** Format: date-time */
@@ -886,6 +899,17 @@ export interface components {
             /** Format: date-time */
             createdAt?: string | null;
         };
+        ProjectAssetGetDto: {
+            /** Format: int32 */
+            id?: number | null;
+            path?: string | null;
+            /** Format: int32 */
+            projectId?: number | null;
+            /** Format: date-time */
+            createdAt?: string | null;
+            /** Format: date-time */
+            updatedAt?: string | null;
+        };
         ProjectDto: {
             slug?: string | null;
             title?: string | null;
@@ -894,6 +918,19 @@ export interface components {
             embedding?: number[] | null;
             /** Format: date-time */
             createdAt?: string | null;
+        };
+        ProjectGetDto: {
+            /** Format: int32 */
+            id?: number | null;
+            slug?: string | null;
+            title?: string | null;
+            description?: string | null;
+            longDescription?: string | null;
+            embedding?: number[] | null;
+            /** Format: date-time */
+            createdAt?: string | null;
+            /** Format: date-time */
+            updatedAt?: string | null;
         };
         ProjectSearchResult: {
             slug?: string | null;
@@ -906,16 +943,22 @@ export interface components {
         ProjectSkill: {
             /** Format: int32 */
             projectId?: number;
-            project?: components["schemas"]["Project"];
             /** Format: int32 */
             skillId?: number;
-            skill?: components["schemas"]["Skill"];
             /** Format: date-time */
             createdAt?: string;
         };
         ProjectSkillDto: {
             projectSlug?: string | null;
             skillName?: string | null;
+            /** Format: date-time */
+            createdAt?: string | null;
+        };
+        ProjectSkillGetDto: {
+            /** Format: int32 */
+            projectId?: number | null;
+            /** Format: int32 */
+            skillId?: number | null;
             /** Format: date-time */
             createdAt?: string | null;
         };
@@ -945,12 +988,20 @@ export interface components {
             createdAt?: string;
             /** Format: date-time */
             updatedAt?: string | null;
-            projectSkills?: components["schemas"]["ProjectSkill"][] | null;
         };
         SkillDto: {
             name?: string | null;
             /** Format: date-time */
             createdAt?: string | null;
+        };
+        SkillGetDto: {
+            /** Format: int32 */
+            id?: number | null;
+            name?: string | null;
+            /** Format: date-time */
+            createdAt?: string | null;
+            /** Format: date-time */
+            updatedAt?: string | null;
         };
         Vector: {
             memory?: components["schemas"]["SingleReadOnlyMemory"];
