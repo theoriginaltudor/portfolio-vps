@@ -24,13 +24,19 @@ type ApiResponseData<TEndpoint extends ApiEndpoint> = paths[TEndpoint] extends {
 type GetOptions<TEndpoint extends ApiEndpoint> = paths[TEndpoint] extends {
   get: unknown;
 }
-  ? Omit<RequestInit, "method" | "body"> & { method?: "GET" }
+  ? Omit<RequestInit, "method" | "body"> & {
+      method?: "GET";
+      query?: { fields?: string };
+    }
   : never;
 
 type PostJsonOptions<TEndpoint extends ApiEndpoint> = paths[TEndpoint] extends {
   post: { requestBody?: { content: { "application/json": infer TBody } } };
 }
-  ? Omit<RequestInit, "method" | "body"> & { method: "POST"; body?: TBody }
+  ? Omit<RequestInit, "method" | "body"> & {
+      method: "POST";
+      body?: TBody;
+    }
   : never;
 
 type PostMultipartOptions<TEndpoint extends ApiEndpoint> =
@@ -52,13 +58,27 @@ export const apiCall = async <TEndpoint extends ApiEndpoint>(
   endpoint: TEndpoint,
   options?: ApiRequestOptions<TEndpoint>
 ) => {
-  const url = getApiUrl(endpoint);
-  try {
-    const { body, headers, method, ...restOptions } = (options || {}) as
-      | (GetOptions<TEndpoint> & { body?: unknown })
-      | (PostJsonOptions<TEndpoint> & { body?: unknown })
-      | (PostMultipartOptions<TEndpoint> & { body?: unknown });
+  const { body, headers, method, ...restOptions } = (options || {}) as
+    | (GetOptions<TEndpoint> & { body?: unknown })
+    | (PostJsonOptions<TEndpoint> & { body?: unknown })
+    | (PostMultipartOptions<TEndpoint> & { body?: unknown });
 
+  const isGet = !method || method === "GET";
+  const query =
+    isGet && options && typeof options === "object" && "query" in options
+      ? (options as { query?: { fields?: string } }).query
+      : undefined;
+  const searchParams = new URLSearchParams();
+  if (isGet && query?.fields) searchParams.set("fields", query.fields);
+  const queryString = searchParams.toString();
+  const endpointWithQs =
+    isGet && queryString
+      ? (endpoint as string) +
+        (String(endpoint).includes("?") ? "&" : "?") +
+        queryString
+      : (endpoint as string);
+  const url = getApiUrl(endpointWithQs);
+  try {
     const requestOptions: RequestInit = {
       method,
       headers: {

@@ -83,6 +83,7 @@ export function paramApiCall<TEndpoint extends ApiEndpoint>(
   options: {
     method: "GET";
     params: PathParams<TEndpoint>;
+    query?: { fields?: string };
   } & Omit<RequestInit, "method" | "body">
 ): Promise<
   | { ok: true; data: ResponseData<TEndpoint, "get"> }
@@ -134,6 +135,7 @@ export function paramApiCall<TEndpoint extends ApiEndpoint>(
   options: {
     params: PathParams<TEndpoint>;
     body?: unknown;
+    query?: { fields?: string };
   } & Omit<RequestInit, "method" | "body">
 ): Promise<
   | { ok: true; data: ResponseData<TEndpoint, "get"> }
@@ -148,13 +150,21 @@ export async function paramApiCall<TEndpoint extends ApiEndpoint>(
     method?: "GET" | "POST" | "PUT" | "DELETE";
     params: PathParams<TEndpoint>;
     body?: unknown;
+    query?: { fields?: string };
   } & Omit<RequestInit, "method" | "body">
 ): Promise<
   | { ok: true; data: unknown }
   | { ok: true; data?: undefined }
   | { ok: false; error: string; status: number }
 > {
-  const { params, body, headers, method = "GET", ...restOptions } = options;
+  const {
+    params,
+    body,
+    headers,
+    method = "GET",
+    query,
+    ...restOptions
+  } = options;
 
   const { path, missing } = fillPathParams(endpoint, params);
   if (missing.length > 0) {
@@ -165,7 +175,17 @@ export async function paramApiCall<TEndpoint extends ApiEndpoint>(
     };
   }
 
-  const url = getApiUrl(path as string);
+  const searchParams = new URLSearchParams();
+  if (method === "GET" && query?.fields) {
+    searchParams.set("fields", query.fields);
+  }
+  const queryString = searchParams.toString();
+  const url = getApiUrl(
+    (path as string) +
+      (method === "GET" && queryString
+        ? (String(path).includes("?") ? "&" : "?") + queryString
+        : "")
+  );
 
   try {
     const requestOptions: RequestInit = {
