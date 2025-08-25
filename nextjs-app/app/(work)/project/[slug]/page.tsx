@@ -53,7 +53,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         edit={editMode}
       />
 
-      <Skills skills={skills} edit={editMode} articleId={project.id ?? 0} />
+      {skills.length > 0 && (
+        <Skills skills={skills} edit={editMode} articleId={project.id ?? 0} />
+      )}
 
       <ArticleBody
         className="max-w-2xl text-base w-full px-4 mt-8"
@@ -63,7 +65,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         {project.longDescription}
       </ArticleBody>
 
-      {imageUrls.length > 1 && (
+      {imageUrls.length > 0 && (
         <ProjectImageCarousel images={imageUrls} edit={editMode} />
       )}
     </main>
