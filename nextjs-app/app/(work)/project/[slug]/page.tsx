@@ -5,7 +5,6 @@ import { ProjectImageHeader } from "@/feature-components/work/project-page/proje
 import { ProjectImageCarousel } from "@/feature-components/work/project-page/project-image-carousel";
 import { fetchProjectData } from "@/feature-components/work/project-page/hooks/fetch-data";
 import { buildImageUrls } from "@/feature-components/work/project-page/hooks/build-urls";
-import { createClient } from "@/lib/supabase/server";
 import { Skills } from "@/feature-components/work/project-page/skills";
 import { ArticleBody } from "@/feature-components/work/project-page/article-body";
 import { checkAuth } from "@/lib/utils/server";
@@ -20,8 +19,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   const { slug } = await params;
   if (!slug) return notFound();
 
-  const supabase = await createClient();
-  const { project, projectError } = await fetchProjectData(supabase, slug);
+  const { project, projectError } = await fetchProjectData(slug);
   if (projectError) {
     console.error("Error fetching project:", projectError);
     return notFound();
@@ -32,10 +30,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   }
 
   // Defensive checks for joined data
-  const images = project.images || [];
-  const skills = (project.articles_skills || [])
-    .map((s) => s.skills)
-    .filter(Boolean);
+  const images = project.projectAssets || [];
+  const skills = project.projectSkills?.map((s) => s.skill) || [];
 
   const imageUrls = await buildImageUrls(images);
 
@@ -52,19 +48,19 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     <main className="flex flex-col items-center flex-1 w-full">
       <ProjectImageHeader
         title={project.title}
-        id={project.id}
+        id={project.id ?? 0}
         image={imageUrls[0]}
         edit={editMode}
       />
 
-      <Skills skills={skills} edit={editMode} articleId={project.id} />
+      <Skills skills={skills} edit={editMode} articleId={project.id ?? 0} />
 
       <ArticleBody
         className="max-w-2xl text-base w-full px-4 mt-8"
         edit={editMode}
-        projectId={project.id}
+        projectId={project.id ?? 0}
       >
-        {project.long_description}
+        {project.longDescription}
       </ArticleBody>
 
       {imageUrls.length > 1 && (

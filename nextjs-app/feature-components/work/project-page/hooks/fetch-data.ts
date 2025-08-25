@@ -1,29 +1,26 @@
-import type { Tables } from "@/types/database.types";
-import type { SupabaseClient } from "@supabase/supabase-js";
+import { paramApiCall } from "@/lib/utils/param-api";
+import { components } from "@/types/swagger-types";
 
-interface JoinedSkill {
-  skills: Tables<"skills">;
-}
-
-export interface JoinedProject extends Tables<"articles"> {
-  images: Pick<Tables<"images">, "path">[];
-  articles_skills: JoinedSkill[];
-}
-
-
-export async function fetchProjectData(
-  supabase: SupabaseClient,
-  slug: string
-): Promise<{
-  project: JoinedProject | null;
+export async function fetchProjectData(slug: string): Promise<{
+  project: components["schemas"]["Project"] | null;
   projectError: unknown;
 }> {
-  const { data: project, error: projectError } = await supabase
-    .from("articles")
-    .select(
-      `id, slug, title, description, long_description, images(path), articles_skills(skills(id, name))`
-    )
-    .eq("slug", slug)
-    .single<JoinedProject>();
+  const response = await paramApiCall("/api/Project/{slug}", {
+    method: "GET",
+    params: { slug },
+    headers: {
+      Accept: "application/json",
+    },
+  });
+  let project: components["schemas"]["Project"] | null = null;
+  let projectError: unknown = null;
+
+  if (response.ok && response.data) {
+    project = response.data as components["schemas"]["Project"];
+  } else if (!response.ok) {
+    projectError = response.error;
+  } else {
+    projectError = "Unknown error";
+  }
   return { project, projectError };
 }
