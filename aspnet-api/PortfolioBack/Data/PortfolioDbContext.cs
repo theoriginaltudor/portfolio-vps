@@ -57,12 +57,12 @@ public class PortfolioDbContext : DbContext
 
       // Configure relationships
       entity.HasOne(e => e.Project)
-        .WithMany(p => p.ProjectSkills)
+        .WithMany()
                 .HasForeignKey(e => e.ProjectId)
                 .OnDelete(DeleteBehavior.Cascade);
 
       entity.HasOne(e => e.Skill)
-        .WithMany(s => s.ProjectSkills)
+        .WithMany()
                 .HasForeignKey(e => e.SkillId)
                 .OnDelete(DeleteBehavior.Cascade);
 
