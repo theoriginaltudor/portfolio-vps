@@ -6,13 +6,15 @@ import {
   addExistingSkill,
   addNewSkill as addNewSkillServer,
 } from "./actions/add-skill";
+import { components } from "@/types/swagger-types";
 
 export const useUpdateSkills = (
-  initialSkills: Tables<"skills">[],
+  initialSkills: (components["schemas"]["Skill"] | undefined)[],
   articleId: number
 ) => {
   const path = usePathname();
-  const [list, setList] = useState<Tables<"skills">[]>(initialSkills);
+  const [list, setList] =
+    useState<(components["schemas"]["Skill"] | undefined)[]>(initialSkills);
   const [removeError, setRemoveError] = useState<boolean | undefined>(
     undefined
   );
@@ -26,8 +28,8 @@ export const useUpdateSkills = (
       const formData = new FormData();
       formData.append("skillId", skillId.toString());
       formData.append("articleId", articleId.toString());
-      const removedSkill = initialSkills.find((skill) => skill.id === skillId);
-      setList((prev) => prev.filter((skill) => skill.id !== skillId));
+      const removedSkill = initialSkills.find((skill) => skill?.id === skillId);
+      setList((prev) => prev.filter((skill) => skill?.id !== skillId));
       const response = await detachSkill(formData, path);
       setRemoveError(!response.success);
       if (!response.success) {
@@ -49,7 +51,7 @@ export const useUpdateSkills = (
       const response = await addExistingSkill(formData, path);
       setAddError(!response.success);
       if (!response.success) {
-        setList((prev) => prev.filter((s) => s.id !== skill.id));
+        setList((prev) => prev.filter((s) => s?.id !== skill.id));
       }
     },
     [articleId, path]
@@ -67,17 +69,17 @@ export const useUpdateSkills = (
       const response = await addNewSkillServer(formData, path);
       setAddError(!response.success);
       if (!response.success) {
-        setList((prev) => prev.filter((skill) => skill.id !== -1));
+        setList((prev) => prev.filter((skill) => skill?.id !== -1));
       } else {
         if (typeof response.id === "number") {
           const newSkill = { id: response.id, name: skillName };
           setList((prev) =>
-            prev.map((skill) => (skill.id === -1 ? newSkill : skill))
+            prev.map((skill) => (skill?.id === -1 ? newSkill : skill))
           );
         } else {
           // handle error: response.id is not a number
           setAddError(true);
-          setList((prev) => prev.filter((skill) => skill.id !== -1));
+          setList((prev) => prev.filter((skill) => skill?.id !== -1));
         }
       }
     },
