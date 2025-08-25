@@ -23,6 +23,7 @@ public class ProjectService
   {
     return await _context.Projects
       .Include(p => p.ProjectSkills)
+        .ThenInclude(ps => ps.Skill)
       .Include(p => p.ProjectAssets)
       .FirstOrDefaultAsync(p => p.Slug == slug);
   }
