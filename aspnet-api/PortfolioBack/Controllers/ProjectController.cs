@@ -19,10 +19,10 @@ public class ProjectController : ControllerBase
     return Ok(projects);
   }
 
-  [HttpGet("{id}")]
-  public async Task<ActionResult<Project>> GetById(int id)
+  [HttpGet("{slug}")]
+  public async Task<ActionResult<Project>> GetBySlug(string slug)
   {
-    var project = await _service.GetByIdAsync(id);
+    var project = await _service.GetBySlugAsync(slug);
     if (project == null) return NotFound();
     return Ok(project);
   }
@@ -31,7 +31,7 @@ public class ProjectController : ControllerBase
   public async Task<ActionResult<Project>> Create(Project project)
   {
     var created = await _service.CreateAsync(project);
-    return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+    return CreatedAtAction(nameof(GetBySlug), new { slug = created.Slug }, created);
   }
 
   [HttpPut("{id}")]

@@ -19,12 +19,12 @@ public class ProjectService
         .Include(p => p.ProjectAssets)
         .ToListAsync();
   }
-  public async Task<Project?> GetByIdAsync(int id)
+  public async Task<Project?> GetBySlugAsync(string slug)
   {
     return await _context.Projects
       .Include(p => p.ProjectSkills)
       .Include(p => p.ProjectAssets)
-      .FirstOrDefaultAsync(p => p.Id == id);
+      .FirstOrDefaultAsync(p => p.Slug == slug);
   }
 
   public async Task<Project> CreateAsync(Project project)
