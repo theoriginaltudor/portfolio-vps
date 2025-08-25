@@ -1,12 +1,17 @@
 
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 using PortfolioBack.Data;
 using PortfolioBack.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(o =>
+{
+    // Prevent cycles from causing serialization errors (e.g., Project -> ProjectAssets -> Project)
+    o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

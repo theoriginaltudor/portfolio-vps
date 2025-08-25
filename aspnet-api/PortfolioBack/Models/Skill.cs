@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace PortfolioBack.Models;
 
@@ -15,5 +16,6 @@ public class Skill
   public DateTime? UpdatedAt { get; set; }
 
   // Navigation properties
+  [JsonIgnore]
   public ICollection<ProjectSkill> ProjectSkills { get; set; } = new List<ProjectSkill>();
 }

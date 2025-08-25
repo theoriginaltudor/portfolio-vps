@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using Pgvector;
 
 namespace PortfolioBack.Models;
@@ -29,6 +30,9 @@ public class Project
   public DateTime? UpdatedAt { get; set; }
 
   // Navigation properties
+  [JsonIgnore]
   public ICollection<ProjectSkill> ProjectSkills { get; set; } = new List<ProjectSkill>();
+
+  [JsonIgnore]
   public ICollection<ProjectAsset> ProjectAssets { get; set; } = new List<ProjectAsset>();
 }
