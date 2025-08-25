@@ -57,14 +57,14 @@ public class PortfolioDbContext : DbContext
 
       // Configure relationships
       entity.HasOne(e => e.Project)
-            .WithMany()
-            .HasForeignKey(e => e.ProjectId)
-            .OnDelete(DeleteBehavior.Cascade);
+        .WithMany(p => p.ProjectSkills)
+                .HasForeignKey(e => e.ProjectId)
+                .OnDelete(DeleteBehavior.Cascade);
 
       entity.HasOne(e => e.Skill)
-            .WithMany()
-            .HasForeignKey(e => e.SkillId)
-            .OnDelete(DeleteBehavior.Cascade);
+        .WithMany(s => s.ProjectSkills)
+                .HasForeignKey(e => e.SkillId)
+                .OnDelete(DeleteBehavior.Cascade);
 
       entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
@@ -80,9 +80,9 @@ public class PortfolioDbContext : DbContext
 
       // Configure relationship with Project
       entity.HasOne(e => e.Project)
-            .WithMany()
-            .HasForeignKey(e => e.ProjectId)
-            .OnDelete(DeleteBehavior.Cascade);
+        .WithMany(p => p.ProjectAssets)
+                .HasForeignKey(e => e.ProjectId)
+                .OnDelete(DeleteBehavior.Cascade);
 
       entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
     });
