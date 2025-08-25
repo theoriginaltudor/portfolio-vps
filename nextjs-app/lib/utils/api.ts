@@ -1,7 +1,9 @@
 import { paths } from "@/types/swagger-types";
 import { getApiUrl } from "./get-url";
 
-export type ApiEndpoint = keyof paths;
+export type ApiEndpoint = {
+  [K in keyof paths]: K extends `${string}/{${string}` ? never : K;
+}[keyof paths];
 
 type ApiResponseData<TEndpoint extends ApiEndpoint> = paths[TEndpoint] extends {
   post: {
@@ -10,12 +12,12 @@ type ApiResponseData<TEndpoint extends ApiEndpoint> = paths[TEndpoint] extends {
 }
   ? T
   : paths[TEndpoint] extends {
-      get: {
-        responses: { 200: { content: { "application/json": infer T } } };
-      };
-    }
-  ? T
-  : unknown;
+        get: {
+          responses: { 200: { content: { "application/json": infer T } } };
+        };
+      }
+    ? T
+    : unknown;
 
 type ApiRequestOptions<TEndpoint extends ApiEndpoint> =
   paths[TEndpoint] extends {
@@ -32,25 +34,25 @@ type ApiRequestOptions<TEndpoint extends ApiEndpoint> =
         body?: TBody;
       }
     : paths[TEndpoint] extends {
-        post: {
-          requestBody?: {
-            content: {
-              "multipart/form-data": infer TBody;
+          post: {
+            requestBody?: {
+              content: {
+                "multipart/form-data": infer TBody;
+              };
             };
           };
-        };
-      }
-    ? Omit<RequestInit, "method" | "body"> & {
-        method?: "POST";
-        body?: TBody | FormData;
-      }
-    : paths[TEndpoint] extends {
-        get: unknown;
-      }
-    ? Omit<RequestInit, "method"> & {
-        method?: "GET";
-      }
-    : RequestInit;
+        }
+      ? Omit<RequestInit, "method" | "body"> & {
+          method?: "POST";
+          body?: TBody | FormData;
+        }
+      : paths[TEndpoint] extends {
+            get: unknown;
+          }
+        ? Omit<RequestInit, "method"> & {
+            method?: "GET";
+          }
+        : RequestInit;
 
 export const apiCall = async <TEndpoint extends ApiEndpoint>(
   endpoint: TEndpoint,
