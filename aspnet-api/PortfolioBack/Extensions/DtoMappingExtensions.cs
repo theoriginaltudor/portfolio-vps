@@ -6,6 +6,43 @@ namespace PortfolioBack.Extensions;
 
 public static class DtoMappingExtensions
 {
+  public static ExtendedProjectGetDto ToExtendedDto(this Project model, IEnumerable<string> fields)
+  {
+    var set = new HashSet<string>(fields.Select(f => f.Trim()), StringComparer.OrdinalIgnoreCase);
+    var dto = new ExtendedProjectGetDto();
+    if (set.Count == 0)
+    {
+      dto.Id = model.Id;
+      dto.Slug = model.Slug;
+      dto.Title = model.Title;
+      dto.Description = model.Description;
+      dto.LongDescription = model.LongDescription;
+      dto.Embedding = model.Embedding?.ToArray();
+      dto.CreatedAt = model.CreatedAt;
+      dto.UpdatedAt = model.UpdatedAt;
+    }
+    else
+    {
+      if (set.Contains(nameof(Project.Id))) dto.Id = model.Id;
+      if (set.Contains(nameof(Project.Slug))) dto.Slug = model.Slug;
+      if (set.Contains(nameof(Project.Title))) dto.Title = model.Title;
+      if (set.Contains(nameof(Project.Description))) dto.Description = model.Description;
+      if (set.Contains(nameof(Project.LongDescription))) dto.LongDescription = model.LongDescription;
+      if (set.Contains(nameof(Project.Embedding))) dto.Embedding = model.Embedding?.ToArray();
+      if (set.Contains(nameof(Project.CreatedAt))) dto.CreatedAt = model.CreatedAt;
+      if (set.Contains(nameof(Project.UpdatedAt))) dto.UpdatedAt = model.UpdatedAt;
+    }
+
+    // Always include related collections (they can be empty)
+    dto.ProjectAssets = (model.ProjectAssets ?? new List<ProjectAsset>()).ToDto(Array.Empty<string>());
+    // Map Skills through ProjectSkills
+    var skills = (model.ProjectSkills ?? new List<ProjectSkill>())
+      .Where(ps => ps.Skill != null)
+      .Select(ps => ps.Skill);
+    dto.Skills = skills.ToDto(Array.Empty<string>());
+    return dto;
+  }
+
   public static ProjectGetDto ToDto(this Project model, IEnumerable<string> fields)
   {
     var set = new HashSet<string>(fields.Select(f => f.Trim()), StringComparer.OrdinalIgnoreCase);

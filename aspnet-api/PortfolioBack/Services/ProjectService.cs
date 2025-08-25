@@ -23,6 +23,15 @@ public class ProjectService
       .FirstOrDefaultAsync(p => p.Slug == slug);
   }
 
+  public async Task<Project?> GetBySlugWithRelationsAsync(string slug)
+  {
+    return await _context.Projects
+      .Include(p => p.ProjectAssets)
+      .Include(p => p.ProjectSkills)
+        .ThenInclude(ps => ps.Skill)
+      .FirstOrDefaultAsync(p => p.Slug == slug);
+  }
+
   public async Task<Project> CreateAsync(Project project)
   {
     _context.Projects.Add(project);
