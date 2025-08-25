@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using PortfolioBack.Models;
 using PortfolioBack.Services;
+using PortfolioBack.Extensions;
+using PortfolioBack.DTOs;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -12,19 +14,45 @@ public class ProjectController : ControllerBase
     _service = service;
   }
 
+  /// <summary>
+  /// Returns projects; optionally shape fields using the <c>fields</c> query parameter (comma-separated).
+  /// </summary>
+  /// <param name="fields">Comma-separated list of property names to include (e.g., <c>Id,Title</c>).</param>
   [HttpGet]
-  public async Task<ActionResult<List<Project>>> GetAll()
+  public async Task<ActionResult<IEnumerable<ProjectGetDto>>> GetAll([FromQuery(Name = "fields")] string? fields)
   {
     var projects = await _service.GetAllAsync();
-    return Ok(projects);
+    // If no fields provided or no valid keys, return full data
+    var requested = string.IsNullOrWhiteSpace(fields)
+      ? Array.Empty<string>()
+      : fields.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    var valid = DataShapingExtensions.ValidFieldsFor<Project>(requested);
+    if (requested.Length == 0 || valid.Count == 0)
+    {
+      return Ok(projects.ToDto(Array.Empty<string>()));
+    }
+    return Ok(projects.ToDto(valid));
   }
 
+  /// <summary>
+  /// Returns a project by slug; optionally shape fields using the <c>fields</c> query parameter (comma-separated).
+  /// </summary>
+  /// <param name="slug">Project slug.</param>
+  /// <param name="fields">Comma-separated list of property names to include (e.g., <c>Id,Title</c>).</param>
   [HttpGet("{slug}")]
-  public async Task<ActionResult<Project>> GetBySlug(string slug)
+  public async Task<ActionResult<ProjectGetDto>> GetBySlug(string slug, [FromQuery(Name = "fields")] string? fields)
   {
     var project = await _service.GetBySlugAsync(slug);
     if (project == null) return NotFound();
-    return Ok(project);
+    var requested = string.IsNullOrWhiteSpace(fields)
+      ? Array.Empty<string>()
+      : fields.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    var valid = DataShapingExtensions.ValidFieldsFor<Project>(requested);
+    if (requested.Length == 0 || valid.Count == 0)
+    {
+      return Ok(project.ToDto(Array.Empty<string>()));
+    }
+    return Ok(project.ToDto(valid));
   }
 
   [HttpPost]

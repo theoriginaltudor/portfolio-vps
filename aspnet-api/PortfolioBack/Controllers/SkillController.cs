@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using PortfolioBack.Models;
 using PortfolioBack.Services;
+using PortfolioBack.Extensions;
+using PortfolioBack.DTOs;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -12,19 +14,44 @@ public class SkillController : ControllerBase
     _service = service;
   }
 
+  /// <summary>
+  /// Returns skills; optionally shape fields using the <c>fields</c> query parameter (comma-separated).
+  /// </summary>
+  /// <param name="fields">Comma-separated list of property names to include (e.g., <c>Id,Name</c>).</param>
   [HttpGet]
-  public async Task<ActionResult<List<Skill>>> GetAll()
+  public async Task<ActionResult<IEnumerable<SkillGetDto>>> GetAll([FromQuery(Name = "fields")] string? fields)
   {
     var skills = await _service.GetAllAsync();
-    return Ok(skills);
+    var requested = string.IsNullOrWhiteSpace(fields)
+      ? Array.Empty<string>()
+      : fields.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    var valid = DataShapingExtensions.ValidFieldsFor<Skill>(requested);
+    if (requested.Length == 0 || valid.Count == 0)
+    {
+      return Ok(skills.ToDto(Array.Empty<string>()));
+    }
+    return Ok(skills.ToDto(valid));
   }
 
+  /// <summary>
+  /// Returns a skill by id; optionally shape fields using the <c>fields</c> query parameter (comma-separated).
+  /// </summary>
+  /// <param name="id">Skill identifier.</param>
+  /// <param name="fields">Comma-separated list of property names to include (e.g., <c>Id,Name</c>).</param>
   [HttpGet("{id}")]
-  public async Task<ActionResult<Skill>> GetById(int id)
+  public async Task<ActionResult<SkillGetDto>> GetById(int id, [FromQuery(Name = "fields")] string? fields)
   {
     var skill = await _service.GetByIdAsync(id);
     if (skill == null) return NotFound();
-    return Ok(skill);
+    var requested = string.IsNullOrWhiteSpace(fields)
+      ? Array.Empty<string>()
+      : fields.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    var valid = DataShapingExtensions.ValidFieldsFor<Skill>(requested);
+    if (requested.Length == 0 || valid.Count == 0)
+    {
+      return Ok(skill.ToDto(Array.Empty<string>()));
+    }
+    return Ok(skill.ToDto(valid));
   }
 
   [HttpPost]

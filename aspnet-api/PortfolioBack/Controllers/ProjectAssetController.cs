@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using PortfolioBack.Models;
 using PortfolioBack.Services;
+using PortfolioBack.Extensions;
+using PortfolioBack.DTOs;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -12,19 +14,44 @@ public class ProjectAssetController : ControllerBase
     _service = service;
   }
 
+  /// <summary>
+  /// Returns project assets; optionally shape fields using the <c>fields</c> query parameter (comma-separated).
+  /// </summary>
+  /// <param name="fields">Comma-separated list of property names to include (e.g., <c>Id,Path,ProjectId</c>).</param>
   [HttpGet]
-  public async Task<ActionResult<List<ProjectAsset>>> GetAll()
+  public async Task<ActionResult<IEnumerable<ProjectAssetGetDto>>> GetAll([FromQuery(Name = "fields")] string? fields)
   {
     var assets = await _service.GetAllAsync();
-    return Ok(assets);
+    var requested = string.IsNullOrWhiteSpace(fields)
+      ? Array.Empty<string>()
+      : fields.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    var valid = DataShapingExtensions.ValidFieldsFor<ProjectAsset>(requested);
+    if (requested.Length == 0 || valid.Count == 0)
+    {
+      return Ok(assets.ToDto(Array.Empty<string>()));
+    }
+    return Ok(assets.ToDto(valid));
   }
 
+  /// <summary>
+  /// Returns a project asset by id; optionally shape fields using the <c>fields</c> query parameter (comma-separated).
+  /// </summary>
+  /// <param name="id">ProjectAsset identifier.</param>
+  /// <param name="fields">Comma-separated list of property names to include (e.g., <c>Id,Path,ProjectId</c>).</param>
   [HttpGet("{id}")]
-  public async Task<ActionResult<ProjectAsset>> GetById(int id)
+  public async Task<ActionResult<ProjectAssetGetDto>> GetById(int id, [FromQuery(Name = "fields")] string? fields)
   {
     var asset = await _service.GetByIdAsync(id);
     if (asset == null) return NotFound();
-    return Ok(asset);
+    var requested = string.IsNullOrWhiteSpace(fields)
+      ? Array.Empty<string>()
+      : fields.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    var valid = DataShapingExtensions.ValidFieldsFor<ProjectAsset>(requested);
+    if (requested.Length == 0 || valid.Count == 0)
+    {
+      return Ok(asset.ToDto(Array.Empty<string>()));
+    }
+    return Ok(asset.ToDto(valid));
   }
 
   [HttpPost]
