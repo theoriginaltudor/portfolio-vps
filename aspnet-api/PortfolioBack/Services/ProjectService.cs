@@ -15,16 +15,11 @@ public class ProjectService
   public async Task<List<Project>> GetAllAsync()
   {
     return await _context.Projects
-        .Include(p => p.ProjectSkills)
-        .Include(p => p.ProjectAssets)
         .ToListAsync();
   }
   public async Task<Project?> GetBySlugAsync(string slug)
   {
     return await _context.Projects
-      .Include(p => p.ProjectSkills)
-        .ThenInclude(ps => ps.Skill)
-      .Include(p => p.ProjectAssets)
       .FirstOrDefaultAsync(p => p.Slug == slug);
   }
 

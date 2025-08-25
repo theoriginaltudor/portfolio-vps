@@ -15,12 +15,11 @@ public class ProjectAssetService
   public async Task<List<ProjectAsset>> GetAllAsync()
   {
     return await _context.ProjectAssets
-        .Include(pa => pa.Project)
         .ToListAsync();
   }
   public async Task<ProjectAsset?> GetByIdAsync(int id)
   {
-    return await _context.ProjectAssets.Include(pa => pa.Project).FirstOrDefaultAsync(pa => pa.Id == id);
+    return await _context.ProjectAssets.FirstOrDefaultAsync(pa => pa.Id == id);
   }
 
   public async Task<ProjectAsset> CreateAsync(ProjectAsset asset)

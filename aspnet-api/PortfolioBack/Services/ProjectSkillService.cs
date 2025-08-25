@@ -15,15 +15,11 @@ public class ProjectSkillService
   public async Task<List<ProjectSkill>> GetAllAsync()
   {
     return await _context.ProjectSkills
-        .Include(ps => ps.Project)
-        .Include(ps => ps.Skill)
         .ToListAsync();
   }
   public async Task<ProjectSkill?> GetByIdAsync(int projectId, int skillId)
   {
     return await _context.ProjectSkills
-      .Include(ps => ps.Project)
-      .Include(ps => ps.Skill)
       .FirstOrDefaultAsync(ps => ps.ProjectId == projectId && ps.SkillId == skillId);
   }
 

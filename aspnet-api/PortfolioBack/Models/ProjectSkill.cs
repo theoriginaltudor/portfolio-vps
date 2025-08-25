@@ -10,6 +10,7 @@ public class ProjectSkill
   public Project Project { get; set; } = null!;
 
   public int SkillId { get; set; }
+  [JsonIgnore]
   public Skill Skill { get; set; } = null!;
 
   public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
