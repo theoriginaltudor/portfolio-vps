@@ -263,7 +263,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/Project/{id}": {
+    "/api/Project/{slug}": {
         parameters: {
             query?: never;
             header?: never;
@@ -275,7 +275,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
-                    id: number;
+                    slug: string;
                 };
                 cookie?: never;
             };
@@ -294,6 +294,22 @@ export interface paths {
                 };
             };
         };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Project/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
         put: {
             parameters: {
                 query?: never;
