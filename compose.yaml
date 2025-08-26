@@ -32,10 +32,8 @@ services:
     depends_on:
       - aspnet-api
     environment:
-      # Browser should call same-origin /api (proxied by Nginx)
-      NEXT_PUBLIC_API_URL: "/api"
       # Server-side (Node in the Next.js container) can talk directly to the API on the Docker network
-      SERVER_API_URL: "http://aspnet-api:5000/api"
+      SERVER_API_URL: "http://aspnet-api:5000"
       NODE_ENV: "production"
     restart: always
 
