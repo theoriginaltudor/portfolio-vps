@@ -1,7 +1,10 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using System.Text.Json.Serialization;
+using System;
 using PortfolioBack.Data;
 using PortfolioBack.Services;
 
@@ -93,6 +96,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Respect X-Forwarded-* headers from Nginx so scheme/remote IP are correct behind the proxy
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
