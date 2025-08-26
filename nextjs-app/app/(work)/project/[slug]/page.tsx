@@ -30,10 +30,22 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   }
 
   // Defensive checks for joined data
-  const images = project.projectAssets || [];
-  const skills = project.projectSkills?.map((s) => s.skill) || [];
+  const images = project.projectAssets?.map((asset) => asset.path) || [];
+  const skills = (project.skills ?? [])
+    .map((s) => {
+      if (!s || !s.name) return undefined;
+      return {
+        id: s.id ?? undefined,
+        name: s.name,
+        createdAt: s.createdAt ?? undefined,
+        updatedAt: s.updatedAt ?? undefined,
+      };
+    })
+    .filter((s): s is NonNullable<typeof s> => !!s);
 
-  const imageUrls = await buildImageUrls(images);
+  const imageUrls = await buildImageUrls(
+    images.filter((img): img is string => typeof img === "string")
+  );
 
   if (!imageUrls.length) {
     console.warn("No images found for project:", project.id);
@@ -47,7 +59,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   return (
     <main className="flex flex-col items-center flex-1 w-full">
       <ProjectImageHeader
-        title={project.title}
+        title={project.title ?? "Untitled Project"}
         id={project.id ?? 0}
         image={imageUrls[0]}
         edit={editMode}
@@ -62,7 +74,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         edit={editMode}
         projectId={project.id ?? 0}
       >
-        {project.longDescription}
+        {project.longDescription ?? "No description provided."}
       </ArticleBody>
 
       {imageUrls.length > 0 && (

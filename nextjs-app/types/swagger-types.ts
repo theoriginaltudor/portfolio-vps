@@ -199,6 +199,47 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/ExtendedProject/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    fields?: string;
+                };
+                header?: never;
+                path: {
+                    slug: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ExtendedProjectGetDto"];
+                        "application/json": components["schemas"]["ExtendedProjectGetDto"];
+                        "text/json": components["schemas"]["ExtendedProjectGetDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/Project": {
         parameters: {
             query?: never;
@@ -869,6 +910,21 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        ExtendedProjectGetDto: {
+            /** Format: int32 */
+            id?: number | null;
+            slug?: string | null;
+            title?: string | null;
+            description?: string | null;
+            longDescription?: string | null;
+            embedding?: number[] | null;
+            /** Format: date-time */
+            createdAt?: string | null;
+            /** Format: date-time */
+            updatedAt?: string | null;
+            projectAssets?: components["schemas"]["ProjectAssetGetDto"][] | null;
+            skills?: components["schemas"]["SkillGetDto"][] | null;
+        };
         Project: {
             /** Format: int32 */
             id?: number;

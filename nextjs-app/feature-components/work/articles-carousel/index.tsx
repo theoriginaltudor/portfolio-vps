@@ -11,7 +11,7 @@ import { Slide } from "@/components/slide";
 import { getArticlesImage } from "./get-articles-images";
 
 interface ArticlesCarouselProps {
-  articles: components["schemas"]["Project"][];
+  articles: components["schemas"]["ExtendedProjectGetDto"][];
 }
 
 export const ArticlesCarousel = async ({ articles }: ArticlesCarouselProps) => {
@@ -48,8 +48,8 @@ export const ArticlesCarousel = async ({ articles }: ArticlesCarouselProps) => {
               <Link href={`/project/${article.slug}`}>
                 <Slide
                   id={article.id ?? 0}
-                  title={article.title}
-                  description={article.description}
+                  title={article.title ?? "Untitled Project"}
+                  description={article.description ?? "No description"}
                   imagePath={image?.path}
                 />
               </Link>

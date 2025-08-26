@@ -8,7 +8,7 @@ export const getArticlesImage = async () => {
     { path: string; projectId: number | undefined }[]
   >((acc, asset) => {
     if (!acc.some((a) => a.projectId === asset.projectId)) {
-      acc.push({ path: asset.path, projectId: asset.projectId });
+      acc.push({ path: asset.path ?? "", projectId: asset.projectId ?? 0 });
     }
     return acc;
   }, []);
