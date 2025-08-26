@@ -13,6 +13,7 @@ public class PortfolioDbContext : DbContext
   public DbSet<Skill> Skills { get; set; }
   public DbSet<ProjectSkill> ProjectSkills { get; set; }
   public DbSet<ProjectAsset> ProjectAssets { get; set; }
+  public DbSet<User> Users { get; set; }
 
   protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
   {
@@ -84,6 +85,18 @@ public class PortfolioDbContext : DbContext
                 .HasForeignKey(e => e.ProjectId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+      entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+    });
+
+    // Configure User entity
+    modelBuilder.Entity<User>(entity =>
+    {
+      entity.HasKey(e => e.Id);
+      entity.Property(e => e.Username).IsRequired().HasMaxLength(100);
+      entity.HasIndex(e => e.Username).IsUnique();
+      entity.Property(e => e.PasswordHash).IsRequired();
+      entity.Property(e => e.PasswordSalt).IsRequired();
+      entity.Property(e => e.PasswordIterations).HasDefaultValue(100000);
       entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
     });
   }

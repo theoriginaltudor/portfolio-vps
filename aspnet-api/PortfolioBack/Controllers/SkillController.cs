@@ -3,6 +3,7 @@ using PortfolioBack.Models;
 using PortfolioBack.Services;
 using PortfolioBack.Extensions;
 using PortfolioBack.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -19,6 +20,7 @@ public class SkillController : ControllerBase
   /// </summary>
   /// <param name="fields">Comma-separated list of property names to include (e.g., <c>Id,Name</c>).</param>
   [HttpGet]
+  [AllowAnonymous]
   public async Task<ActionResult<IEnumerable<SkillGetDto>>> GetAll([FromQuery(Name = "fields")] string? fields)
   {
     var skills = await _service.GetAllAsync();
@@ -39,6 +41,7 @@ public class SkillController : ControllerBase
   /// <param name="id">Skill identifier.</param>
   /// <param name="fields">Comma-separated list of property names to include (e.g., <c>Id,Name</c>).</param>
   [HttpGet("{id}")]
+  [AllowAnonymous]
   public async Task<ActionResult<SkillGetDto>> GetById(int id, [FromQuery(Name = "fields")] string? fields)
   {
     var skill = await _service.GetByIdAsync(id);
@@ -55,6 +58,7 @@ public class SkillController : ControllerBase
   }
 
   [HttpPost]
+  [Authorize]
   public async Task<ActionResult<Skill>> Create(Skill skill)
   {
     var created = await _service.CreateAsync(skill);
@@ -62,6 +66,7 @@ public class SkillController : ControllerBase
   }
 
   [HttpPut("{id}")]
+  [Authorize]
   public async Task<IActionResult> Update(int id, Skill skill)
   {
     if (id != skill.Id) return BadRequest();
@@ -71,6 +76,7 @@ public class SkillController : ControllerBase
   }
 
   [HttpDelete("{id}")]
+  [Authorize]
   public async Task<IActionResult> Delete(int id)
   {
     var deleted = await _service.DeleteAsync(id);

@@ -3,11 +3,13 @@ using Pgvector;
 using PortfolioBack.DTOs;
 using PortfolioBack.Services;
 using PortfolioBack.Extensions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PortfolioBack.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[AllowAnonymous]
 public class ProjectSearchController : ControllerBase
 {
   private readonly IProjectSearchService _searchService;

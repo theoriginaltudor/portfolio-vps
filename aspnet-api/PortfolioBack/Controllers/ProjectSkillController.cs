@@ -3,6 +3,7 @@ using PortfolioBack.Models;
 using PortfolioBack.Services;
 using PortfolioBack.Extensions;
 using PortfolioBack.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PortfolioBack.Controllers;
 
@@ -23,6 +24,7 @@ public class ProjectSkillController : ControllerBase
   /// </summary>
   /// <param name="fields">Comma-separated list of property names to include (e.g., <c>ProjectId,SkillId</c>).</param>
   [HttpGet]
+  [AllowAnonymous]
   public async Task<ActionResult<IEnumerable<ProjectSkillGetDto>>> GetAll([FromQuery(Name = "fields")] string? fields)
   {
     var projectSkills = await _service.GetAllAsync();
@@ -44,6 +46,7 @@ public class ProjectSkillController : ControllerBase
   /// <param name="skillId">Skill identifier.</param>
   /// <param name="fields">Comma-separated list of property names to include (e.g., <c>ProjectId,SkillId</c>).</param>
   [HttpGet("{projectId}/{skillId}")]
+  [AllowAnonymous]
   public async Task<ActionResult<ProjectSkillGetDto>> GetById(int projectId, int skillId, [FromQuery(Name = "fields")] string? fields)
   {
     var projectSkill = await _service.GetByIdAsync(projectId, skillId);
@@ -60,6 +63,7 @@ public class ProjectSkillController : ControllerBase
   }
 
   [HttpPost]
+  [Authorize]
   public async Task<ActionResult<ProjectSkill>> Create(ProjectSkill projectSkill)
   {
     var created = await _service.CreateAsync(projectSkill);
@@ -67,6 +71,7 @@ public class ProjectSkillController : ControllerBase
   }
 
   [HttpPut("{projectId}/{skillId}")]
+  [Authorize]
   public async Task<IActionResult> Update(int projectId, int skillId, ProjectSkill projectSkill)
   {
     if (projectId != projectSkill.ProjectId || skillId != projectSkill.SkillId) return BadRequest();
@@ -76,6 +81,7 @@ public class ProjectSkillController : ControllerBase
   }
 
   [HttpDelete("{projectId}/{skillId}")]
+  [Authorize]
   public async Task<IActionResult> Delete(int projectId, int skillId)
   {
     var deleted = await _service.DeleteAsync(projectId, skillId);

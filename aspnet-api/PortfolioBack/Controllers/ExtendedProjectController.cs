@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PortfolioBack.DTOs;
 using PortfolioBack.Extensions;
@@ -6,6 +7,7 @@ using PortfolioBack.Services;
 
 [ApiController]
 [Route("api/[controller]")]
+[AllowAnonymous]
 public class ExtendedProjectController : ControllerBase
 {
   private readonly ProjectService _projectService;

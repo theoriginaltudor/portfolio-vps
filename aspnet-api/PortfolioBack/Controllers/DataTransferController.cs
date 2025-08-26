@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PortfolioBack.Services;
 
@@ -5,6 +6,7 @@ namespace PortfolioBack.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class DataTransferController : ControllerBase
 {
   private readonly DataTransferService _dataTransferService;

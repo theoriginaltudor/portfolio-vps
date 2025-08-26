@@ -3,6 +3,7 @@ using PortfolioBack.Models;
 using PortfolioBack.Services;
 using PortfolioBack.Extensions;
 using PortfolioBack.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -19,6 +20,7 @@ public class ProjectAssetController : ControllerBase
   /// </summary>
   /// <param name="fields">Comma-separated list of property names to include (e.g., <c>Id,Path,ProjectId</c>).</param>
   [HttpGet]
+  [AllowAnonymous]
   public async Task<ActionResult<IEnumerable<ProjectAssetGetDto>>> GetAll([FromQuery(Name = "fields")] string? fields)
   {
     var assets = await _service.GetAllAsync();
@@ -39,6 +41,7 @@ public class ProjectAssetController : ControllerBase
   /// <param name="id">ProjectAsset identifier.</param>
   /// <param name="fields">Comma-separated list of property names to include (e.g., <c>Id,Path,ProjectId</c>).</param>
   [HttpGet("{id}")]
+  [AllowAnonymous]
   public async Task<ActionResult<ProjectAssetGetDto>> GetById(int id, [FromQuery(Name = "fields")] string? fields)
   {
     var asset = await _service.GetByIdAsync(id);
@@ -55,6 +58,7 @@ public class ProjectAssetController : ControllerBase
   }
 
   [HttpPost]
+  [Authorize]
   public async Task<ActionResult<ProjectAsset>> Create(ProjectAsset asset)
   {
     var created = await _service.CreateAsync(asset);
@@ -62,6 +66,7 @@ public class ProjectAssetController : ControllerBase
   }
 
   [HttpPut("{id}")]
+  [Authorize]
   public async Task<IActionResult> Update(int id, ProjectAsset asset)
   {
     if (id != asset.Id) return BadRequest();
@@ -71,6 +76,7 @@ public class ProjectAssetController : ControllerBase
   }
 
   [HttpDelete("{id}")]
+  [Authorize]
   public async Task<IActionResult> Delete(int id)
   {
     var deleted = await _service.DeleteAsync(id);
