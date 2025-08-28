@@ -21,18 +21,17 @@ export default async function LoginPage() {
         action={loginUser}
         >
         <div className="flex gap-2 w-full">
-          <Label htmlFor="email" className="flex-1 justify-end">
-            Email:
+          <Label htmlFor="username" className="flex-1 justify-end">
+            Username:
           </Label>
           <Input
             className="w-[200px]"
-            id="email"
-            name="email"
-            type="email"
+            id="username"
+            name="username"
+            type="text"
             required
-            autoComplete="email"
-            pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
-            minLength={5}
+            autoComplete="username"
+            minLength={3}
             maxLength={254}
             />
         </div>
@@ -58,18 +57,17 @@ export default async function LoginPage() {
         action={registerUser}
       >
         <div className="flex gap-2 w-full">
-          <Label htmlFor="email" className="flex-1 justify-end">
-            Email:
+          <Label htmlFor="username" className="flex-1 justify-end">
+            Username:
           </Label>
           <Input
             className="w-[200px]"
-            id="email"
-            name="email"
-            type="email"
+            id="username"
+            name="username"
+            type="text"
             required
-            autoComplete="email"
-            pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
-            minLength={5}
+            autoComplete="username"
+            minLength={3}
             maxLength={254}
           />
         </div>

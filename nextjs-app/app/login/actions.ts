@@ -5,27 +5,16 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function loginUser(formData: FormData) {
-
-  const email = formData.get("email") as string | null;
+  const username = formData.get("username") as string | null;
   const password = formData.get("password") as string | null;
 
-  if (!email || !password) {
+  if (!username || !password) {
     redirect("/error?reason=missing-fields");
   }
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    redirect("/error?reason=invalid-email");
-  }
-
-  const data = {
-    email,
-    password,
-  };
-
   const { error, data: responseData } = await apiCall("/api/Login/login", {
     method: "POST",
-    body: {username: email, password},
+    body: { username, password },
     headers: {
       "Content-Type": "application/json",
     },
@@ -40,26 +29,16 @@ export async function loginUser(formData: FormData) {
 }
 
 export async function registerUser(formData: FormData) {
-  const email = formData.get("email") as string | null;
+  const username = formData.get("username") as string | null;
   const password = formData.get("password") as string | null;
 
-  if (!email || !password) {
+  if (!username || !password) {
     redirect("/error?reason=missing-fields");
   }
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    redirect("/error?reason=invalid-email");
-  }
-
-  const data = {
-    email,
-    password,
-  };
-
   const { error } = await apiCall("/api/Login/signup", {
     method: "POST",
-    body: {username: email, password},
+    body: { username, password },
     headers: {
       "Content-Type": "application/json",
     },
