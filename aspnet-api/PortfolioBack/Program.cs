@@ -29,15 +29,17 @@ builder.Services.AddDbContext<PortfolioDbContext>(options =>
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
+    var isDev = builder.Environment.IsDevelopment();
         // Paths for interactive flows (adjust to your app's routes)
         options.LoginPath = "/login";
         options.AccessDeniedPath = "/access-denied";
 
         // Cookie settings
         options.Cookie.Name = "auth";
-        options.Cookie.HttpOnly = true;
-        options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // set to Always in production (HTTPS)
-        options.Cookie.SameSite = SameSiteMode.None; // use None if you need cross-site cookies
+    options.Cookie.HttpOnly = true;
+    // In Development allow HTTP for local testing; in Production require HTTPS and SameSite=None for cross-site
+    options.Cookie.SecurePolicy = isDev ? CookieSecurePolicy.None : CookieSecurePolicy.Always;
+    options.Cookie.SameSite = isDev ? SameSiteMode.Lax : SameSiteMode.None;
         options.SlidingExpiration = true;
         options.ExpireTimeSpan = TimeSpan.FromDays(1);
 

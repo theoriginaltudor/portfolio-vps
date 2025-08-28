@@ -3,13 +3,13 @@ using System.ComponentModel.DataAnnotations;
 namespace PortfolioBack.DTOs;
 
 public record SignupRequestDto(
-  [property: Required, MinLength(3), MaxLength(100)] string Username,
-  [property: Required, MinLength(6), MaxLength(100)] string Password
+  [param: Required, MinLength(3), MaxLength(100)] string Username,
+  [param: Required, MinLength(6), MaxLength(100)] string Password
 );
 
 public record LoginRequestDto(
-  [property: Required] string Username,
-  [property: Required] string Password
+  [param: Required] string Username,
+  [param: Required] string Password
 );
 
 public record AuthUserDto(int Id, string Username);
