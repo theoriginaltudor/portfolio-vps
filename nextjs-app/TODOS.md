@@ -9,7 +9,8 @@
 - [ ] add theme for the projects on hover and for the article
 - [ ] make a chat page where you can just talk with the LLM, asking questions and it will talk about the data in the articles plus give a link to them
 - [ ] make the avatar in projects route clickable to navigate to the chat page
-- [/] start working on authenticated edit mode
+- [x] authenticated mode edit text in articles
+- [/] authenticated mode edit pictures in articles
 - [ ] add Streaming functionality with suspense and use
 - [ ] change images to use server images, not supabase
 - [ ] change DB queries to own API
