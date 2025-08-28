@@ -1,9 +1,9 @@
 import { cookies } from "next/headers";
+import { apiCall } from "./api";
 
 export const getUser = async () => {
-  const response = await fetch("/api/Login/me");
-  if (!response.ok) return null;
-  const user = await response.json();
+  const {ok, data: user} = await apiCall("/api/Login/me");
+  if (!ok) return null;
   return user;
 }
 

@@ -9,7 +9,7 @@ export default async function LoginPage() {
   if (user) {
     return (
       <div className="flex flex-col items-center justify-center h-screen">
-        <h1 className="text-2xl font-bold">You are already logged in!</h1>
+        <h1 className="text-2xl font-bold">You are already logged in! {user.username}</h1>
       </div>
     );
   }
