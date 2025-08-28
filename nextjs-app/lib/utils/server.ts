@@ -1,11 +1,9 @@
 import { cookies } from "next/headers";
-import { createClient } from "../supabase/server";
 
 export const getUser = async () => {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const response = await fetch("/api/Login/me");
+  if (!response.ok) return null;
+  const user = await response.json();
   return user;
 }
 
