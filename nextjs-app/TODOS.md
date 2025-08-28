@@ -12,7 +12,7 @@
 - [x] authenticated mode edit text in articles
 - [/] authenticated mode edit pictures in articles
 - [ ] add Streaming functionality with suspense and use
-- [ ] change images to use server images, not supabase
-- [ ] change DB queries to own API
+- [x] change images to use server images, not supabase
+- [x] change DB queries to own API
 - [ ] add rate limiting to the API
 - [ ] update DB with new table for AI generated questions for the articles that have been embedded, which are connected to the articles table with an id
