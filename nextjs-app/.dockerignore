@@ -1,0 +1,10 @@
+# Exclude files/folders not needed for Docker build context
+node_modules
+.next
+.git
+.gitignore
+.DS_Store
+npm-debug.log
+yarn-error.log
+.vscode
+*.local
