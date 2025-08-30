@@ -2,10 +2,15 @@ import { paths } from "@/types/swagger-types";
 import { getApiUrl } from "./get-url";
 
 // Endpoints that contain path parameters (identified by having "/{" in the path)
+// Excludes Login endpoints which should use authApiCall
 export type ApiEndpoint = Extract<
   keyof paths & string,
   `${string}/{${string}}`
->;
+> extends infer T
+  ? T extends `${string}/Login${string}`
+    ? never
+    : T
+  : never;
 
 type MethodNames = "get" | "post" | "put" | "delete";
 

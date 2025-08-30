@@ -2,7 +2,11 @@ import { paths } from "@/types/swagger-types";
 import { getApiUrl } from "./get-url";
 
 export type ApiEndpoint = {
-  [K in keyof paths]: K extends `${string}/{${string}` ? never : K;
+  [K in keyof paths]: K extends `${string}/{${string}` 
+    ? never 
+    : K extends `${string}/Login${string}`
+    ? never 
+    : K;
 }[keyof paths];
 
 // Prefer GET response type when both GET and POST exist and method is omitted
