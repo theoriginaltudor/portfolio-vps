@@ -81,6 +81,7 @@ export const apiCall = async <TEndpoint extends ApiEndpoint>(
   try {
     const requestOptions: RequestInit = {
       method,
+      credentials: 'include', // Include cookies automatically
       headers: {
         Accept: "application/json",
         ...headers,

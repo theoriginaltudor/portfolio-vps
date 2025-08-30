@@ -194,6 +194,7 @@ export async function paramApiCall<TEndpoint extends ApiEndpoint>(
         Accept: "application/json",
         ...headers,
       },
+      credentials: 'include', // Include cookies automatically
       ...restOptions,
     };
 
