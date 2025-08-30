@@ -1,5 +1,6 @@
 import { paths } from "@/types/swagger-types";
 import { getApiUrl } from "./get-url";
+import { cookies } from "next/headers";
 
 // Endpoints that contain path parameters (identified by having "/{" in the path)
 // Excludes Login endpoints which should use authApiCall
@@ -193,10 +194,22 @@ export async function paramApiCall<TEndpoint extends ApiEndpoint>(
   );
 
   try {
+    // Get auth cookie for authenticated requests when running server-side
+    let authCookie = null;
+    if (typeof window === "undefined") {
+      try {
+        const cookieStore = await cookies();
+        authCookie = cookieStore.get("auth");
+      } catch {
+        // cookies() might not be available in all contexts
+      }
+    }
+
     const requestOptions: RequestInit = {
       method,
       headers: {
         Accept: "application/json",
+        ...(authCookie && { Cookie: `auth=${authCookie.value}` }),
         ...headers,
       },
       credentials: 'include', // Include cookies automatically
