@@ -62,6 +62,48 @@ public class ProjectSkillController : ControllerBase
     return Ok(projectSkill.ToDto(valid));
   }
 
+  /// <summary>
+  /// Returns all project-skill relationships for a specific project; optionally shape fields using the <c>fields</c> query parameter (comma-separated).
+  /// </summary>
+  /// <param name="projectId">Project identifier.</param>
+  /// <param name="fields">Comma-separated list of property names to include (e.g., <c>ProjectId,SkillId</c>).</param>
+  [HttpGet("project/{projectId}")]
+  [AllowAnonymous]
+  public async Task<ActionResult<IEnumerable<ProjectSkillGetDto>>> GetByProjectId(int projectId, [FromQuery(Name = "fields")] string? fields)
+  {
+    var projectSkills = await _service.GetByProjectIdAsync(projectId);
+    var requested = string.IsNullOrWhiteSpace(fields)
+      ? Array.Empty<string>()
+      : fields.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    var valid = DataShapingExtensions.ValidFieldsFor<ProjectSkill>(requested);
+    if (requested.Length == 0 || valid.Count == 0)
+    {
+      return Ok(projectSkills.ToDto(Array.Empty<string>()));
+    }
+    return Ok(projectSkills.ToDto(valid));
+  }
+
+  /// <summary>
+  /// Returns all project-skill relationships for a specific skill; optionally shape fields using the <c>fields</c> query parameter (comma-separated).
+  /// </summary>
+  /// <param name="skillId">Skill identifier.</param>
+  /// <param name="fields">Comma-separated list of property names to include (e.g., <c>ProjectId,SkillId</c>).</param>
+  [HttpGet("skill/{skillId}")]
+  [AllowAnonymous]
+  public async Task<ActionResult<IEnumerable<ProjectSkillGetDto>>> GetBySkillId(int skillId, [FromQuery(Name = "fields")] string? fields)
+  {
+    var projectSkills = await _service.GetBySkillIdAsync(skillId);
+    var requested = string.IsNullOrWhiteSpace(fields)
+      ? Array.Empty<string>()
+      : fields.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    var valid = DataShapingExtensions.ValidFieldsFor<ProjectSkill>(requested);
+    if (requested.Length == 0 || valid.Count == 0)
+    {
+      return Ok(projectSkills.ToDto(Array.Empty<string>()));
+    }
+    return Ok(projectSkills.ToDto(valid));
+  }
+
   [HttpPost]
   [Authorize]
   public async Task<ActionResult<ProjectSkill>> Create(ProjectSkill projectSkill)

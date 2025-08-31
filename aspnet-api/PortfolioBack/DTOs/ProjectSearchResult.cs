@@ -7,4 +7,5 @@ public class ProjectSearchResult
   public string Description { get; set; } = string.Empty;
   public string? LongDescription { get; set; }
   public double Similarity { get; set; }
+  public List<SkillGetDto> Skills { get; set; } = new();
 }

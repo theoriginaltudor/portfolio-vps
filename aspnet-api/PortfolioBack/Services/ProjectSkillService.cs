@@ -23,6 +23,20 @@ public class ProjectSkillService
       .FirstOrDefaultAsync(ps => ps.ProjectId == projectId && ps.SkillId == skillId);
   }
 
+  public async Task<List<ProjectSkill>> GetByProjectIdAsync(int projectId)
+  {
+    return await _context.ProjectSkills
+      .Where(ps => ps.ProjectId == projectId)
+      .ToListAsync();
+  }
+
+  public async Task<List<ProjectSkill>> GetBySkillIdAsync(int skillId)
+  {
+    return await _context.ProjectSkills
+      .Where(ps => ps.SkillId == skillId)
+      .ToListAsync();
+  }
+
   public async Task<ProjectSkill> CreateAsync(ProjectSkill projectSkill)
   {
     _context.ProjectSkills.Add(projectSkill);

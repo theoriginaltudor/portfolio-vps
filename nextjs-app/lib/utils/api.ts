@@ -1,8 +1,13 @@
 import { paths } from "@/types/swagger-types";
 import { getApiUrl } from "./get-url";
+import { cookies } from "next/headers";
 
 export type ApiEndpoint = {
-  [K in keyof paths]: K extends `${string}/{${string}` ? never : K;
+  [K in keyof paths]: K extends `${string}/{${string}` 
+    ? never 
+    : K extends `${string}/Login${string}`
+    ? never 
+    : K;
 }[keyof paths];
 
 // Prefer GET response type when both GET and POST exist and method is omitted
@@ -79,10 +84,23 @@ export const apiCall = async <TEndpoint extends ApiEndpoint>(
       : (endpoint as string);
   const url = getApiUrl(endpointWithQs);
   try {
+    // Get auth cookie for authenticated requests when running server-side
+    let authCookie = null;
+    if (typeof window === "undefined") {
+      try {
+        const cookieStore = await cookies();
+        authCookie = cookieStore.get("auth");
+      } catch {
+        // cookies() might not be available in all contexts
+      }
+    }
+
     const requestOptions: RequestInit = {
       method,
+      credentials: 'include', // Include cookies automatically
       headers: {
         Accept: "application/json",
+        ...(authCookie && { Cookie: `auth=${authCookie.value}` }),
         ...headers,
       },
       ...restOptions,

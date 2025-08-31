@@ -1,15 +1,13 @@
 import { cookies } from "next/headers";
-import { createClient } from "../supabase/server";
+import { authApiCall } from "./auth-api";
 
 export const getUser = async () => {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const {ok, data: user} = await authApiCall("/api/Login/me", { method: "GET" });
+  if (!ok) return null;
   return user;
 }
 
 export const checkAuth = async () => {
   const cookieStore = await cookies();
-  return cookieStore.has(`sb-${process.env.NEXT_PUBLIC_SUPABASE_PROJECT_ID}-auth-token`);
+  return cookieStore.has("auth");
 };

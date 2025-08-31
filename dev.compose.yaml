@@ -26,11 +26,12 @@ services:
       - postgres
     environment:
       ConnectionStrings__DefaultConnection: "Host=postgres; Port=5432; Database=${POSTGRES_DB}; Username=${POSTGRES_USER}; Password=${POSTGRES_PASSWORD}"
+      ASPNETCORE_ENVIRONMENT: Development
     restart: always
     volumes:
       - ./aspnet-api/images:/app/images
     ports:
-      - "8000:5000"
+      - "8000:8000"
     entrypoint: ["/app/entrypoint.sh"]
 
   nginx:

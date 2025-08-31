@@ -1,92 +1,99 @@
 import { google } from "@ai-sdk/google";
 import { embed } from "ai";
-import { createClient } from "@/lib/supabase/server";
-import { Database, Tables } from "@/types/database.types";
-import type { SupabaseClient } from "@supabase/supabase-js";
+import { apiCall } from "@/lib/utils/api";
+import { components } from "@/types/swagger-types";
 
 const embeddingModel = google.textEmbeddingModel("text-embedding-004");
 
-export interface SearchArticlesResult {
-  articles: Omit<Tables<"articles">, "embedding">[];
+// Use the types from your swagger schema
+type ProjectSearchResult = components["schemas"]["ProjectSearchResult"];
+
+export interface SearchProjectsResult {
+  projects: ProjectSearchResult[];
   tokens: number;
 }
 
-export const searchArticles = async (
-  supabase: SupabaseClient<Database>,
-  message: string
-): Promise<SearchArticlesResult | { articles: []; tokens: number }> => {
-  const searchTerm = await embed({
-    model: embeddingModel,
-    value: message,
-  });
-  const tokens = searchTerm.usage?.tokens || 0;
-  const { data, error } = await supabase.rpc(
-    "search_articles",
-    {
-      query_embedding: JSON.stringify(searchTerm.embedding),
-      match_threshold: 0.4,
-      match_count: 3,
-    }
-  ) as {
-    data: Database["public"]["Functions"]["search_articles"]["Returns"] | null;
-    error: Error | null;
-  };
-  if (error || !data || data.length === 0) {
-    if (error) console.error("Error fetching data from Supabase:", error);
-    return { articles: [], tokens };
-  }
-  return {
-    articles: data.map((a) => ({
-      id: a.id,
-      slug: a.slug,
-      title: a.title,
-      description: a.description,
-      long_description: a.long_description,
-    })),
-    tokens,
-  };
-};
-
 export interface SkillsMap {
-  [articleId: number]: string[];
+  [projectSlug: string]: string[];
 }
 
-export const getSkills = async (
-  supabase: SupabaseClient<Database>,
-  articleIds: number[]
-): Promise<SkillsMap> => {
-  const skillsMap: SkillsMap = {};
-  if (articleIds.length === 0) return skillsMap;
-  const { data: skillsData, error: skillsError } = await supabase
-    .from("articles_skills")
-    .select("article_id, skills(name)")
-    .in("article_id", articleIds);
-  if (!skillsError && skillsData) {
-    for (const row of skillsData as { article_id: number; skills: { name: string } }[]) {
-      if (!row.skills || !row.skills.name) continue;
-      if (!skillsMap[row.article_id]) {
-        skillsMap[row.article_id] = [];
-      }
-      skillsMap[row.article_id].push(row.skills.name);
+export const searchProjects = async (
+  message: string
+): Promise<SearchProjectsResult | { projects: []; tokens: number }> => {
+  try {
+    const searchTerm = await embed({
+      model: embeddingModel,
+      value: message,
+    });
+    const tokens = searchTerm.usage?.tokens || 0;
+
+    // Use your API call utility for the search endpoint
+    const result = await apiCall("/api/ProjectSearch/search", {
+      method: "POST",
+      body: {
+        queryEmbedding: searchTerm.embedding,
+        matchThreshold: 0.4,
+        matchCount: 3,
+      },
+    });
+
+    if (!result.ok) {
+      console.error("Error fetching data from API:", result.error);
+      return { projects: [], tokens };
     }
+
+    const data = result.data || [];
+    
+    if (!data || data.length === 0) {
+      return { projects: [], tokens };
+    }
+
+    return {
+      projects: data,
+      tokens,
+    };
+  } catch (error) {
+    console.error("Error in searchProjects:", error);
+    return { projects: [], tokens: 0 };
   }
+};
+
+export const getSkills = (
+  projects: ProjectSearchResult[]
+): SkillsMap => {
+  const skillsMap: SkillsMap = {};
+
+  projects.forEach((project) => {
+    const slug = project.slug;
+    
+    if (slug) {
+      if (project.skills && project.skills.length > 0) {
+        skillsMap[slug] = project.skills
+          .map(skill => skill.name)
+          .filter(Boolean) as string[];
+      } else {
+        skillsMap[slug] = [];
+      }
+    }
+  });
+
   return skillsMap;
 };
 
 export const buildContext = (
-  articles: Omit<Tables<"articles">, "embedding">[],
+  projects: ProjectSearchResult[],
   skillsMap: SkillsMap
 ): string => {
-  return articles.reduce((acc, article, idx) => {
-    const skillsArr = skillsMap[article.id] || [];
+  return projects.reduce((acc, project, idx) => {
+    const skillsArr = project.slug ? skillsMap[project.slug] || [] : [];
     const skills = skillsArr.join(", ");
-    const articleContext =
-      `Slug: project/${article.slug}\n` +
-      `Title: ${article.title}\n` +
+    const projectContext =
+      `Slug: project/${project.slug || ""}\n` +
+      `Title: ${project.title || ""}\n` +
       (skills ? `Skills: ${skills}\n` : "") +
-      `Description: ${article.description}\n` +
-      `Article body: ${article.long_description}`;
-    return acc + (idx > 0 ? "\n-----break------\n" : "") + articleContext;
+      `Description: ${project.description || ""}\n` +
+      `Project body: ${project.longDescription || project.description || ""}`;
+    return acc + (idx > 0 ? "\n-----break------\n" : "") + projectContext;
   }, "");
 };
 
@@ -94,14 +101,14 @@ export const getSimilarArticles = async (
   message: string
 ): Promise<{ context: string; tokens: number }> => {
   try {
-    const supabase = await createClient();
-    const searchResult = await searchArticles(supabase, message);
-    if (!searchResult.articles.length) {
+    const searchResult = await searchProjects(message);
+    if (!searchResult.projects.length) {
       return { context: "", tokens: searchResult.tokens };
     }
-    const articleIds = searchResult.articles.map((a) => a.id);
-    const skillsMap = await getSkills(supabase, articleIds);
-    const context = buildContext(searchResult.articles, skillsMap);
+
+    const skillsMap = getSkills(searchResult.projects);
+    const context = buildContext(searchResult.projects, skillsMap);
+    
     return {
       context,
       tokens: searchResult.tokens,

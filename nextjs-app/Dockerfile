@@ -1,35 +1,39 @@
-# Stage 1: Build the Next.js app
-FROM node:lts-jod AS builder
+# syntax=docker/dockerfile:1.7-labs
+
+# Base image with corepack/pnpm enabled
+FROM node:20-slim AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 WORKDIR /app
 
-# Copy package files and install dependencies
-COPY package*.json ./
-RUN npm install
+# Install only production dependencies (cached by lockfile)
+FROM base AS deps
+COPY pnpm-lock.yaml package.json ./
+RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
+	pnpm install --frozen-lockfile --prod
 
-# Copy the rest of the source code
+# Build stage (installs dev deps to build)
+FROM base AS build
+COPY pnpm-lock.yaml package.json ./
+RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
+	pnpm install --frozen-lockfile
 COPY . .
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN pnpm run build
 
-# Build the production application
-RUN npm run build
-
-# Stage 2: Create the final production image
-FROM node:lts-jod
+# Final runtime image
+FROM base AS runner
+ENV NODE_ENV=production
+ENV PORT=3000
 WORKDIR /app
 
-# Copy only the necessary files from the builder stage
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/package-lock.json ./package-lock.json
-COPY --from=builder /app/.env.local ./.env.local
-COPY --from=builder /app/types ./types
-RUN npm install --omit=dev
+# Copy production node_modules and build output
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=build /app/package.json ./package.json
+COPY --from=build /app/.next ./.next
+COPY --from=build /app/public ./public
+COPY --from=build /app/.env ./.env
 
-# The port Next.js will run on *inside* the container
-ENV PORT=3000
-
-# Expose the port
 EXPOSE 3000
-
-# Command to start the app
-CMD ["npm", "start"]
+CMD ["pnpm", "start"]

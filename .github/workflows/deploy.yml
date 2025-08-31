@@ -26,7 +26,7 @@ jobs:
             --exclude '.git/' \
             --exclude '.github/' \
             --exclude '.env' \
-            --exclude 'nextjs-app/.env.local' \
+            --exclude 'nextjs-app/.env' \
             --exclude 'nextjs-app/node_modules/' \
             --exclude 'nextjs-app/.next/' \
             --exclude 'nextjs-app/package-lock.json' \
@@ -46,13 +46,13 @@ jobs:
             echo "POSTGRES_DB=${{ vars.POSTGRES_DB }}" > .env
             echo "POSTGRES_USER=${{ vars.POSTGRES_USER }}" >> .env
             echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
-            # Create nextjs-app/.env.local file
-            echo "GOOGLE_GENERATIVE_AI_API_KEY=${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}" > nextjs-app/.env.local
-            echo "NEXT_PUBLIC_SUPABASE_URL=${{ vars.NEXT_PUBLIC_SUPABASE_URL }}" >> nextjs-app/.env.local
-            echo "NEXT_PUBLIC_SUPABASE_PROJECT_ID=${{ vars.NEXT_PUBLIC_SUPABASE_PROJECT_ID }}" >> nextjs-app/.env.local
-            echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" >> nextjs-app/.env.local
-            echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" >> nextjs-app/.env.local
-            echo "NEXT_PUBLIC_IMAGE_URL=http://${{ secrets.SSH_HOST }}:80/images" >> nextjs-app/.env.local
+            # Create nextjs-app/.env file
+            echo "GOOGLE_GENERATIVE_AI_API_KEY=${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}" > nextjs-app/.env
+            echo "NEXT_PUBLIC_SUPABASE_URL=${{ vars.NEXT_PUBLIC_SUPABASE_URL }}" >> nextjs-app/.env
+            echo "NEXT_PUBLIC_SUPABASE_PROJECT_ID=${{ vars.NEXT_PUBLIC_SUPABASE_PROJECT_ID }}" >> nextjs-app/.env
+            echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" >> nextjs-app/.env
+            echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" >> nextjs-app/.env
+            echo "NEXT_PUBLIC_IMAGE_URL=http://${{ secrets.SSH_HOST }}:80/images" >> nextjs-app/.env
             # Optionally restore/build dependencies here
             # cd nextjs-app && npm ci && cd ..
             # cd aspnet-api/PortfolioBack && dotnet restore && cd ../..

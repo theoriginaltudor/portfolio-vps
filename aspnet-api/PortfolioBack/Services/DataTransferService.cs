@@ -10,11 +10,13 @@ public class DataTransferService
 {
   private readonly PortfolioDbContext _context;
   private readonly ILogger<DataTransferService> _logger;
+  private readonly IConfiguration _configuration;
 
-  public DataTransferService(PortfolioDbContext context, ILogger<DataTransferService> logger)
+  public DataTransferService(PortfolioDbContext context, ILogger<DataTransferService> logger, IConfiguration configuration)
   {
     _context = context;
     _logger = logger;
+    _configuration = configuration;
   }
   /// <summary>
   /// Transfers uploaded image files to the server's images directory.
@@ -41,8 +43,23 @@ public class DataTransferService
         };
       }
 
-      // Determine the images directory (relative to the backend root)
-      var imagesDir = Path.Combine(AppContext.BaseDirectory, "images");
+      // Determine the images directory from configuration
+      var configuredImagesPath = _configuration["ImagesPath"];
+      string imagesDir;
+      
+      if (!string.IsNullOrEmpty(configuredImagesPath))
+      {
+        // If configured path is absolute, use it directly; otherwise make it relative to the app directory
+        imagesDir = Path.IsPathRooted(configuredImagesPath) 
+          ? configuredImagesPath 
+          : Path.Combine(AppContext.BaseDirectory, configuredImagesPath);
+      }
+      else
+      {
+        // Fallback to the old behavior if no configuration is provided
+        imagesDir = Path.Combine(AppContext.BaseDirectory, "images");
+      }
+      
       _logger.LogInformation("Images directory: {ImagesDir}", imagesDir);
 
       if (!Directory.Exists(imagesDir))
