@@ -26,7 +26,7 @@ public class ProjectSearchService : IProjectSearchService
     var searchResults = await _context.Database
         .SqlQueryRaw<SearchArticleResult>(@"
                 SELECT slug, title, description, long_description, similarity, skills 
-                FROM search_articles($1, $2, $3)",
+                FROM search_articles({0}, {1}, {2})",
             queryEmbedding, matchThreshold, matchCount)
         .ToListAsync();
 
