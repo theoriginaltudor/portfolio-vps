@@ -911,6 +911,88 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/ProjectSkill/project/{projectId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    fields?: string;
+                };
+                header?: never;
+                path: {
+                    projectId: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ProjectSkillGetDto"][];
+                        "application/json": components["schemas"]["ProjectSkillGetDto"][];
+                        "text/json": components["schemas"]["ProjectSkillGetDto"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/ProjectSkill/skill/{skillId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    fields?: string;
+                };
+                header?: never;
+                path: {
+                    skillId: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ProjectSkillGetDto"][];
+                        "application/json": components["schemas"]["ProjectSkillGetDto"][];
+                        "text/json": components["schemas"]["ProjectSkillGetDto"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/Skill": {
         parameters: {
             query?: never;
@@ -1087,8 +1169,8 @@ export interface components {
             skills?: components["schemas"]["SkillGetDto"][] | null;
         };
         LoginRequestDto: {
-            username: string;
-            password: string;
+            username?: string | null;
+            password?: string | null;
         };
         Project: {
             /** Format: int32 */
@@ -1160,6 +1242,7 @@ export interface components {
             longDescription?: string | null;
             /** Format: double */
             similarity?: number;
+            skills?: components["schemas"]["SkillGetDto"][] | null;
         };
         ProjectSkill: {
             /** Format: int32 */
@@ -1191,8 +1274,8 @@ export interface components {
             matchCount?: number;
         };
         SignupRequestDto: {
-            username: string;
-            password: string;
+            username?: string | null;
+            password?: string | null;
         };
         SingleReadOnlyMemory: {
             /** Format: int32 */
