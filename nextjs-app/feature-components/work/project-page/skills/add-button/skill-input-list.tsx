@@ -1,11 +1,18 @@
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils/client";
 import { useSkillInputList } from "./use-skill-input-list";
-import { Tables } from "@/types/database.types";
+
+// Use the same skill type as defined in the hook
+type SkillType = {
+  id: number;
+  name: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
 
 interface SkillInputListProps {
   error?: boolean;
-  addSkill: (skill: Tables<"skills">) => void;
+  addSkill: (skill: SkillType) => void;
   addNewSkill: (skillName: string) => void;
 }
 

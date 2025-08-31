@@ -1,4 +1,3 @@
-import { Tables } from "@/types/database.types";
 import { usePathname } from "next/navigation";
 import { useCallback, useState } from "react";
 import { detachSkill } from "./actions/detach-skill";
@@ -7,6 +6,14 @@ import {
   addNewSkill as addNewSkillServer,
 } from "./actions/add-skill";
 import { components } from "@/types/swagger-types";
+
+// Use a consistent skill type that matches what the API returns
+type SkillType = {
+  id: number;
+  name: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
 
 export const useUpdateSkills = (
   initialSkills: (components["schemas"]["Skill"] | undefined)[],
@@ -40,7 +47,7 @@ export const useUpdateSkills = (
   );
 
   const addSkill = useCallback(
-    async (skill: Tables<"skills">) => {
+    async (skill: SkillType) => {
       if (typeof skill.id !== "number") {
         throw new Error("Invalid skillId");
       }
@@ -71,13 +78,13 @@ export const useUpdateSkills = (
       if (!response.success) {
         setList((prev) => prev.filter((skill) => skill?.id !== -1));
       } else {
-        if (typeof response.id === "number") {
-          const newSkill = { id: response.id, name: skillName };
+        if (typeof response.skillId === "number") {
+          const newSkill = { id: response.skillId, name: skillName };
           setList((prev) =>
             prev.map((skill) => (skill?.id === -1 ? newSkill : skill))
           );
         } else {
-          // handle error: response.id is not a number
+          // handle error: response.skillId is not a number
           setAddError(true);
           setList((prev) => prev.filter((skill) => skill?.id !== -1));
         }

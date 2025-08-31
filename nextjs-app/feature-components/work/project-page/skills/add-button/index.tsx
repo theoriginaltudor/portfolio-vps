@@ -1,10 +1,17 @@
 import { useState } from "react";
-import { Tables } from "@/types/database.types";
 import { PlusCircleIcon } from "lucide-react";
 import { SkillInputList } from "./skill-input-list";
 
+// Use the same skill type as defined in other components
+type SkillType = {
+  id: number;
+  name: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
 interface AddFormProps {
-  addSkill: (skillId: Tables<"skills">) => void;
+  addSkill: (skillId: SkillType) => void;
   addNewSkill: (skillName: string) => void;
   error?: boolean;
 }
