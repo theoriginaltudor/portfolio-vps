@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Drawer } from "@/components/ui/drawer";
 import { Menu } from "lucide-react";
 import { NavigationMenu } from "@/components/navigation-menu";
-import { User } from "@supabase/supabase-js";
+import { components } from "@/types/swagger-types";
 
-export const MobileNav = ({ user }: { user?: User | undefined }) => {
+export const MobileNav = ({ user }: { user?: components["schemas"]["AuthUserDto"] | undefined }) => {
   const [open, setOpen] = React.useState(false);
   return (
     <div className="md:hidden">
