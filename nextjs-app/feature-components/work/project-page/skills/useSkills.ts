@@ -46,7 +46,14 @@ export const useUpdateSkills = (
       const formData = new FormData();
       formData.append("skillId", skill.id.toString());
       formData.append("articleId", articleId.toString());
-      setList((prev) => [...prev, skill]);
+      // Ensure the skill matches the expected type for the list
+      const skillForList: components["schemas"]["Skill"] = {
+        id: skill.id,
+        name: skill.name || "",
+        createdAt: skill.createdAt || "",
+        updatedAt: skill.updatedAt || undefined,
+      };
+      setList((prev) => [...prev, skillForList]);
       const response = await addExistingSkill(formData, path);
       setAddError(!response.success);
       if (!response.success) {
