@@ -1,5 +1,5 @@
 import { Input } from "@/components/ui/input";
-import { loginUser, registerUser } from "./actions";
+import { loginUser } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { getUser } from "@/lib/utils/server";
@@ -52,7 +52,7 @@ export default async function LoginPage() {
         </div>
         <Button type="submit">Log in</Button>
       </form>
-      <form
+      {/* <form
         className="flex flex-col gap-6 p-4 justify-center items-center mx-auto"
         action={registerUser}
       >
@@ -87,7 +87,7 @@ export default async function LoginPage() {
           />
         </div>
         <Button type="submit">Sign up</Button>
-      </form>
+      </form> */}
     </div>
   );
 }
