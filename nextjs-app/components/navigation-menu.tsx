@@ -49,7 +49,7 @@ export const NavigationMenu = ({
           <>
             <NavigationMenuPrimitive.Item>
               <div className="flex flex-row items-center gap-2">
-                <UserIcon /> {user.username}
+                <UserIcon /> {user.username ?? "Unknown user"}
               </div>
             </NavigationMenuPrimitive.Item>
             <NavigationMenuPrimitive.Item>
