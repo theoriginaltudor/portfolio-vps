@@ -17,5 +17,6 @@
 - [ ] add rate limiting to the API
 - [ ] update DB with new table for AI generated questions for the articles that have been embedded, which are connected to the articles table with an id
 - [ ] auth cookie is deleted when doing any navigation
+- [ ] auth fails
 - [x] remove the signup functionality
-- [ ] the nginx is not working with the domain
+- [x] the nginx is not working with the domain
