@@ -64,14 +64,13 @@ export const addNewSkill = async (formData: FormData, path: string) => {
       return { success: false };
     }
     
-    // skillData should be properly typed as a single Skill from the API call
-    const skillArray = skillData as components["schemas"]["Skill"][];
-    const skill = skillArray[0]; // Take the first item from the array
+    
+    const skillId = skillData[0].id; // Take the first item from the array
     
     // Then, link the skill to the project
     const projectSkill: components["schemas"]["ProjectSkill"] = {
       projectId: articleId,
-      skillId: skill.id,
+      skillId: skillId ?? undefined,
     };
     
     const { ok: linkOk, error: linkError } = await apiCall("/api/ProjectSkill", {
@@ -81,11 +80,11 @@ export const addNewSkill = async (formData: FormData, path: string) => {
     
     if (!linkOk) {
       console.error("Error linking skill to article:", linkError);
-      return { success: false, id: skill.id };
+      return { success: false, id: skillId };
     }
     
     revalidatePath(path);
-    return { success: true, skillId: skill.id };
+    return { success: true, skillId: skillId };
   } catch (e) {
     console.error(e);
     return { success: false };
