@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Tables } from "@/types/database.types";
 import { PlusCircleIcon } from "lucide-react";
 import { SkillInputList } from "./skill-input-list";
+import { components } from "@/types/swagger-types";
 
 interface AddFormProps {
-  addSkill: (skillId: Tables<"skills">) => void;
+  addSkill: (skillId: components["schemas"]["SkillGetDto"]) => void;
   addNewSkill: (skillName: string) => void;
   error?: boolean;
 }

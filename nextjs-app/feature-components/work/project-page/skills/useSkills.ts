@@ -1,4 +1,3 @@
-import { Tables } from "@/types/database.types";
 import { usePathname } from "next/navigation";
 import { useCallback, useState } from "react";
 import { detachSkill } from "./actions/detach-skill";
@@ -40,14 +39,21 @@ export const useUpdateSkills = (
   );
 
   const addSkill = useCallback(
-    async (skill: Tables<"skills">) => {
+    async (skill: components["schemas"]["SkillGetDto"]) => {
       if (typeof skill.id !== "number") {
         throw new Error("Invalid skillId");
       }
       const formData = new FormData();
       formData.append("skillId", skill.id.toString());
       formData.append("articleId", articleId.toString());
-      setList((prev) => [...prev, skill]);
+      // Ensure the skill matches the expected type for the list
+      const skillForList: components["schemas"]["Skill"] = {
+        id: skill.id,
+        name: skill.name || "",
+        createdAt: skill.createdAt || "",
+        updatedAt: skill.updatedAt || undefined,
+      };
+      setList((prev) => [...prev, skillForList]);
       const response = await addExistingSkill(formData, path);
       setAddError(!response.success);
       if (!response.success) {
@@ -71,13 +77,13 @@ export const useUpdateSkills = (
       if (!response.success) {
         setList((prev) => prev.filter((skill) => skill?.id !== -1));
       } else {
-        if (typeof response.id === "number") {
-          const newSkill = { id: response.id, name: skillName };
+        if (typeof response.skillId === "number") {
+          const newSkill = { id: response.skillId, name: skillName };
           setList((prev) =>
             prev.map((skill) => (skill?.id === -1 ? newSkill : skill))
           );
         } else {
-          // handle error: response.id is not a number
+          // handle error: response.skillId is not a number
           setAddError(true);
           setList((prev) => prev.filter((skill) => skill?.id !== -1));
         }
