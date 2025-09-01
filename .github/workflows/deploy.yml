@@ -42,6 +42,11 @@ jobs:
         run: |
           ssh ${{ vars.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             cd ${{ vars.DEPLOY_PATH }}
+            # Create SSL directory if it doesn't exist
+            mkdir -p nginx/ssl
+            # Create SSL certificates (add your Cloudflare origin cert content here)
+            echo "${{ secrets.CLOUDFLARE_ORIGIN_CERT }}" > nginx/ssl/cloudflare-origin.crt
+            echo "${{ secrets.CLOUDFLARE_ORIGIN_KEY }}" > nginx/ssl/cloudflare-origin.key
             # Create .env file
             echo "POSTGRES_DB=${{ vars.POSTGRES_DB }}" > .env
             echo "POSTGRES_USER=${{ vars.POSTGRES_USER }}" >> .env
@@ -53,9 +58,6 @@ jobs:
             echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" >> nextjs-app/.env
             echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" >> nextjs-app/.env
             echo "NEXT_PUBLIC_IMAGE_URL=http://${{ secrets.SSH_HOST }}:80/images" >> nextjs-app/.env
-            # Optionally restore/build dependencies here
-            # cd nextjs-app && npm ci && cd ..
-            # cd aspnet-api/PortfolioBack && dotnet restore && cd ../..
             sudo docker compose -f compose.yaml down
             sudo docker compose -f compose.yaml up --build -d
           EOF
