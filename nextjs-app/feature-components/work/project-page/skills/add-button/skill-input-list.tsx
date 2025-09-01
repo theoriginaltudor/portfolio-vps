@@ -1,18 +1,11 @@
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils/client";
 import { useSkillInputList } from "./use-skill-input-list";
-
-// Use the same skill type as defined in the hook
-type SkillType = {
-  id: number;
-  name: string;
-  createdAt?: string;
-  updatedAt?: string;
-};
+import { components } from "@/types/swagger-types";
 
 interface SkillInputListProps {
   error?: boolean;
-  addSkill: (skill: SkillType) => void;
+  addSkill: (skill: components["schemas"]["SkillGetDto"]) => void;
   addNewSkill: (skillName: string) => void;
 }
 
@@ -34,7 +27,7 @@ export const SkillInputList: React.FC<SkillInputListProps> = ({
       <Input
         placeholder="Skill"
         ref={ref}
-        value={selected.name}
+        value={selected.name || ""}
         onChange={(e) => {
           setSelected({ id: -1, name: e.target.value });
         }}
@@ -44,7 +37,7 @@ export const SkillInputList: React.FC<SkillInputListProps> = ({
       <ul className="mt-2 w-full rounded bg-white dark:bg-gray-900 shadow absolute z-10 bottom-0 left-0 right-0 translate-y-full">
         {selected.id === -1 &&
           skills
-            .filter((skill) => skill.name.includes(selected.name))
+            .filter((skill) => skill.name && skill.name.includes(selected.name || ""))
             .map((skill) => (
               <li
                 key={skill.id}

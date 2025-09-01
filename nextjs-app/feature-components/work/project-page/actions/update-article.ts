@@ -6,16 +6,16 @@ import { revalidatePath } from "next/cache";
 
 export const updateArticle = async (formData: FormData, path: string): Promise<{ success: boolean }> => {
   try {
-    if (!formData.get("id")) {
-      console.error("Article ID is required for update.");
+    const { title, longDescription, slug } = Object.fromEntries(formData.entries());
+    
+    if (!slug) {
+      console.error("Project slug is required for update.");
       return { success: false };
     }
 
-    const { title, long_description, id, slug } = Object.fromEntries(formData.entries());
-    const articleId = Number(id);
-    const projectSlug = slug ? slug.toString() : null;
+    const projectSlug = slug.toString();
 
-    await updateArticleContent({ title, long_description }, articleId, projectSlug);
+    await updateArticleContent({ title, longDescription }, projectSlug);
 
     revalidatePath(path);
     return { success: true };
@@ -26,42 +26,28 @@ export const updateArticle = async (formData: FormData, path: string): Promise<{
 }
 
 const updateArticleContent = async (
-  data: { title: FormDataEntryValue | null; long_description: FormDataEntryValue | null },
-  articleId: number,
-  projectSlug: string | null
+  data: { title: FormDataEntryValue | null; longDescription: FormDataEntryValue | null },
+  projectSlug: string
 ) => {
   // Only update if there's something to update
-  if (!data.title && !data.long_description) {
+  if (!data.title && !data.longDescription) {
     throw new Error("No article content to update.");
   }
 
-  // First, get the existing project by its ID - we need to use the regular Project endpoint
-  // since we have the ID but need to get the data to preserve other fields
-  const getResult = await paramApiCall("/api/Project/{slug}", {
-    method: "GET", 
-    params: { slug: articleId.toString() }, // This might not work since slug != id
-  });
-
-  // If getting by ID doesn't work, we'll have to make an assumption about the data
-  // This is a limitation of the current API design
-  let existingProject: components["schemas"]["ProjectGetDto"] | null = null;
+  // Build the update object with only the fields that need to be updated
+  const projectUpdate: Partial<components["schemas"]["Project"]> = {};
   
-  if (getResult.ok && getResult.data) {
-    existingProject = getResult.data as components["schemas"]["ProjectGetDto"];
+  if (data.title) {
+    projectUpdate.title = data.title.toString();
+  }
+  
+  if (data.longDescription) {
+    projectUpdate.longDescription = data.longDescription.toString();
   }
 
-  // Build the update object
-  const projectUpdate: components["schemas"]["Project"] = {
-    id: articleId,
-    slug: existingProject?.slug || projectSlug || `project-${articleId}`,
-    title: data.title ? data.title.toString() : (existingProject?.title || `Project ${articleId}`),
-    description: existingProject?.description || "Project description",
-    longDescription: data.long_description ? data.long_description.toString() : (existingProject?.longDescription || "Project long description"),
-  };
-
-  const result = await paramApiCall("/api/Project/{id}", {
+  const result = await paramApiCall("/api/Project/{slug}", {
     method: "PUT",
-    params: { id: articleId },
+    params: { slug: projectSlug },
     body: projectUpdate,
   });
 

@@ -1,68 +1,100 @@
 import { embed } from "ai";
 import { google } from "@ai-sdk/google";
-import { Database } from "@/types/database.types";
-import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import { components } from "@/types/swagger-types";
+import { apiCall } from "@/lib/utils/api";
+import { paramApiCall } from "@/lib/utils/param-api";
 
 const model = google.textEmbeddingModel("text-embedding-004");
-interface ArticleSkillWithSkill {
-  skills: Database["public"]["Tables"]["skills"]["Row"];
-}
 
-type ArticleWithSkills = Database["public"]["Tables"]["articles"]["Row"] & {
-  articles_skills: ArticleSkillWithSkill[];
-};
+async function getProjects() {
+  const { ok, data, error } = await apiCall("/api/Project", {
+    method: "GET",
+  });
 
-async function getArticles(supabase: SupabaseClient) {
-  const { data, error } = await supabase
-    .from('articles')
-    .select(`
-      id,
-      title,
-      description,
-      long_description,
-      articles_skills (
-        skills ( name )
-      )
-    `)
-    .is('embedding', null);
-
-  if (error) {
-    console.error("Error fetching articles:", error);
-    throw new Error(`Error fetching articles: ${error.message}`);
+  if (!ok || !data) {
+    console.error("Error fetching projects:", error);
+    throw new Error(`Error fetching projects: ${error}`);
   }
 
-  return data as unknown as ArticleWithSkills[];
+  // Filter for projects that don't have embeddings
+  return (data as components["schemas"]["ProjectGetDto"][])
+    .filter(project => !project.embedding);
+}
+
+async function getProjectSkills(projectId: number) {
+  const result = await paramApiCall("/api/ProjectSkill/project/{projectId}", {
+    method: "GET",
+    params: { projectId },
+  });
+
+  if (!result.ok) {
+    console.error("Error fetching project skills:", result.error);
+    return [];
+  }
+
+  if (!result.data) {
+    return [];
+  }
+
+  // Get skill details for each project skill
+  const skills: string[] = [];
+  const projectSkills = result.data as components["schemas"]["ProjectSkillGetDto"][];
+  
+  for (const ps of projectSkills) {
+    if (ps.skillId) {
+      const skillResult = await paramApiCall("/api/Skill/{id}", {
+        method: "GET",
+        params: { id: ps.skillId },
+      });
+      if (skillResult.ok && skillResult.data) {
+        const skill = skillResult.data as components["schemas"]["SkillGetDto"];
+        if (skill.name) {
+          skills.push(skill.name);
+        }
+      }
+    }
+  }
+
+  return skills;
+}
+
+async function updateProjectEmbedding(projectId: number, embedding: number[]) {
+  const result = await paramApiCall("/api/Project/{id}", {
+    method: "PUT",
+    params: { id: projectId },
+    body: { embedding },
+  });
+
+  if (!result.ok) {
+    throw new Error(`Failed to update embedding for project ${projectId}: ${result.error}`);
+  }
 }
 
 async function generateEmbeddings() {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    throw new Error("Supabase environment variables are not set.");
-  }
-  const supabase = await createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
-  const articles = await getArticles(supabase);
+  const projects = await getProjects();
 
   let updated = 0;
   const failed: { id: number; error: unknown }[] = [];
 
-  for (const article of articles) {
+  for (const project of projects) {
     try {
-      const skills = article.articles_skills.map((s) => s.skills.name).join(', ');
-      const contentToEmbed = `Title: ${article.title}\nSkills: ${skills}\nDescription: ${article.description}\nContent: ${article.long_description}`;
+      if (!project.id) {
+        console.warn(`Skipping project with no ID: ${project.slug}`);
+        continue;
+      }
+
+      const skills = await getProjectSkills(project.id);
+      const skillsText = skills.join(', ');
+      const contentToEmbed = `Title: ${project.title}\nSkills: ${skillsText}\nDescription: ${project.description}\nContent: ${project.longDescription}`;
+      
       const result = await embed({ model, value: contentToEmbed });
       const embedding = result.embedding;
-      const { error: updateError } = await supabase
-        .from('articles')
-        .update({ embedding })
-        .eq('id', article.id);
-      if (updateError) {
-        console.error(`Failed to update embedding for article ${article.id}:`, updateError);
-        failed.push({ id: article.id, error: updateError });
-      } else {
-        updated++;
-      }
+      
+      await updateProjectEmbedding(project.id, embedding);
+      updated++;
     } catch (err) {
-      console.error(`An error occurred while processing article ${article.id}:`, err);
-      failed.push({ id: article.id, error: err });
+      console.error(`An error occurred while processing project ${project.id}:`, err);
+      failed.push({ id: project.id || -1, error: err });
     }
   }
 

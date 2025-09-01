@@ -7,14 +7,6 @@ import {
 } from "./actions/add-skill";
 import { components } from "@/types/swagger-types";
 
-// Use a consistent skill type that matches what the API returns
-type SkillType = {
-  id: number;
-  name: string;
-  createdAt?: string;
-  updatedAt?: string;
-};
-
 export const useUpdateSkills = (
   initialSkills: (components["schemas"]["Skill"] | undefined)[],
   articleId: number
@@ -47,7 +39,7 @@ export const useUpdateSkills = (
   );
 
   const addSkill = useCallback(
-    async (skill: SkillType) => {
+    async (skill: components["schemas"]["SkillGetDto"]) => {
       if (typeof skill.id !== "number") {
         throw new Error("Invalid skillId");
       }

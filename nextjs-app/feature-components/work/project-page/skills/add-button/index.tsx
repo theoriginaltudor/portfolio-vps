@@ -1,17 +1,10 @@
 import { useState } from "react";
 import { PlusCircleIcon } from "lucide-react";
 import { SkillInputList } from "./skill-input-list";
-
-// Use the same skill type as defined in other components
-type SkillType = {
-  id: number;
-  name: string;
-  createdAt?: string;
-  updatedAt?: string;
-};
+import { components } from "@/types/swagger-types";
 
 interface AddFormProps {
-  addSkill: (skillId: SkillType) => void;
+  addSkill: (skillId: components["schemas"]["SkillGetDto"]) => void;
   addNewSkill: (skillName: string) => void;
   error?: boolean;
 }

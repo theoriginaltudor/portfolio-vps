@@ -64,8 +64,9 @@ export const addNewSkill = async (formData: FormData, path: string) => {
       return { success: false };
     }
     
-    // Cast to single Skill object since POST returns a single skill, not an array
-    const skill = skillData as unknown as components["schemas"]["Skill"];
+    // skillData should be properly typed as a single Skill from the API call
+    const skillArray = skillData as components["schemas"]["Skill"][];
+    const skill = skillArray[0]; // Take the first item from the array
     
     // Then, link the skill to the project
     const projectSkill: components["schemas"]["ProjectSkill"] = {
