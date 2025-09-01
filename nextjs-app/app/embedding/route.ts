@@ -1,6 +1,5 @@
 import { embed } from "ai";
 import { google } from "@ai-sdk/google";
-import { components } from "@/types/swagger-types";
 import { apiCall } from "@/lib/utils/api";
 import { paramApiCall } from "@/lib/utils/param-api";
 
@@ -16,9 +15,7 @@ async function getProjects() {
     throw new Error(`Error fetching projects: ${error}`);
   }
 
-  // Filter for projects that don't have embeddings
-  return (data as components["schemas"]["ProjectGetDto"][])
-    .filter(project => !project.embedding);
+  return data;
 }
 
 async function getProjectSkills(projectId: number) {
@@ -38,18 +35,16 @@ async function getProjectSkills(projectId: number) {
 
   // Get skill details for each project skill
   const skills: string[] = [];
-  const projectSkills = result.data as components["schemas"]["ProjectSkillGetDto"][];
   
-  for (const ps of projectSkills) {
+  for (const ps of result.data) {
     if (ps.skillId) {
       const skillResult = await paramApiCall("/api/Skill/{id}", {
         method: "GET",
         params: { id: ps.skillId },
       });
       if (skillResult.ok && skillResult.data) {
-        const skill = skillResult.data as components["schemas"]["SkillGetDto"];
-        if (skill.name) {
-          skills.push(skill.name);
+        if (skillResult.data.name) {
+          skills.push(skillResult.data.name);
         }
       }
     }
