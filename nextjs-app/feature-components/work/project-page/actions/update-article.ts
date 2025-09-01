@@ -6,16 +6,16 @@ import { revalidatePath } from "next/cache";
 
 export const updateArticle = async (formData: FormData, path: string): Promise<{ success: boolean }> => {
   try {
-    const { title, longDescription, slug } = Object.fromEntries(formData.entries());
-    
-    if (!slug) {
-      console.error("Project slug is required for update.");
+    const { title, longDescription, id } = Object.fromEntries(formData.entries());
+
+    if (!id) {
+      console.error("Project ID is required for update.");
       return { success: false };
     }
 
-    const projectSlug = slug.toString();
+    const projectId = Number(id);
 
-    await updateArticleContent({ title, longDescription }, projectSlug);
+    await updateArticleContent({ title, longDescription }, projectId);
 
     revalidatePath(path);
     return { success: true };
@@ -27,16 +27,11 @@ export const updateArticle = async (formData: FormData, path: string): Promise<{
 
 const updateArticleContent = async (
   data: { title: FormDataEntryValue | null; longDescription: FormDataEntryValue | null },
-  projectSlug: string
+  projectId: number
 ) => {
-  // Only update if there's something to update
-  if (!data.title && !data.longDescription) {
-    throw new Error("No article content to update.");
-  }
-
   // Build the update object with only the fields that need to be updated
-  const projectUpdate: Partial<components["schemas"]["Project"]> = {};
-  
+  const projectUpdate: Pick<components["schemas"]["ProjectGetDto"], "title" | "longDescription"> = {};
+
   if (data.title) {
     projectUpdate.title = data.title.toString();
   }
@@ -45,9 +40,14 @@ const updateArticleContent = async (
     projectUpdate.longDescription = data.longDescription.toString();
   }
 
-  const result = await paramApiCall("/api/Project/{slug}", {
+  // Only update if there's something to update
+  if (Object.keys(projectUpdate).length === 0) {
+    throw new Error("No article content to update.");
+  }
+
+  const result = await paramApiCall("/api/Project/{id}", {
     method: "PUT",
-    params: { slug: projectSlug },
+    params: { id: projectId },
     body: projectUpdate,
   });
 
