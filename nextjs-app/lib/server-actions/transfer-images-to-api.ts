@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { apiCall } from "@/lib/utils/api";
+import type { Tables } from "@/types/database.types";
 
 export async function transferBlobToApi() {
   const supabase = await createClient();
@@ -7,18 +8,21 @@ export async function transferBlobToApi() {
     .from("images")
     .select("path");
 
-  images?.push({ path: "/tc1_1.webp" });
-
   if (imagesError) {
     console.error("Error fetching images:", imagesError);
     return { ok: false, error: imagesError.message, status: 500 };
   }
 
+  const typedImages = (images as Pick<Tables<"images">, "path">[] | null) ?? [];
+  
+  // Add the additional image
+  typedImages.push({ path: "/tc1_1.webp" });
+
   const blobList: FormData = new FormData();
   let downloaded = 0;
   let failed = 0;
   await Promise.all(
-    (images ?? []).map(async (image: { path: string }) => {
+    typedImages.map(async (image: { path: string }) => {
       const { data, error } = await supabase.storage
         .from("portfolio-images")
         .download(image.path);

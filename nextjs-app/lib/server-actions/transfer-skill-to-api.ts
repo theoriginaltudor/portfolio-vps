@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { apiCall } from "@/lib/utils/api";
+import type { Tables } from "@/types/database.types";
 
 export async function transferSkillsToApi() {
   const supabase = await createClient();
@@ -10,13 +11,15 @@ export async function transferSkillsToApi() {
     return { ok: false, error: error.message, status: 500 };
   }
 
+  const skills = data as Pick<Tables<"skills">, "name">[] | null;
+
   const {
     ok,
     error: apiError,
     status,
   } = await apiCall("/api/DataTransfer/skills", {
     method: "POST",
-    body: (data ?? []).map((skill) => ({
+    body: (skills ?? []).map((skill) => ({
       name: skill.name,
     })),
     headers: {
@@ -24,5 +27,5 @@ export async function transferSkillsToApi() {
     },
   });
 
-  return { ok, error: apiError, status, data: { count: (data ?? []).length } };
+  return { ok, error: apiError, status, data: { count: (skills ?? []).length } };
 }
