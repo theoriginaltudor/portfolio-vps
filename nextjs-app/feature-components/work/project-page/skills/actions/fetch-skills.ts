@@ -1,10 +1,9 @@
 'use server';
-import { createClient } from "@/lib/supabase/server";
-import { Tables } from "@/types/database.types";
+import { apiCall } from "@/lib/utils/api";
+import { components } from "@/types/swagger-types";
 
-export async function fetchSkillsServer(): Promise<Tables<"skills">[]> {
-  const supabase = await createClient();
-  const { data, error } = await supabase.from("skills").select("*");
+export async function fetchSkillsServer(): Promise<components["schemas"]["SkillGetDto"][]> {
+  const { data, error } = await apiCall("/api/Skill");
   if (error || !data) return [];
-  return data as Tables<"skills">[];
+  return data;
 }

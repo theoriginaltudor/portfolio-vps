@@ -1,5 +1,5 @@
 'use server';
-import { createClient } from "@/lib/supabase/server";
+import { paramApiCall } from "@/lib/utils/param-api";
 import { revalidatePath } from "next/cache";
 
 export const detachSkill = async (formData: FormData, path: string): Promise<{ success: boolean }> => {
@@ -14,15 +14,16 @@ export const detachSkill = async (formData: FormData, path: string): Promise<{ s
     if (isNaN(articleId) || isNaN(skillId)) {
       throw new Error("Invalid articleId or skillId: must be a number");
     }
-    const supabase = await createClient();
-    const { error } = await supabase
-      .from("articles_skills")
-      .delete()
-      .eq("article_id", articleId)
-      .eq("skill_id", skillId);
-    if (error) {
-      throw new Error(`Failed to remove skill from article: ${error.message}`);
+    
+    const result = await paramApiCall("/api/ProjectSkill/{projectId}/{skillId}", {
+      method: "DELETE",
+      params: { projectId: articleId, skillId: skillId },
+    });
+    
+    if (!result.ok) {
+      throw new Error(`Failed to remove skill from article: ${result.error}`);
     }
+    
     revalidatePath(path);
     return { success: true };
   } catch (error) {

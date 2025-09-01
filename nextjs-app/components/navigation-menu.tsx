@@ -4,7 +4,7 @@ import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu";
 import { cn } from "@/lib/utils/client";
 import Link from "next/link";
 import { User as UserIcon, LogOut } from "lucide-react";
-import { User } from "@supabase/supabase-js";
+import { components } from "@/types/swagger-types";
 import { logoutUser } from "@/app/login/actions";
 import { usePathname } from "next/navigation";
 
@@ -15,7 +15,7 @@ export const NavigationMenu = ({
 }: {
   className?: string;
   onNavigate?: () => void;
-  user?: User;
+  user?: components["schemas"]["AuthUserDto"];
 }) => {
   const pathname = usePathname();
   const logoutWithPath = logoutUser.bind(null, pathname);
@@ -49,7 +49,7 @@ export const NavigationMenu = ({
           <>
             <NavigationMenuPrimitive.Item>
               <div className="flex flex-row items-center gap-2">
-                <UserIcon /> {user.email}
+                <UserIcon /> {user.username ?? "Unknown user"}
               </div>
             </NavigationMenuPrimitive.Item>
             <NavigationMenuPrimitive.Item>
