@@ -30,7 +30,7 @@ const updateArticleContent = async (
   projectId: number
 ) => {
   // Build the update object with only the fields that need to be updated
-  const projectUpdate: Pick<components["schemas"]["ProjectGetDto"], "title" | "longDescription"> = {};
+  const projectUpdate: Pick<components["schemas"]["ProjectGetDto"], "title" | "longDescription" | "id"> = {id: projectId};
 
   if (data.title) {
     projectUpdate.title = data.title.toString();
