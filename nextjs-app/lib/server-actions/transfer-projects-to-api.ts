@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { apiCall } from "@/lib/utils/api";
+import type { Tables } from "@/types/database.types";
 
 export async function transferProjectsToApi() {
   const supabase = await createClient();
@@ -10,13 +11,15 @@ export async function transferProjectsToApi() {
     return { ok: false, error: error.message, status: 500 };
   }
 
+  const articles = data as Tables<"articles">[] | null;
+
   const {
     ok,
     error: apiError,
     status,
   } = await apiCall("/api/DataTransfer/projects", {
     method: "POST",
-    body: (data ?? []).map((article) => ({
+    body: (articles ?? []).map((article) => ({
       slug: article.slug,
       title: article.title,
       description: article.description,
@@ -31,5 +34,5 @@ export async function transferProjectsToApi() {
     },
   });
 
-  return { ok, error: apiError, status, data: { count: (data ?? []).length } };
+  return { ok, error: apiError, status, data: { count: (articles ?? []).length } };
 }
