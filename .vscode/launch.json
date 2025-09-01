@@ -5,10 +5,21 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "C#: Debug",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}/aspnet-api/PortfolioBack/PortfolioBack.csproj"
+        },
+        {
             "name": ".NET Core Attach",
             "type": "coreclr",
             "request": "attach"
         }
-
+    ],
+    "compounds": [
+        {
+            "name": "Launch and Attach",
+            "configurations": ["C#: Debug", ".NET Core Attach"]
+        }
     ]
 }
