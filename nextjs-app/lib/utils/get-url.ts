@@ -9,8 +9,23 @@ const getApiUrl = (endpoint: string) => {
 };
 
 const getImageUrl = (path: string) => {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_IMAGE_URL || "http://localhost:80/images";
+  // Use environment variable if set, otherwise detect protocol based on current context
+  if (process.env.NEXT_PUBLIC_IMAGE_URL) {
+    const baseUrl = process.env.NEXT_PUBLIC_IMAGE_URL;
+    return `${baseUrl}${path.startsWith("/") ? path : "/" + path}`;
+  }
+  
+  // For development, default to localhost
+  if (typeof window === "undefined") {
+    // Server-side: use localhost for development
+    const baseUrl = "http://localhost:80/images";
+    return `${baseUrl}${path.startsWith("/") ? path : "/" + path}`;
+  }
+  
+  // Client-side: use current protocol and host
+  const protocol = window.location.protocol;
+  const host = window.location.host;
+  const baseUrl = `${protocol}//${host}/images`;
   return `${baseUrl}${path.startsWith("/") ? path : "/" + path}`;
 };
 

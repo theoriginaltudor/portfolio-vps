@@ -57,7 +57,7 @@ jobs:
             echo "NEXT_PUBLIC_SUPABASE_PROJECT_ID=${{ vars.NEXT_PUBLIC_SUPABASE_PROJECT_ID }}" >> nextjs-app/.env
             echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" >> nextjs-app/.env
             echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" >> nextjs-app/.env
-            echo "NEXT_PUBLIC_IMAGE_URL=http://${{ secrets.SSH_HOST }}:80/images" >> nextjs-app/.env
+            echo "NEXT_PUBLIC_IMAGE_URL=https://${{ vars.HOST_SITE }}/images" >> nextjs-app/.env
             sudo docker compose -f compose.yaml down
             sudo docker compose -f compose.yaml up --build -d
           EOF
