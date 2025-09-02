@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PortfolioBack.Data;
 using PortfolioBack.Models;
+using PortfolioBack.DTOs;
 
 namespace PortfolioBack.Services;
 
