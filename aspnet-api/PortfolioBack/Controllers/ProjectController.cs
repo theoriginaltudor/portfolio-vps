@@ -68,7 +68,7 @@ public class ProjectController : ControllerBase
 
   [HttpPut("{id}")]
   [Authorize]
-  public async Task<IActionResult> Update(int id, Project project)
+  public async Task<IActionResult> Update(int id, ProjectGetDto project)
   {
     if (id != project.Id) return BadRequest();
     var updated = await _service.UpdateAsync(project);
