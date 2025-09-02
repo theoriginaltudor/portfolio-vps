@@ -36,7 +36,7 @@ export const ArticleEditForm: React.FC<ArticleEditFormProps> = ({
     <form action={formAction} className="flex flex-col gap-4 items-center">
       <input type="hidden" name="id" value={projectId} />
       <textarea
-        name="long_description"
+        name="longDescription"
         value={description}
         onChange={(e) => {
           setDescription(e.target.value);
