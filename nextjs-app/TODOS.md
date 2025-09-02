@@ -11,6 +11,7 @@
 - [x] change DB queries to own API
 - [x] remove the signup functionality
 - [x] the nginx is not working with the domain
+- [x] update data for projects fails
 - [ ] add theme for the projects on hover and for the article
 - [ ] make a chat page where you can just talk with the LLM, asking questions and it will talk about the data in the articles plus give a link to them
 - [ ] make the avatar in projects route clickable to navigate to the chat page
