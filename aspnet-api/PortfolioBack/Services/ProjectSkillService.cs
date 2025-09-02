@@ -37,14 +37,26 @@ public class ProjectSkillService
       .ToListAsync();
   }
 
-  public async Task<ProjectSkill> CreateAsync(ProjectSkill projectSkill)
+  public async Task<ProjectSkill> CreateAsync(ProjectSkillGetDto projectSkill)
   {
-    _context.ProjectSkills.Add(projectSkill);
+    var existingProject = await _context.Projects.FindAsync(projectSkill.ProjectId);
+    var existingSkill = await _context.Skills.FindAsync(projectSkill.SkillId);
+    if (existingProject == null || existingSkill == null) return null;
+
+    var entity = new ProjectSkill
+    {
+      ProjectId = projectSkill.ProjectId,
+      Project = existingProject,
+      SkillId = projectSkill.SkillId,
+      Skill = existingSkill,
+      DateCreated = DateTime.UtcNow,
+    };
+    _context.ProjectSkills.Add(entity);
     await _context.SaveChangesAsync();
-    return projectSkill;
+    return entity;
   }
 
-  public async Task<ProjectSkill?> UpdateAsync(ProjectSkill projectSkill)
+  public async Task<ProjectSkill?> UpdateAsync(ProjectSkillGetDto projectSkill)
   {
     var existing = await _context.ProjectSkills.FindAsync(projectSkill.ProjectId, projectSkill.SkillId);
     if (existing == null) return null;
