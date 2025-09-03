@@ -6,16 +6,18 @@
 - [x] add supabase storage for image handling
 - [x] implement retrival augmented generationnto get better results from chat
 - [x] fix files and folders naming to use kebab-case
+- [x] authenticated mode edit text in articles
+- [x] change images to use server images, not supabase
+- [x] change DB queries to own API
+- [x] remove the signup functionality
+- [x] the nginx is not working with the domain
+- [x] update data for projects fails
 - [ ] add theme for the projects on hover and for the article
 - [ ] make a chat page where you can just talk with the LLM, asking questions and it will talk about the data in the articles plus give a link to them
 - [ ] make the avatar in projects route clickable to navigate to the chat page
-- [x] authenticated mode edit text in articles
 - [/] authenticated mode edit pictures in articles
 - [ ] add Streaming functionality with suspense and use
-- [x] change images to use server images, not supabase
-- [x] change DB queries to own API
 - [ ] add rate limiting to the API
 - [ ] update DB with new table for AI generated questions for the articles that have been embedded, which are connected to the articles table with an id
 - [ ] auth cookie is deleted when doing any navigation
-- [x] remove the signup functionality
-- [ ] the nginx is not working with the domain
+- [/] auth fails on live

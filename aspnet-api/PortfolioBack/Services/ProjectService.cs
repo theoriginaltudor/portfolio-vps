@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PortfolioBack.Data;
 using PortfolioBack.Models;
+using PortfolioBack.DTOs;
 
 namespace PortfolioBack.Services;
 
@@ -39,11 +40,19 @@ public class ProjectService
     return project;
   }
 
-  public async Task<Project?> UpdateAsync(Project project)
+  public async Task<Project?> UpdateAsync(ProjectGetDto project)
   {
     var existing = await _context.Projects.FindAsync(project.Id);
     if (existing == null) return null;
-    _context.Entry(existing).CurrentValues.SetValues(project);
+    if (project.LongDescription != null)
+      existing.LongDescription = project.LongDescription;
+    if (project.Description != null)
+      existing.Description = project.Description;
+    if (project.Title != null)
+      existing.Title = project.Title;
+    if (project.Slug != null)
+      existing.Slug = project.Slug;
+    existing.UpdatedAt = DateTime.UtcNow;
     await _context.SaveChangesAsync();
     return existing;
   }

@@ -106,7 +106,7 @@ public class ProjectSkillController : ControllerBase
 
   [HttpPost]
   [Authorize]
-  public async Task<ActionResult<ProjectSkill>> Create(ProjectSkill projectSkill)
+  public async Task<ActionResult<ProjectSkill>> Create(ProjectSkillGetDto projectSkill)
   {
     var created = await _service.CreateAsync(projectSkill);
     return CreatedAtAction(nameof(GetById), new { projectId = created.ProjectId, skillId = created.SkillId }, created);
