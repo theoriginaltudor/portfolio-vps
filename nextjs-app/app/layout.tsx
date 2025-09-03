@@ -18,7 +18,8 @@ const geistMono = Geist_Mono({
 
 // Global (default) metadata for the entire site. Individual pages can override pieces.
 export const metadata: Metadata = {
-  metadataBase: new URL("https://tudor-dev.com"),
+  // Updated to use www host (site enforces redirect to www)
+  metadataBase: new URL("https://www.tudor-dev.com"),
   title: {
     default: "Tudor Caseru – Full‑Stack Developer Portfolio",
     template: "%s | Tudor Caseru"
@@ -47,7 +48,7 @@ export const metadata: Metadata = {
     title: "Tudor Caseru – Full‑Stack Developer Portfolio",
     description:
       "Projects, skills, and experiments in web engineering, APIs, and AI integration.",
-  url: "https://tudor-dev.com",
+    url: "https://www.tudor-dev.com",
     siteName: "Tudor Caseru Portfolio",
     images: [
       {

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: "Tudor Caseru – Portfolio Home",
     description:
       "Explore highlighted work, skills, and an AI chat assistant for project questions.",
-  url: "https://tudor-dev.com",
+    url: "https://www.tudor-dev.com",
     images: [
       {
         url: "/api/og?title=Home",
