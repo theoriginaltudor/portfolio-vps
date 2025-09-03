@@ -105,17 +105,19 @@ if (app.Environment.IsDevelopment())
 }
 
 // Respect X-Forwarded-* headers from Nginx so scheme/remote IP/host are correct behind the proxy
-app.UseForwardedHeaders(new ForwardedHeadersOptions
+var fwd = new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost,
-    // In containerized deployments behind Nginx we clear the restrictions
-    // so headers from the reverse proxy are honored.
-    // Ensure only your proxy can send these headers in front of the app.
     ForwardLimit = null,
     RequireHeaderSymmetry = false
-});
+};
+// Trust all proxies/networks inside the Docker network
+fwd.KnownNetworks.Clear();
+fwd.KnownProxies.Clear();
+app.UseForwardedHeaders(fwd);
 
-app.UseHttpsRedirection();
+// Don't force HTTPS here; TLS terminates at Nginx/Cloudflare.
+// If Forwarded Proto is honored, downstream will already appear as https.
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

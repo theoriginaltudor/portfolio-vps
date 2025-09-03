@@ -11,8 +11,8 @@ async function handleAuthCookie(response: Response) {
   const setCookieHeader = response.headers.get("set-cookie");
   if (setCookieHeader) {
     // Parse and forward the auth cookie (handle multiple cookies)
-    const cookies = setCookieHeader.split(',');
-    for (const cookie of cookies) {
+  const cookies = setCookieHeader.split(',');
+  for (const cookie of cookies) {
       const authCookieMatch = cookie.trim().match(/auth=([^;]+)/);
       if (authCookieMatch) {
         const cookieValue = authCookieMatch[1];
@@ -20,6 +20,8 @@ async function handleAuthCookie(response: Response) {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",
           sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      path: "/",
+      domain: process.env.NODE_ENV === "production" ? ".tudor-dev.com" : undefined,
           maxAge: 60 * 60 * 24 * 7, // 7 days, matching backend
         });
         break;
