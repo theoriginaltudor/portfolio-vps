@@ -35,9 +35,9 @@ This repository contains a full-stack portfolio website and API, designed for de
    ```
 2. **Start services (all containers):**
    ```zsh
-   podman-compose up --build
+   podman-compose -f db.compose.yaml up --build
    # or
-   docker-compose up --build
+   docker-compose -f db.compose.yaml up --build
    ```
 3. **Frontend:**
    ```zsh
