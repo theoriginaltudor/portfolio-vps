@@ -1,4 +1,5 @@
 import { Input } from "@/components/ui/input";
+import type { Metadata } from "next";
 import { loginUser } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -91,3 +92,14 @@ export default async function LoginPage() {
     </div>
   );
 }
+
+export const metadata: Metadata = {
+  title: "Login",
+  description: "Secure access for managing portfolio content and data integration tasks.",
+  robots: { index: false, follow: false },
+  openGraph: {
+    title: "Login – Tudor Caseru",
+    description: "Authenticated access to management features.",
+  url: "https://tudor-dev.com/login"
+  }
+};

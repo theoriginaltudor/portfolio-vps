@@ -1,4 +1,5 @@
 import * as React from "react";
+import type { Metadata } from "next";
 import { ArticlesCarousel } from "@/feature-components/work/articles-carousel";
 import { apiCall } from "@/lib/utils/api";
 
@@ -16,3 +17,15 @@ export default async function ProjectsPage() {
     </main>
   );
 }
+
+export const metadata: Metadata = {
+  title: "Projects",
+  description:
+    "A curated selection of software projects showcasing full‑stack engineering, API design, performance, and AI integration.",
+  openGraph: {
+    title: "Projects – Tudor Caseru",
+    description:
+      "Explore real-world applications, platform builds, and product features delivered by Tudor Caseru.",
+  url: "https://tudor-dev.com/projects"
+  }
+};
