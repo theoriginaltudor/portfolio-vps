@@ -40,6 +40,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     // In Development allow HTTP for local testing; in Production require HTTPS and SameSite=None for cross-site
     options.Cookie.SecurePolicy = isDev ? CookieSecurePolicy.None : CookieSecurePolicy.Always;
     options.Cookie.SameSite = isDev ? SameSiteMode.Lax : SameSiteMode.None;
+        // In production, share auth across www and apex
+        if (!isDev)
+        {
+            options.Cookie.Domain = ".tudor-dev.com"; // valid for tudor-dev.com and www.tudor-dev.com
+        }
         options.SlidingExpiration = true;
         options.ExpireTimeSpan = TimeSpan.FromDays(1);
 
@@ -99,10 +104,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// Respect X-Forwarded-* headers from Nginx so scheme/remote IP are correct behind the proxy
+// Respect X-Forwarded-* headers from Nginx so scheme/remote IP/host are correct behind the proxy
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost,
+    // In containerized deployments behind Nginx we clear the restrictions
+    // so headers from the reverse proxy are honored.
+    // Ensure only your proxy can send these headers in front of the app.
+    ForwardLimit = null,
+    RequireHeaderSymmetry = false
 });
 
 app.UseHttpsRedirection();
