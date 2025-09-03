@@ -1,4 +1,5 @@
 import { transferImagesToApi } from "@/lib/server-actions/transfer-image-path-to-api";
+import type { Metadata } from "next";
 import { transferBlobToApi } from "@/lib/server-actions/transfer-images-to-api";
 import { transferProjectSkillsToApi } from "@/lib/server-actions/transfer-project-skills-to-api";
 import { transferProjectsToApi } from "@/lib/server-actions/transfer-projects-to-api";
@@ -117,3 +118,14 @@ export default async function DataTransferPage() {
     </main>
   );
 }
+
+export const metadata: Metadata = {
+  title: "Data Transfer",
+  description: "Utility page to synchronize local/imported portfolio data (projects, skills, assets) with the API backend.",
+  robots: { index: false, follow: false },
+  openGraph: {
+    title: "Data Transfer – Admin",
+    description: "Internal utilities for syncing portfolio content.",
+  url: "https://tudor-dev.com/data-transfer"
+  }
+};

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { Metadata } from "next";
 import React from "react";
 import { AvatarWithMessage } from "@/feature-components/contact/avatar-with-message";
 import { ContactInfoCard } from "@/feature-components/contact/contact-info-card";
@@ -41,3 +42,15 @@ export default async function ContactPage({
     </main>
   );
 }
+
+export const metadata: Metadata = {
+  title: "Contact",
+  description:
+    "Get in touch with Tudor Caseru – inquiries about collaboration, engineering roles, or project discussions.",
+  openGraph: {
+    title: "Contact – Tudor Caseru",
+    description:
+      "Reach out for software engineering, full‑stack development, or technical consulting.",
+  url: "https://tudor-dev.com/contact"
+  }
+};

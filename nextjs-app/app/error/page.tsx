@@ -1,3 +1,11 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Error",
+  description: "An error occurred while processing your request.",
+  robots: { index: false }
+};
+
 export default async function ErrorPage({
   params,
 }: {

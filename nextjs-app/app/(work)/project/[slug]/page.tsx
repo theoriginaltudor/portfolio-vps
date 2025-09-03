@@ -1,9 +1,10 @@
 import React from "react";
+import type { Metadata } from "next";
+import { fetchProjectData } from "@/feature-components/work/project-page/hooks/fetch-data";
 
 import { notFound } from "next/navigation";
 import { ProjectImageHeader } from "@/feature-components/work/project-page/project-image-header";
 import { ProjectImageCarousel } from "@/feature-components/work/project-page/project-image-carousel";
-import { fetchProjectData } from "@/feature-components/work/project-page/hooks/fetch-data";
 import { buildImageUrls } from "@/feature-components/work/project-page/hooks/build-urls";
 import { Skills } from "@/feature-components/work/project-page/skills";
 import { ArticleBody } from "@/feature-components/work/project-page/article-body";
@@ -13,6 +14,64 @@ interface ProjectPageProps {
   params: Promise<{
     slug: string;
   }>;
+}
+
+export async function generateMetadata(
+  { params }: ProjectPageProps
+): Promise<Metadata> {
+  const { slug } = await params;
+  if (!slug) {
+    return {
+      title: "Project Not Found",
+      description: "The requested project could not be located."
+    };
+  }
+  try {
+    const { project } = await fetchProjectData(slug);
+    if (!project) {
+      return {
+        title: "Project Not Found",
+        description: "The requested project could not be located."
+      };
+    }
+    const title = project.title || slug;
+    const short = project.description || project.longDescription?.slice(0, 140) || "Project details and implementation notes.";
+    return {
+      title,
+      description: short,
+      openGraph: {
+        title,
+        description: short,
+  url: `https://tudor-dev.com/project/${slug}`,
+        type: "article",
+        images: project.projectAssets?.[0]?.path
+          ? [
+              {
+                url: project.projectAssets[0].path.startsWith("http")
+                  ? project.projectAssets[0].path
+                  : `/api/og?title=${encodeURIComponent(title)}`,
+                width: 1200,
+                height: 630,
+                alt: title
+              }
+            ]
+          : undefined
+      },
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description: short
+      },
+      alternates: {
+        canonical: `/project/${slug}`
+      }
+    };
+  } catch {
+    return {
+      title: slug,
+      description: "Project details."
+    };
+  }
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {

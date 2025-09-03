@@ -1,4 +1,5 @@
 import { apiCall } from "@/lib/utils/api";
+import type { Metadata } from "next";
 import { getImageUrl } from "@/lib/utils/get-url";
 import Image from "next/image";
 
@@ -103,3 +104,14 @@ export default async function CheckTransferPage() {
     </main>
   );
 }
+
+export const metadata: Metadata = {
+  title: "Check Transfer",
+  description: "Diagnostic view for verifying API data integrity and asset linkage.",
+  robots: { index: false, follow: false },
+  openGraph: {
+    title: "Check Transfer – Diagnostics",
+    description: "Inspect synchronized data objects and sample assets.",
+  url: "https://tudor-dev.com/check-transfer"
+  }
+};
