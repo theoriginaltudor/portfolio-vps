@@ -46,8 +46,6 @@ public class ProjectService
     if (existing == null) return null;
     if (project.LongDescription != null)
       existing.LongDescription = project.LongDescription;
-    if (project.Title != null)
-      existing.Title = project.Title;
     if (project.Description != null)
       existing.Description = project.Description;
     if (project.Title != null)
