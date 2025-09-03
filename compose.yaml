@@ -32,7 +32,7 @@ services:
     depends_on:
       - aspnet-api
     environment:
-      SERVER_API_URL: "http://nginx:80"
+      SERVER_API_URL: "http://aspnet-api:8000"
       NODE_ENV: "production"
     restart: always
 
