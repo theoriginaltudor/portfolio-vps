@@ -65,6 +65,14 @@ public class ProjectAssetController : ControllerBase
     return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
   }
 
+  [HttpPost("batch")]
+  [Authorize]
+  public async Task<ActionResult<ProjectAsset[]>> Create(ProjectAsset[] assets)
+  {
+    var created = await _service.CreateAsync(assets);
+    return Created(string.Empty, created);
+  }
+
   [HttpPut("{id}")]
   [Authorize]
   public async Task<IActionResult> Update(int id, ProjectAsset asset)

@@ -29,6 +29,13 @@ public class ProjectAssetService
     return asset;
   }
 
+  public async Task<ProjectAsset[]> CreateAsync(ProjectAsset[] assets)
+  {
+    _context.ProjectAssets.AddRange(assets);
+    await _context.SaveChangesAsync();
+    return assets;
+  }
+
   public async Task<ProjectAsset?> UpdateAsync(ProjectAsset asset)
   {
     var existing = await _context.ProjectAssets.FindAsync(asset.Id);
