@@ -522,9 +522,9 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/json": components["schemas"]["Project"];
-                    "text/json": components["schemas"]["Project"];
-                    "application/*+json": components["schemas"]["Project"];
+                    "application/json": components["schemas"]["ProjectGetDto"];
+                    "text/json": components["schemas"]["ProjectGetDto"];
+                    "application/*+json": components["schemas"]["ProjectGetDto"];
                 };
             };
             responses: {
@@ -714,6 +714,49 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/ProjectAsset/batch": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ProjectAsset"][];
+                    "text/json": components["schemas"]["ProjectAsset"][];
+                    "application/*+json": components["schemas"]["ProjectAsset"][];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ProjectAsset"][];
+                        "application/json": components["schemas"]["ProjectAsset"][];
+                        "text/json": components["schemas"]["ProjectAsset"][];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/ProjectSearch/search": {
         parameters: {
             query?: never;
@@ -798,9 +841,9 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/json": components["schemas"]["ProjectSkill"];
-                    "text/json": components["schemas"]["ProjectSkill"];
-                    "application/*+json": components["schemas"]["ProjectSkill"];
+                    "application/json": components["schemas"]["ProjectSkillGetDto"];
+                    "text/json": components["schemas"]["ProjectSkillGetDto"];
+                    "application/*+json": components["schemas"]["ProjectSkillGetDto"];
                 };
             };
             responses: {
