@@ -18,21 +18,6 @@ services:
       # - ./database/init:/docker-entrypoint-initdb.d:ro
     restart: always
 
-  # aspnet-api:
-  #   build:
-  #     context: ./aspnet-api
-  #   container_name: aspnet_api
-  #   depends_on:
-  #     - postgres
-  #   environment:
-  #     ConnectionStrings__DefaultConnection: "Host=postgres; Port=5432; Database=${POSTGRES_DB}; Username=${POSTGRES_USER}; Password=${POSTGRES_PASSWORD}"
-  #   restart: always
-  #   volumes:
-  #     - ./aspnet-api/images:/app/images
-  #   ports:
-  #     - "8000:5000"
-  #   entrypoint: ["/app/entrypoint.sh"]
-
   nginx:
     image: docker.io/library/nginx:latest
     container_name: nginx_proxy
