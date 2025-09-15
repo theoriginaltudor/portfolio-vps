@@ -35,13 +35,18 @@ jobs:
             --exclude 'aspnet-api/PortfolioBack/obj/' \
             --exclude 'aspnet-api/PortfolioBack/*.dll' \
             compose.yaml portfolio-vps.sln \
-            aspnet-api nextjs-app \
+            aspnet-api nextjs-app nginx \
             ${{ vars.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ vars.DEPLOY_PATH }}
 
       - name: Execute remote commands
         run: |
           ssh ${{ vars.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             cd ${{ vars.DEPLOY_PATH }}
+            # Create SSL directory if it doesn't exist
+            mkdir -p nginx/ssl
+            # Create SSL certificates (add your Cloudflare origin cert content here)
+            echo "${{ secrets.CLOUDFLARE_ORIGIN_CERT }}" > nginx/ssl/cloudflare-origin.crt
+            echo "${{ secrets.CLOUDFLARE_ORIGIN_KEY }}" > nginx/ssl/cloudflare-origin.key
             # Create .env file
             echo "POSTGRES_DB=${{ vars.POSTGRES_DB }}" > .env
             echo "POSTGRES_USER=${{ vars.POSTGRES_USER }}" >> .env
