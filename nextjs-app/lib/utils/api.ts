@@ -79,7 +79,6 @@ export const apiCall = async <TEndpoint extends ApiEndpoint>(
     | (PostMultipartOptions<TEndpoint> & { body?: unknown });
 
   const isGet = !method || method === 'GET';
-  const isDelete = method === 'DELETE';
   const query =
     isGet && options && typeof options === 'object' && 'query' in options
       ? (options as { query?: { fields?: string } }).query
