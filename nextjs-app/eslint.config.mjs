@@ -15,6 +15,7 @@ const eslintConfig = [
   {
     ignores: [
       'node_modules/**',
+      '.pnpm-store/**',
       '.next/**',
       'out/**',
       'dist/**',
