@@ -6,7 +6,6 @@ This repository contains a full-stack portfolio website and API, designed for de
 
 - **ASP.NET Core API (`aspnet-api/PortfolioBack`)**: Serves as the backend for portfolio data, projects, skills, and assets. Uses PostgreSQL (with pgvector) for storage and supports vector search for advanced queries. Provides RESTful endpoints for frontend consumption.
 - **Next.js Frontend (`nextjs-app`)**: A modern, responsive portfolio site built with Next.js, React, TypeScript, Tailwind CSS, and Supabase. Features include an AI-powered chat, project gallery with carousels, contact page, dark mode, and integration with Supabase for data and image storage.
-- **Nginx (`nginx/`)**: Acts as a reverse proxy for the frontend and serves static images directly from a shared volume.
 - **PostgreSQL**: Database service with vector search support for semantic queries.
 
 ## Features
@@ -22,7 +21,8 @@ This repository contains a full-stack portfolio website and API, designed for de
 ## Development & Deployment
 
 ### Prerequisites
-- Docker / Podman
+
+- Docker
 - Node.js & npm (for frontend development)
 - .NET SDK (for backend development)
 
@@ -52,6 +52,7 @@ This repository contains a full-stack portfolio website and API, designed for de
    ```
 
 ### Production Deployment
+
 - Use `compose.yaml` for production orchestration.
 - Nginx reverse proxies requests to Next.js and serves images from `/images/`.
 - Environment variables for database and API connections are required.
@@ -65,19 +66,21 @@ This repository contains a full-stack portfolio website and API, designed for de
 - `/api/data-transfer` – Data transfer operations
 
 ## Tech Stack
+
 - ASP.NET Core, Entity Framework Core, PostgreSQL (pgvector)
 - Next.js, React, TypeScript, Tailwind CSS, Supabase
-- Nginx
 - Docker / Podman Compose
 
 ## Folder Structure
+
 - `aspnet-api/PortfolioBack/` – Backend API
 - `nextjs-app/` – Frontend app
-- `nginx/` – Nginx config
 - `compose.yaml`, `dev.compose.yaml` – Container orchestration
 
 ## License
+
 MIT
 
 ---
+
 For more details, see the individual README files in `nextjs-app/` and backend folders.
