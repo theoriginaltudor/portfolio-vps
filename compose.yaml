@@ -23,9 +23,12 @@ services:
     restart: always
     volumes:
       - ./aspnet-api/images:/app/images
-    ports:
-      - "8000:8000"
     entrypoint: ["/app/entrypoint.sh"]
+    networks:
+      default: {}
+      shared_net:
+        aliases:
+          - api
 
   nextjs-app:
     build:
@@ -37,8 +40,15 @@ services:
       SERVER_API_URL: "http://aspnet-api:8000"
       NODE_ENV: "production"
     restart: always
-    ports:
-      - "3000:3000"
+    networks:
+      default: {}
+      shared_net:
+        aliases:
+          - frontend
 
 volumes:
   pg_data:
+
+networks:
+  shared_net:
+    external: true
