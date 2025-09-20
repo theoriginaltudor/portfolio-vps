@@ -23,3 +23,4 @@
 - [ ] update DB with new table for AI generated questions for the articles that have been embedded, which are connected to the articles table with an id
 - [ ] improve system prompt to know more about you (Romanina, developer, companies I worked at, each project should have a company field and a client field)
 - [ ] to improve static site generation, move the article edit functionality in an admin dashboard
+- [ ] for proxy extraction you need to keep the api in the nginx config so it has the same site origin
