@@ -4,23 +4,20 @@ import { loginUser } from './actions';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { getUser } from '@/lib/utils/server';
+import { PageProps } from '../../.next/types/app/login/page';
 
-export default async function LoginPage({
-  searchParams,
-}: {
-  searchParams: { redirect?: string };
-}) {
+export default async function LoginPage({ searchParams }: PageProps) {
   const user = await getUser();
   if (user) {
     return (
       <div className='flex h-screen flex-col items-center justify-center'>
-        <h1 className='text-2xl font-bold'>
+        <h1 className='fon t-bold text-2xl'>
           You are already logged in! {user.username}
         </h1>
       </div>
     );
   }
-  const redirect = searchParams.redirect;
+  const redirect = (await searchParams).redirect;
   return (
     <div className='flex flex-row gap-10'>
       <form

@@ -1,12 +1,12 @@
-"use client";
-import * as React from "react";
-import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu";
-import { cn } from "@/lib/utils/client";
-import Link from "next/link";
-import { User as UserIcon, LogOut } from "lucide-react";
-import { components } from "@/types/swagger-types";
-import { logoutUser } from "@/app/login/actions";
-import { usePathname } from "next/navigation";
+'use client';
+import * as React from 'react';
+import * as NavigationMenuPrimitive from '@radix-ui/react-navigation-menu';
+import { cn } from '@/lib/utils/client';
+import Link from 'next/link';
+import { LogOut, User as UserIcon } from 'lucide-react';
+import { components } from '@/types/swagger-types';
+import { logoutUser } from '@/app/login/actions';
+import { usePathname } from 'next/navigation';
 
 export const NavigationMenu = ({
   className,
@@ -15,32 +15,32 @@ export const NavigationMenu = ({
 }: {
   className?: string;
   onNavigate?: () => void;
-  user?: components["schemas"]["AuthUserDto"];
+  user?: components['schemas']['AuthUserDto'];
 }) => {
   const pathname = usePathname();
   const logoutWithPath = logoutUser.bind(null, pathname);
   return (
     <NavigationMenuPrimitive.Root
-      className={cn("flex justify-end w-full", className)}
+      className={cn('flex w-full justify-end', className)}
     >
-      <NavigationMenuPrimitive.List className="flex flex-col items-center gap-6 w-full md:flex-row md:gap-8">
+      <NavigationMenuPrimitive.List className='flex w-full flex-col items-center gap-6 md:flex-row md:gap-8'>
         <NavigationMenuPrimitive.Item>
           <NavigationMenuPrimitive.Link asChild>
-            <Link href="/" onClick={onNavigate}>
+            <Link href='/' onClick={onNavigate}>
               Home
             </Link>
           </NavigationMenuPrimitive.Link>
         </NavigationMenuPrimitive.Item>
         <NavigationMenuPrimitive.Item>
           <NavigationMenuPrimitive.Link asChild>
-            <Link href="/projects" onClick={onNavigate}>
+            <Link href='/projects' onClick={onNavigate}>
               Projects
             </Link>
           </NavigationMenuPrimitive.Link>
         </NavigationMenuPrimitive.Item>
         <NavigationMenuPrimitive.Item>
           <NavigationMenuPrimitive.Link asChild>
-            <Link href="/contact" onClick={onNavigate}>
+            <Link href='/contact' onClick={onNavigate}>
               Contact
             </Link>
           </NavigationMenuPrimitive.Link>
@@ -48,15 +48,15 @@ export const NavigationMenu = ({
         {user && (
           <>
             <NavigationMenuPrimitive.Item>
-              <div className="flex flex-row items-center gap-2">
-                <UserIcon /> {user.username ?? "Unknown user"}
+              <div className='flex flex-row items-center gap-2'>
+                <UserIcon /> {user.username ?? 'Unknown user'}
               </div>
             </NavigationMenuPrimitive.Item>
             <NavigationMenuPrimitive.Item>
               <form action={logoutWithPath}>
                 <button
-                  type="submit"
-                  className="flex items-center gap-2 cursor-pointer"
+                  type='submit'
+                  className='flex cursor-pointer items-center gap-2'
                 >
                   <LogOut />
                 </button>

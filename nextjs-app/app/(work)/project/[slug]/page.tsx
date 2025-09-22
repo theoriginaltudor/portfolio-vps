@@ -126,24 +126,20 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         title={project.title ?? 'Untitled Project'}
         id={project.id ?? 0}
         image={imageUrls[0]}
-        edit={editMode}
       />
 
       {skills.length > 0 && (
-        <Skills skills={skills} edit={editMode} articleId={project.id ?? 0} />
+        <Skills skills={skills} articleId={project.id ?? 0} />
       )}
 
       <ArticleBody
         className='mt-8 w-full max-w-2xl px-4 text-base'
-        edit={editMode}
         projectId={project.id ?? 0}
       >
         {project.longDescription ?? 'No description provided.'}
       </ArticleBody>
 
-      {imageUrls.length > 0 && (
-        <ProjectImageCarousel images={imageUrls} edit={editMode} />
-      )}
+      {imageUrls.length > 0 && <ProjectImageCarousel images={imageUrls} />}
 
       {editMode && project.id && <DeleteButton projectId={project.id} />}
     </main>
