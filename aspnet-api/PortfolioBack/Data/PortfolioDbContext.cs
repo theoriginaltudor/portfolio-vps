@@ -15,12 +15,6 @@ public class PortfolioDbContext : DbContext
   public DbSet<ProjectAsset> ProjectAssets { get; set; }
   public DbSet<User> Users { get; set; }
 
-  protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-  {
-    base.OnConfiguring(optionsBuilder);
-    optionsBuilder.UseNpgsql(o => o.UseVector());
-  }
-
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
     base.OnModelCreating(modelBuilder);
