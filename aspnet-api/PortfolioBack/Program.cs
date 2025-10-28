@@ -16,7 +16,6 @@ builder.Services.AddControllers().AddJsonOptions(o =>
     // Prevent cycles from causing serialization errors (e.g., Project -> ProjectAssets -> Project)
     o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
-builder.Services.AddEndpointsApiExplorer();
 
 // Add Entity Framework
 builder.Services.AddDbContext<PortfolioDbContext>(options =>
