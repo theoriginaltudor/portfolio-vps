@@ -30,16 +30,16 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie(options =>
     {
     var isDev = builder.Environment.IsDevelopment();
-        // Paths for interactive flows (adjust to your app's routes)
-        options.LoginPath = "/login";
-        options.AccessDeniedPath = "/access-denied";
+    // Paths for interactive flows (adjust to your app's routes)
+    options.LoginPath = "/login";
+    options.AccessDeniedPath = "/access-denied";
 
-        // Cookie settings
-        options.Cookie.Name = "auth";
+    // Cookie settings
+    options.Cookie.Name = "auth";
     options.Cookie.HttpOnly = true;
     // In Development allow HTTP for local testing; in Production require HTTPS and SameSite=None for cross-site
     options.Cookie.SecurePolicy = isDev ? CookieSecurePolicy.None : CookieSecurePolicy.Always;
-    options.Cookie.SameSite = isDev ? SameSiteMode.Lax : SameSiteMode.None;
+    options.Cookie.SameSite = isDev ? SameSiteMode.Lax : SameSiteMode.None; 
         // In production, share auth across www and apex
         if (!isDev)
         {

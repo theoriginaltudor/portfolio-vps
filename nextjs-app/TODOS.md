@@ -5,7 +5,6 @@
 - [x] add supabase storage for image handling
 - [x] implement retrival augmented generationnto get better results from chat
 - [x] fix files and folders naming to use kebab-case
-- [x] authenticated mode edit text in articles
 - [x] change images to use server images, not supabase
 - [x] change DB queries to own API
 - [x] remove the signup functionality
@@ -13,15 +12,17 @@
 - [x] update data for projects fails
 - [x] auth fails on live
 - [x] auth cookie is deleted when doing any navigation
-- [/] authenticated mode edit pictures in articles
+- [x] for proxy extraction you need to keep the api in the nginx config so it has the same site origin
 - [ ] add theme for the projects on hover and for the article (themes to the syte and apply different themes when hovering)
-- [ ] make a chat page where you can just talk with the LLM, asking questions and it will talk about the data in the articles plus give a link to them
 - [ ] make the avatar in projects route clickable to navigate to the chat page
 - [ ] add Streaming functionality with suspense and use
-- [ ] add rate limiting to the API
 - [ ] update DB with new table for AI generated questions for the articles that have been embedded, which are connected to the articles table with an id
 - [ ] improve system prompt to know more about you (Romanina, developer, companies I worked at, each project should have a company field and a client field)
 - [ ] to improve static site generation, move the article edit functionality in an admin dashboard
-- [ ] for proxy extraction you need to keep the api in the nginx config so it has the same site origin
 - [ ] embeddings generation not working (fails with bad request from server)
 - [ ] add embedding route to middleware with authenticated request
+- [ ] add indexing on slug for DB Project Table for select performance
+- [ ] clear up configurations in PortfolioDbContext and use enityFramework conventions
+- [ ] new article route fails to create new article
+- [ ] use children as props in some cases to optimise rerenders and which components can be server components (pass server components to client components as props) https://kentcdodds.com/blog/optimize-react-re-renders
+- [ ] remove swagger from the backend since it's not needed for OpenAPI specs (update the script for types generation)
