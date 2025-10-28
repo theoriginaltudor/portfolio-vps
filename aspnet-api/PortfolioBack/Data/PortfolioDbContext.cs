@@ -31,11 +31,7 @@ public class PortfolioDbContext : DbContext
     // Configure Project entity
     modelBuilder.Entity<Project>(entity =>
     {
-      entity.HasKey(e => e.Id);
-      entity.Property(e => e.Slug).IsRequired().HasMaxLength(200);
       entity.HasIndex(e => e.Slug).IsUnique();
-      entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
-      entity.Property(e => e.Description).IsRequired().HasMaxLength(500);
       entity.Property(e => e.LongDescription).HasColumnType("text");
       entity.Property(e => e.Embedding).HasColumnType("vector(768)");
       entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
@@ -44,8 +40,6 @@ public class PortfolioDbContext : DbContext
     // Configure Skill entity
     modelBuilder.Entity<Skill>(entity =>
     {
-      entity.HasKey(e => e.Id);
-      entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
       entity.HasIndex(e => e.Name).IsUnique();
       entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
     });
@@ -59,24 +53,18 @@ public class PortfolioDbContext : DbContext
       // Configure relationships
       entity.HasOne(e => e.Project)
         .WithMany(p => p.ProjectSkills)
-                .HasForeignKey(e => e.ProjectId)
                 .OnDelete(DeleteBehavior.Cascade);
 
       entity.HasOne(e => e.Skill)
         .WithMany(s => s.ProjectSkills)
-                .HasForeignKey(e => e.SkillId)
                 .OnDelete(DeleteBehavior.Cascade);
 
       entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-      // Map to table name matching the database
-      entity.ToTable("ProjectSkills");
     });
 
     // Configure ProjectAsset entity
     modelBuilder.Entity<ProjectAsset>(entity =>
     {
-      entity.HasKey(e => e.Id);
       entity.Property(e => e.Path).IsRequired().HasMaxLength(500);
 
       // Configure relationship with Project
@@ -91,12 +79,7 @@ public class PortfolioDbContext : DbContext
     // Configure User entity
     modelBuilder.Entity<User>(entity =>
     {
-      entity.HasKey(e => e.Id);
-      entity.Property(e => e.Username).IsRequired().HasMaxLength(100);
       entity.HasIndex(e => e.Username).IsUnique();
-      entity.Property(e => e.PasswordHash).IsRequired();
-      entity.Property(e => e.PasswordSalt).IsRequired();
-      entity.Property(e => e.PasswordIterations).HasDefaultValue(100000);
       entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
     });
   }

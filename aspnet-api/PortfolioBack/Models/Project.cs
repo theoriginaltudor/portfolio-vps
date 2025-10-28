@@ -31,8 +31,8 @@ public class Project
 
   // Navigation properties
   [JsonIgnore]
-  public ICollection<ProjectSkill> ProjectSkills { get; set; } = new List<ProjectSkill>();
+  public virtual ICollection<ProjectSkill> ProjectSkills { get; set; } = new List<ProjectSkill>();
 
   [JsonIgnore]
-  public ICollection<ProjectAsset> ProjectAssets { get; set; } = new List<ProjectAsset>();
+  public virtual ICollection<ProjectAsset> ProjectAssets { get; set; } = new List<ProjectAsset>();
 }
