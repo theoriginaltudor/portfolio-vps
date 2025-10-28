@@ -21,7 +21,7 @@
 - [ ] to improve static site generation, move the article edit functionality in an admin dashboard
 - [ ] embeddings generation not working (fails with bad request from server)
 - [ ] add embedding route to middleware with authenticated request
-- [ ] add indexing on slug for DB Project Table for select performance
+- [x] add indexing on slug for DB Project Table for select performance
 - [x] clear up configurations in PortfolioDbContext and use Entity Framework conventions
 - [ ] new article route fails to create new article
 - [ ] use children as props in some cases to optimise rerenders and which components can be server components (pass server components to client components as props) https://kentcdodds.com/blog/optimize-react-re-renders
