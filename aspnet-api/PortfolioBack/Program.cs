@@ -1,14 +1,14 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using System.Text.Json.Serialization;
-using System;
 using PortfolioBack.Data;
 using PortfolioBack.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddOpenApi();
 
 // Add services to the container.
 builder.Services.AddControllers().AddJsonOptions(o =>
@@ -17,7 +17,6 @@ builder.Services.AddControllers().AddJsonOptions(o =>
     o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 // Add Entity Framework
 builder.Services.AddDbContext<PortfolioDbContext>(options =>
@@ -100,8 +99,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.MapOpenApi();
 }
 
 // Respect X-Forwarded-* headers from Nginx so scheme/remote IP/host are correct behind the proxy
