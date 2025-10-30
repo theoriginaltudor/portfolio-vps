@@ -23,13 +23,18 @@ public class ProjectController : ControllerBase
   [AllowAnonymous]
   public async Task<ActionResult<IEnumerable<ProjectGetDto>>> GetAll([FromQuery(Name = "fields")] string? fields)
   {
-    var projects = await _service.GetAllAsync();
-    // If no fields provided or no valid keys, return full data
     var requested = string.IsNullOrWhiteSpace(fields)
       ? Array.Empty<string>()
       : fields.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     var valid = DataShapingExtensions.ValidFieldsFor<Project>(requested);
-    if (requested.Length == 0 || valid.Count == 0)
+
+    if (requested.Length > 0 && valid.Count == 0)
+    {
+      return BadRequest("Invalid fields specified.");
+    }
+
+    var projects = await _service.GetAllAsync();
+    if (requested.Length == 0)
     {
       return Ok(projects.ToDto(Array.Empty<string>()));
     }
@@ -45,13 +50,20 @@ public class ProjectController : ControllerBase
   [AllowAnonymous]
   public async Task<ActionResult<ProjectGetDto>> GetBySlug(string slug, [FromQuery(Name = "fields")] string? fields)
   {
-    var project = await _service.GetBySlugAsync(slug);
-    if (project == null) return NotFound();
     var requested = string.IsNullOrWhiteSpace(fields)
       ? Array.Empty<string>()
       : fields.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     var valid = DataShapingExtensions.ValidFieldsFor<Project>(requested);
-    if (requested.Length == 0 || valid.Count == 0)
+
+    if (requested.Length > 0 && valid.Count == 0)
+    {
+      return BadRequest("Invalid fields specified.");
+    }
+
+    var project = await _service.GetBySlugAsync(slug);
+    if (project == null) return NotFound();
+
+    if (requested.Length == 0)
     {
       return Ok(project.ToDto(Array.Empty<string>()));
     }

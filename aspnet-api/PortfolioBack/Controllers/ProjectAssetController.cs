@@ -23,12 +23,18 @@ public class ProjectAssetController : ControllerBase
   [AllowAnonymous]
   public async Task<ActionResult<IEnumerable<ProjectAssetGetDto>>> GetAll([FromQuery(Name = "fields")] string? fields)
   {
-    var assets = await _service.GetAllAsync();
     var requested = string.IsNullOrWhiteSpace(fields)
       ? Array.Empty<string>()
       : fields.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     var valid = DataShapingExtensions.ValidFieldsFor<ProjectAsset>(requested);
-    if (requested.Length == 0 || valid.Count == 0)
+
+    if (requested.Length > 0 && valid.Count == 0)
+    {
+      return BadRequest("Invalid fields specified.");
+    }
+
+    var assets = await _service.GetAllAsync();
+    if (requested.Length == 0)
     {
       return Ok(assets.ToDto(Array.Empty<string>()));
     }
@@ -44,13 +50,20 @@ public class ProjectAssetController : ControllerBase
   [AllowAnonymous]
   public async Task<ActionResult<ProjectAssetGetDto>> GetById(int id, [FromQuery(Name = "fields")] string? fields)
   {
-    var asset = await _service.GetByIdAsync(id);
-    if (asset == null) return NotFound();
     var requested = string.IsNullOrWhiteSpace(fields)
       ? Array.Empty<string>()
       : fields.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     var valid = DataShapingExtensions.ValidFieldsFor<ProjectAsset>(requested);
-    if (requested.Length == 0 || valid.Count == 0)
+
+    if (requested.Length > 0 && valid.Count == 0)
+    {
+      return BadRequest("Invalid fields specified.");
+    }
+
+    var asset = await _service.GetByIdAsync(id);
+    if (asset == null) return NotFound();
+
+    if (requested.Length == 0)
     {
       return Ok(asset.ToDto(Array.Empty<string>()));
     }
