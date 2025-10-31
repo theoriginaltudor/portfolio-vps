@@ -11,6 +11,7 @@ namespace PortfolioBack.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[AutoValidateAntiforgeryToken]
 public class ProjectSkillController : ControllerBase
 {
   private readonly ProjectSkillService _service;
@@ -131,7 +132,6 @@ public class ProjectSkillController : ControllerBase
 
   [HttpPost]
   [Authorize]
-  [ValidateAntiForgeryToken]
   public async Task<ActionResult<ProjectSkill>> Create(ProjectSkillGetDto projectSkill)
   {
     var created = await _service.CreateAsync(projectSkill);
@@ -140,7 +140,6 @@ public class ProjectSkillController : ControllerBase
 
   [HttpPut("{projectId}/{skillId}")]
   [Authorize]
-  [ValidateAntiForgeryToken]
   public async Task<IActionResult> Update(int projectId, int skillId, ProjectSkill projectSkill)
   {
     if (projectId != projectSkill.ProjectId || skillId != projectSkill.SkillId) return BadRequest();
@@ -151,7 +150,6 @@ public class ProjectSkillController : ControllerBase
 
   [HttpDelete("{projectId}/{skillId}")]
   [Authorize]
-  [ValidateAntiForgeryToken]
   public async Task<IActionResult> Delete(int projectId, int skillId)
   {
     var deleted = await _service.DeleteAsync(projectId, skillId);

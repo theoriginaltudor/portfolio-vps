@@ -88,7 +88,6 @@ public class LoginController : ControllerBase
 
   [HttpGet("me")]
   [Authorize]
-  [ValidateAntiForgeryToken]
   public ActionResult<AuthUserDto> Me()
   {
     var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
