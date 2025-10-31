@@ -7,3 +7,4 @@ aspnet-api/images
 aspnet-api/PortfolioBack/bin/
 aspnet-api/PortfolioBack/obj/
 aspnet-api/PortfolioBack/*.dll
+.vscode/
