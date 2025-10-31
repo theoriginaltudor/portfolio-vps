@@ -7,6 +7,7 @@ namespace PortfolioBack.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
+[ValidateAntiForgeryToken]
 public class DataTransferController : ControllerBase
 {
   private readonly DataTransferService _dataTransferService;

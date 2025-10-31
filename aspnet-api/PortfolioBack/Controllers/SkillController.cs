@@ -73,6 +73,7 @@ public class SkillController : ControllerBase
 
   [HttpPost]
   [Authorize]
+  [ValidateAntiForgeryToken]
   public async Task<ActionResult<Skill>> Create(Skill skill)
   {
     var created = await _service.CreateAsync(skill);
@@ -81,6 +82,7 @@ public class SkillController : ControllerBase
 
   [HttpPut("{id}")]
   [Authorize]
+  [ValidateAntiForgeryToken]
   public async Task<IActionResult> Update(int id, Skill skill)
   {
     if (id != skill.Id) return BadRequest();
@@ -91,6 +93,7 @@ public class SkillController : ControllerBase
 
   [HttpDelete("{id}")]
   [Authorize]
+  [ValidateAntiForgeryToken]
   public async Task<IActionResult> Delete(int id)
   {
     var deleted = await _service.DeleteAsync(id);

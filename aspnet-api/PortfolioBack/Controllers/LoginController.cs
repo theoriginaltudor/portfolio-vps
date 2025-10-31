@@ -8,6 +8,7 @@ using PortfolioBack.DTOs;
 using PortfolioBack.Models;
 using PortfolioBack.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Antiforgery;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -15,35 +16,42 @@ public class LoginController : ControllerBase
 {
   private readonly PortfolioDbContext _db;
   private readonly IPasswordHasher _hasher;
+  private readonly IAntiforgery _antiforgery;
 
-  public LoginController(PortfolioDbContext db, IPasswordHasher hasher)
+  public LoginController(PortfolioDbContext db, IPasswordHasher hasher, IAntiforgery antiforgery)
   {
     _db = db;
     _hasher = hasher;
+    _antiforgery = antiforgery;
   }
 
-  [HttpPost("signup")]
-  [AllowAnonymous]
-  public async Task<ActionResult<AuthUserDto>> Signup([FromBody] SignupRequestDto request)
-  {
-    var username = request.Username.Trim();
-    var exists = await _db.Users.AnyAsync(u => u.Username == username);
-    if (exists) return Conflict(new { message = "Username already exists" });
+  // [HttpPost("signup")]
+  // [AllowAnonymous]
+  // public async Task<ActionResult<AuthUserDto>> Signup([FromBody] SignupRequestDto request)
+  // {
+  //   var username = request.Username.Trim();
+  //   var exists = await _db.Users.AnyAsync(u => u.Username == username);
+  //   if (exists) return Conflict(new { message = "Username already exists" });
 
-    var (hash, salt, iterations) = _hasher.HashPassword(request.Password);
-    var user = new User
-    {
-      Username = username,
-      PasswordHash = hash,
-      PasswordSalt = salt,
-      PasswordIterations = iterations
-    };
-    _db.Users.Add(user);
-    await _db.SaveChangesAsync();
+  //   var (hash, salt, iterations) = _hasher.HashPassword(request.Password);
+  //   var user = new User
+  //   {
+  //     Username = username,
+  //     PasswordHash = hash,
+  //     PasswordSalt = salt,
+  //     PasswordIterations = iterations
+  //   };
+  //   _db.Users.Add(user);
+  //   await _db.SaveChangesAsync();
 
-    await SignInUserAsync(user);
-    return Ok(new AuthUserDto(user.Id, user.Username));
-  }
+  //   await SignInUserAsync(user);
+  //   var token = _antiforgery.GetAndStoreTokens(HttpContext);
+  //   return Ok(new AuthUserDto {
+  //     Id = user.Id,
+  //     Username = user.Username,
+  //     AntiforgeryToken = token.RequestToken!
+  //   });
+  // }
 
   [HttpPost("login")]
   [AllowAnonymous]
@@ -61,11 +69,17 @@ public class LoginController : ControllerBase
     if (!valid) return Unauthorized(new { message = "Invalid credentials" });
 
     await SignInUserAsync(user);
-    return Ok(new AuthUserDto(user.Id, user.Username));
+    var token = _antiforgery.GetAndStoreTokens(HttpContext);
+    return Ok(new AuthUserDto {
+      Id = user.Id,
+      Username = user.Username,
+      AntiforgeryToken = token.RequestToken!
+    });
   }
 
   [HttpPost("logout")]
   [Authorize]
+  [ValidateAntiForgeryToken]
   public async Task<IActionResult> Logout()
   {
     await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -74,12 +88,17 @@ public class LoginController : ControllerBase
 
   [HttpGet("me")]
   [Authorize]
+  [ValidateAntiForgeryToken]
   public ActionResult<AuthUserDto> Me()
   {
     var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
     var name = User.Identity?.Name ?? User.FindFirstValue(ClaimTypes.Name) ?? string.Empty;
     if (string.IsNullOrEmpty(id)) return Unauthorized();
-    return Ok(new AuthUserDto(int.Parse(id), name));
+    return Ok(new AuthUserDto
+    {
+      Id = int.Parse(id),
+      Username = name
+    });
   }
 
   private async Task SignInUserAsync(User user)

@@ -72,6 +72,7 @@ public class ProjectController : ControllerBase
 
   [HttpPost]
   [Authorize]
+  [ValidateAntiForgeryToken]
   public async Task<ActionResult<Project>> Create(Project project)
   {
     var created = await _service.CreateAsync(project);
@@ -80,6 +81,7 @@ public class ProjectController : ControllerBase
 
   [HttpPut("{id}")]
   [Authorize]
+  [ValidateAntiForgeryToken]
   public async Task<IActionResult> Update(int id, ProjectGetDto project)
   {
     if (id != project.Id) return BadRequest();
@@ -90,6 +92,7 @@ public class ProjectController : ControllerBase
 
   [HttpDelete("{id}")]
   [Authorize]
+  [ValidateAntiForgeryToken]
   public async Task<IActionResult> Delete(int id)
   {
     var deleted = await _service.DeleteAsync(id);

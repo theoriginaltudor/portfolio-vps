@@ -72,6 +72,7 @@ public class ProjectAssetController : ControllerBase
 
   [HttpPost]
   [Authorize]
+  [ValidateAntiForgeryToken]
   public async Task<ActionResult<ProjectAsset>> Create(ProjectAsset asset)
   {
     var created = await _service.CreateAsync(asset);
@@ -80,6 +81,7 @@ public class ProjectAssetController : ControllerBase
 
   [HttpPost("batch")]
   [Authorize]
+  [ValidateAntiForgeryToken]
   public async Task<ActionResult<ProjectAsset[]>> Create(ProjectAsset[] assets)
   {
     var created = await _service.CreateAsync(assets);
@@ -88,6 +90,7 @@ public class ProjectAssetController : ControllerBase
 
   [HttpPut("{id}")]
   [Authorize]
+  [ValidateAntiForgeryToken]
   public async Task<IActionResult> Update(int id, ProjectAsset asset)
   {
     if (id != asset.Id) return BadRequest();
@@ -98,6 +101,7 @@ public class ProjectAssetController : ControllerBase
 
   [HttpDelete("{id}")]
   [Authorize]
+  [ValidateAntiForgeryToken]
   public async Task<IActionResult> Delete(int id)
   {
     var deleted = await _service.DeleteAsync(id);

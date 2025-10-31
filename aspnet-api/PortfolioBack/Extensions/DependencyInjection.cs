@@ -65,6 +65,10 @@ public static class DependencyInjection
             });
 
         services.AddAuthorization();
+        services.AddAntiforgery(options => {
+            options.HeaderName = "X-XSRF-TOKEN";
+        });
+
         return services;
     }
     
