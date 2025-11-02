@@ -1,6 +1,10 @@
 using System;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using PortfolioBack.Services;
+using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
+using PortfolioBack.Data;
+using Microsoft.AspNetCore.Mvc;
 
 namespace PortfolioBack.Extensions;
 
@@ -65,13 +69,14 @@ public static class DependencyInjection
             });
 
         services.AddAuthorization();
-        services.AddAntiforgery(options => {
+        services.AddAntiforgery(options =>
+        {
             options.HeaderName = "X-XSRF-TOKEN";
         });
 
         return services;
     }
-    
+
     public static IServiceCollection AddCustom(this IServiceCollection services)
     {
         services.AddScoped<IProjectSearchService, ProjectSearchService>();
@@ -81,7 +86,28 @@ public static class DependencyInjection
         services.AddScoped<ProjectAssetService>();
         services.AddScoped<ProjectSkillService>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
-        
+
+        return services;
+    }
+
+    public static IServiceCollection AddSetup(this IServiceCollection services, string? connectionString)
+    {
+        services.AddOpenApi();
+
+        // Add services to the container. (has to be view controller for antiforgery attributes on controllers to work)
+        services.AddControllersWithViews(options =>
+        {
+            options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+        }).AddJsonOptions(o =>
+        {
+            // Prevent cycles from causing serialization errors (e.g., Project -> ProjectAssets -> Project)
+            o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        });
+
+        // Add Entity Framework
+        services.AddDbContext<PortfolioDbContext>(options =>
+            options.UseNpgsql(connectionString,
+                o => o.UseVector()));
         return services;
     }
 }
