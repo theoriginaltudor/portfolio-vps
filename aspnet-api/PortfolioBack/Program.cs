@@ -1,16 +1,19 @@
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.HttpOverrides;
 using System.Text.Json.Serialization;
 using PortfolioBack.Data;
 using PortfolioBack.Extensions;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 
-// Add services to the container.
-builder.Services.AddControllers().AddJsonOptions(o =>
+// Add services to the container. (has to be view controller for antiforgery attributes on controllers to work)
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+}).AddJsonOptions(o =>
 {
     // Prevent cycles from causing serialization errors (e.g., Project -> ProjectAssets -> Project)
     o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
@@ -34,17 +37,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-// Respect X-Forwarded-* headers from Nginx so scheme/remote IP/host are correct behind the proxy
-var fwd = new ForwardedHeadersOptions
-{
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost,
-    ForwardLimit = null,
-    RequireHeaderSymmetry = false
-};
-// Trust all proxies/networks inside the Docker network
-fwd.KnownNetworks.Clear();
-fwd.KnownProxies.Clear();
-app.UseForwardedHeaders(fwd);
+app.UseForwarded();
 
 // Don't force HTTPS here; TLS terminates at Nginx/Cloudflare.
 // If Forwarded Proto is honored, downstream will already appear as https.
