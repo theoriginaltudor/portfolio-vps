@@ -14,7 +14,7 @@ using System.IdentityModel.Tokens.Jwt;
 
 [ApiController]
 [Route("api/[controller]")]
-public class LoginController(PortfolioDbContext db, IPasswordHasher hasher, IConfigurationManager configurationManager) : ControllerBase
+public class LoginController(PortfolioDbContext db, IPasswordHasher hasher, IConfiguration configuration) : ControllerBase
 {
 
   // [HttpPost("signup")]
@@ -59,7 +59,7 @@ public class LoginController(PortfolioDbContext db, IPasswordHasher hasher, ICon
     var valid = hasher.Verify(request.Password, user.PasswordHash, user.PasswordSalt, user.PasswordIterations);
     if (!valid) return Unauthorized(new { message = "Invalid credentials" });
 
-    var token = CreateToken(user, configurationManager);
+    var token = CreateToken(user, configuration);
     return Ok(new AuthUserDto
     {
       Id = user.Id,
@@ -91,7 +91,7 @@ public class LoginController(PortfolioDbContext db, IPasswordHasher hasher, ICon
     });
   }
 
-  private string CreateToken(User user, IConfigurationManager configuration)
+  private string CreateToken(User user, IConfiguration configuration)
   {
     var claims = new List<Claim>
     {

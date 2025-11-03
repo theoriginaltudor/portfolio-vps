@@ -38,7 +38,6 @@ public static class DependencyInjection
     public static IServiceCollection AddSetup(this IServiceCollection services, string? connectionString)
     {
         services.AddOpenApi();
-        services.AddScoped<IConfigurationManager, ConfigurationManager>();
 
         // Add services to the container. (has to be view controller for antiforgery attributes on controllers to work)
         services.AddControllers().AddJsonOptions(o =>
