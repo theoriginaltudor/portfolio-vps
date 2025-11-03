@@ -102,10 +102,11 @@ public class LoginController(PortfolioDbContext db, IPasswordHasher hasher, ICon
     var jwtKey = configuration.GetValue<string>("Jwt:Key");
     var jwtIssuer = configuration.GetValue<string>("Jwt:Issuer");
     var jwtAudience = configuration.GetValue<string>("Jwt:Audience");
+    var jwtExpMinutes = configuration.GetValue<string>("Jwt:AccessTokenExpirationMinutes");
 
     if (new List<string?>
     {
-        jwtAudience, jwtIssuer, jwtKey
+        jwtAudience, jwtIssuer, jwtKey, jwtExpMinutes
     }.Any(s => s == null))
     { throw new NullReferenceException("Jwt settings are missing"); }
 
@@ -113,11 +114,16 @@ public class LoginController(PortfolioDbContext db, IPasswordHasher hasher, ICon
 
     var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
+    int minutes;
+    if (!Int32.TryParse(jwtExpMinutes, out minutes))
+    {
+      minutes = 30;
+    }
     var tokenDescriptor = new JwtSecurityToken(
       issuer: jwtIssuer,
       audience: jwtAudience,
       claims: claims,
-      expires: DateTime.UtcNow.AddDays(1),
+      expires: DateTime.UtcNow.AddMinutes(minutes),
       signingCredentials: credentials);
 
     return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
