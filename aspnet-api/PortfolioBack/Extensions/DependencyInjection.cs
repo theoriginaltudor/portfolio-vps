@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using PortfolioBack.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace PortfolioBack.Extensions;
 
@@ -13,8 +15,16 @@ public static class DependencyInjection
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
-                options.Authority = $"https://{configuration.GetValue<string>("Jwt:Issuer")}";
-                options.Audience = $"https://{configuration.GetValue<string>("Jwt:Audience")}";
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = configuration.GetValue<string>("Jwt:Issuer"),
+                    ValidateAudience = true,
+                    ValidAudience = configuration.GetValue<string>("Jwt:Audience"),
+                    ValidateLifetime = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetValue<string>("Jwt:Key")!)),
+                    ValidateIssuerSigningKey = true
+                };
             });
 
         services.AddAuthorization();
@@ -26,6 +36,7 @@ public static class DependencyInjection
     {
         services.AddScoped<IProjectSearchService, ProjectSearchService>();
         services.AddScoped<DataTransferService>();
+        services.AddScoped<LoginService>();
         services.AddScoped<ProjectService>();
         services.AddScoped<SkillService>();
         services.AddScoped<ProjectAssetService>();
