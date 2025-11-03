@@ -5,9 +5,13 @@ meta {
 }
 
 get {
-  url: http://localhost:8000/api/Project/:slug
+  url: http://localhost:8000/api/Project/:slug?filter=slug,title
   body: none
   auth: inherit
+}
+
+params:query {
+  filter: slug,title
 }
 
 params:path {
@@ -16,4 +20,5 @@ params:path {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }
