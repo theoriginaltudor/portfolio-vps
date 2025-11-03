@@ -8,12 +8,13 @@ namespace PortfolioBack.Extensions;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddAuth(this IServiceCollection services, IWebHostEnvironment environment)
+    public static IServiceCollection AddAuth(this IServiceCollection services, IConfigurationManager configuration)
     {
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
-
+                options.Authority = $"https://{configuration.GetValue<string>("Jwt:Issuer")}";
+                options.Audience = $"https://{configuration.GetValue<string>("Jwt:Audience")}";
             });
 
         services.AddAuthorization();
@@ -37,6 +38,7 @@ public static class DependencyInjection
     public static IServiceCollection AddSetup(this IServiceCollection services, string? connectionString)
     {
         services.AddOpenApi();
+        services.AddScoped<IConfigurationManager, ConfigurationManager>();
 
         // Add services to the container. (has to be view controller for antiforgery attributes on controllers to work)
         services.AddControllers().AddJsonOptions(o =>

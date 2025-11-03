@@ -4,7 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSetup(builder.Configuration.GetConnectionString("DefaultConnection"));
 
-builder.Services.AddAuth(builder.Environment);
+builder.Services.AddAuth(builder.Configuration);
 
 // Add custom services
 builder.Services.AddCustom();
