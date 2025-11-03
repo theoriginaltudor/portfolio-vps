@@ -11,7 +11,6 @@ namespace PortfolioBack.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[AutoValidateAntiforgeryToken]
 public class ProjectSkillController : ControllerBase
 {
   private readonly ProjectSkillService _service;

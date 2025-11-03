@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 
 [ApiController]
 [Route("api/[controller]")]
-[AutoValidateAntiforgeryToken]
 public class SkillController : ControllerBase
 {
   private readonly SkillService _service;

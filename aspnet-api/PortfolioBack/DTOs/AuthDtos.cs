@@ -12,8 +12,9 @@ public record LoginRequestDto(
   [param: Required] string Password
 );
 
-public class AuthUserDto{
-  public int Id {get; set; }
-  public string Username {get; set; } = null!;
-  public string? AntiforgeryToken { get; set; }
+public class AuthUserDto
+{
+  public int Id { get; set; }
+  public string Username { get; set; } = null!;
+  public string? Token { get; set; }
 };

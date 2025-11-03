@@ -45,11 +45,9 @@ public class LoginController : ControllerBase
   //   await _db.SaveChangesAsync();
 
   //   await SignInUserAsync(user);
-  //   var token = _antiforgery.GetAndStoreTokens(HttpContext);
   //   return Ok(new AuthUserDto {
   //     Id = user.Id,
   //     Username = user.Username,
-  //     AntiforgeryToken = token.RequestToken!
   //   });
   // }
 
@@ -69,11 +67,10 @@ public class LoginController : ControllerBase
     if (!valid) return Unauthorized(new { message = "Invalid credentials" });
 
     await SignInUserAsync(user);
-    var token = _antiforgery.GetAndStoreTokens(HttpContext);
-    return Ok(new AuthUserDto {
+    return Ok(new AuthUserDto
+    {
       Id = user.Id,
       Username = user.Username,
-      AntiforgeryToken = token.RequestToken!
     });
   }
 

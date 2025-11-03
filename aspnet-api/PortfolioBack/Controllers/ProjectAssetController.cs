@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 
 [ApiController]
 [Route("api/[controller]")]
-[AutoValidateAntiforgeryToken]
 public class ProjectAssetController : ControllerBase
 {
   private readonly ProjectAssetService _service;

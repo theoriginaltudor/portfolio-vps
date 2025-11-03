@@ -69,10 +69,6 @@ public static class DependencyInjection
             });
 
         services.AddAuthorization();
-        services.AddAntiforgery(options =>
-        {
-            options.HeaderName = "X-XSRF-TOKEN";
-        });
 
         return services;
     }
@@ -95,10 +91,7 @@ public static class DependencyInjection
         services.AddOpenApi();
 
         // Add services to the container. (has to be view controller for antiforgery attributes on controllers to work)
-        services.AddControllersWithViews(options =>
-        {
-            options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-        }).AddJsonOptions(o =>
+        services.AddControllers().AddJsonOptions(o =>
         {
             // Prevent cycles from causing serialization errors (e.g., Project -> ProjectAssets -> Project)
             o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
