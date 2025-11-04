@@ -1,0 +1,16 @@
+meta {
+  name: Refresh token
+  type: http
+  seq: 3
+}
+
+get {
+  url: http://localhost:8000/api/Login/refresh
+  body: none
+  auth: none
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

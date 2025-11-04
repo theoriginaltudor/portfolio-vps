@@ -6,6 +6,7 @@ using System.Security.Claims;
 using PortfolioBack.DTOs;
 using PortfolioBack.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Runtime.InteropServices.JavaScript;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -66,11 +67,11 @@ public class LoginController(LoginService loginService, IConfiguration configura
 
   [HttpGet("refresh")]
   [AllowAnonymous]
-  public async Task<ActionResult<string>> Refresh()
+  public async Task<ActionResult<object>> Refresh()
   {
     var refreshToken = Request.Cookies.FirstOrDefault(cookie => string.Equals(cookie.Key, "RefreshToken"));
-    var accessToken = loginService.RefreshToken(refreshToken.Value);
+    var accessToken = await loginService.RefreshToken(refreshToken.Value);
     if (accessToken is null) return BadRequest();
-    return Ok(accessToken);
+    return Ok(new { Token = accessToken });
   }
 }
