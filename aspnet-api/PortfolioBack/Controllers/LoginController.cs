@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 [ApiController]
 [Route("api/[controller]")]
-public class LoginController(LoginService loginService) : ControllerBase
+public class LoginController(LoginService loginService, IConfiguration configuration) : ControllerBase
 {
   // [HttpPost("signup")]
   // [AllowAnonymous]
@@ -30,6 +30,14 @@ public class LoginController(LoginService loginService) : ControllerBase
       await Task.Delay(Random.Shared.Next(50, 150)); // timing noise
       return Unauthorized(new { message = "Invalid credentials" });
     }
+    Int32.TryParse(configuration.GetValue<string>("Jwt:RefreshTokenExpirationDays"), out int days);
+    Response.Cookies.Append("RefreshToken", authUserDto.RefreshToken!, new CookieOptions
+    {
+      HttpOnly = true,
+      Secure = true,
+      SameSite = SameSiteMode.Strict,
+      Expires = DateTime.UtcNow.AddDays(days)
+    });
     return Ok(authUserDto);
   }
 
@@ -55,5 +63,13 @@ public class LoginController(LoginService loginService) : ControllerBase
     });
   }
 
-
+  [HttpGet("refresh")]
+  [AllowAnonymous]
+  public async Task<ActionResult<string>> Refresh()
+  {
+    var refreshToken = Request.Cookies.FirstOrDefault(cookie => string.Equals(cookie.Key, "RefreshToken"));
+    var accessToken = loginService.RefreshToken(refreshToken.Value);
+    if (accessToken is null) return BadRequest();
+    return Ok(accessToken);
+  }
 }
