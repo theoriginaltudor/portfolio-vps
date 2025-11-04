@@ -38,6 +38,7 @@ public class LoginController(LoginService loginService, IConfiguration configura
       SameSite = SameSiteMode.Strict,
       Expires = DateTime.UtcNow.AddDays(days)
     });
+    authUserDto.RefreshToken = null;
     return Ok(authUserDto);
   }
 
