@@ -32,7 +32,7 @@ public class LoginController(LoginService loginService, IConfiguration configura
       return Unauthorized(new { message = "Invalid credentials" });
     }
     Int32.TryParse(configuration.GetValue<string>("Jwt:RefreshTokenExpirationDays"), out int days);
-    Response.Cookies.Append("RefreshToken", authUserDto.RefreshToken!, new CookieOptions
+    Response.Cookies.Append("auth", authUserDto.RefreshToken!, new CookieOptions
     {
       HttpOnly = true,
       Secure = true,
@@ -69,7 +69,7 @@ public class LoginController(LoginService loginService, IConfiguration configura
   [AllowAnonymous]
   public async Task<ActionResult<object>> Refresh()
   {
-    var refreshToken = Request.Cookies.FirstOrDefault(cookie => string.Equals(cookie.Key, "RefreshToken"));
+    var refreshToken = Request.Cookies.FirstOrDefault(cookie => string.Equals(cookie.Key, "auth"));
     var accessToken = await loginService.RefreshToken(refreshToken.Value);
     if (accessToken is null) return BadRequest();
     return Ok(new { Token = accessToken });
