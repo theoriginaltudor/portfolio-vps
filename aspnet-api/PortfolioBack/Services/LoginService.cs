@@ -62,7 +62,22 @@ public class LoginService(PortfolioDbContext db, IPasswordHasher hasher, IConfig
 
     public async Task<string?> RefreshToken(string refreshToken)
     {
-        var valid = await new JwtSecurityTokenHandler().ValidateTokenAsync(refreshToken, new TokenValidationParameters());
+        var jwtRefreshKey = configuration.GetValue<string>("Jwt:RefreshKey");
+        var jwtIssuer = configuration.GetValue<string>("Jwt:Issuer");
+        var jwtAudience = configuration.GetValue<string>("Jwt:Audience");
+
+        var validationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtRefreshKey!)),
+            ValidateIssuer = true,
+            ValidIssuer = jwtIssuer,
+            ValidateAudience = true,
+            ValidAudience = jwtAudience,
+            ValidateLifetime = true,
+        };
+        var valid = await new JwtSecurityTokenHandler().ValidateTokenAsync(refreshToken, validationParameters);
+
         if (valid is null || !valid.IsValid) return null;
         var token = new JwtSecurityTokenHandler().ReadJwtToken(refreshToken);
         if (token is null)
@@ -70,9 +85,11 @@ public class LoginService(PortfolioDbContext db, IPasswordHasher hasher, IConfig
             return null;
         }
 
-        var tokenUsername = token.Claims.FirstOrDefault<Claim>(c => string.Equals(c.Type, ClaimTypes.Name));
+        var claimUsername = token.Claims.FirstOrDefault<Claim>(c => string.Equals(c.Type, ClaimTypes.Name));
 
-        var user = await db.Users.FirstOrDefaultAsync<User>(u => string.Equals(u.Username, tokenUsername));
+        if (claimUsername is null) return null;
+
+        var user = await db.Users.FirstOrDefaultAsync<User>(u => string.Equals(u.Username, claimUsername.Value));
 
         if (user is null) return null;
 

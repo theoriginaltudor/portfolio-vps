@@ -51,7 +51,7 @@ public class LoginController(LoginService loginService, IConfiguration configura
   [Authorize]
   public async Task<IActionResult> Logout()
   {
-    await HttpContext.SignOutAsync(JwtBearerDefaults.AuthenticationScheme);
+    Response.Cookies.Delete("auth");
     return NoContent();
   }
 
