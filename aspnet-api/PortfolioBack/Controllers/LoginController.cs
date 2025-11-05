@@ -32,13 +32,17 @@ public class LoginController(LoginService loginService, IConfiguration configura
       return Unauthorized(new { message = "Invalid credentials" });
     }
     Int32.TryParse(configuration.GetValue<string>("Jwt:RefreshTokenExpirationDays"), out int days);
-    Response.Cookies.Append("auth", authUserDto.RefreshToken!, new CookieOptions
+    var options = new CookieOptions
     {
       HttpOnly = true,
       Secure = true,
       SameSite = SameSiteMode.Strict,
       Expires = DateTime.UtcNow.AddDays(days)
-    });
+    };
+
+    // check if production and add Domain to cookie options
+
+    Response.Cookies.Append("auth", authUserDto.RefreshToken!, options);
     authUserDto.RefreshToken = null;
     return Ok(authUserDto);
   }
