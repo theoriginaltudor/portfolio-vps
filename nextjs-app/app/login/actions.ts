@@ -73,25 +73,25 @@ export async function loginUser(formData: FormData) {
   await completeAuthFlow(response, redirectTo ?? '/');
 }
 
-export async function registerUser(formData: FormData) {
-  const username = formData.get('username') as string | null;
-  const password = formData.get('password') as string | null;
+// export async function registerUser(formData: FormData) {
+//   const username = formData.get('username') as string | null;
+//   const password = formData.get('password') as string | null;
 
-  if (!username || !password) {
-    redirect('/error?reason=missing-fields');
-  }
+//   if (!username || !password) {
+//     redirect('/error?reason=missing-fields');
+//   }
 
-  const { error, response } = await authApiCall('/api/Login/signup', {
-    method: 'POST',
-    body: { username, password },
-  });
+//   const { error, response } = await authApiCall('/api/Login/signup', {
+//     method: 'POST',
+//     body: { username, password },
+//   });
 
-  if (error) {
-    redirect('/error');
-  }
+//   if (error) {
+//     redirect('/error');
+//   }
 
-  await completeAuthFlow(response);
-}
+//   await completeAuthFlow(response);
+// }
 
 export async function logoutUser(pathname: string) {
   const { error, response } = await authApiCall('/api/Login/logout', {

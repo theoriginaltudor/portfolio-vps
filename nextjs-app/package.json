@@ -12,7 +12,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "type-check": "tsc --noEmit",
-    "generate-types": "npx openapi-typescript http://localhost:8000/openapi/v1.json --output ./types/swagger-types.ts",
+    "generate-types": "pnpx openapi-typescript http://localhost:8000/openapi/v1.json --output ./types/swagger-types.ts",
     "generate-supabase-types": "supabase gen types typescript --project-id gqweweuqqlxttuuxhmyi --schema public > types/database.types.ts"
   },
   "dependencies": {
