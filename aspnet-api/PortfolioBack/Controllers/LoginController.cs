@@ -31,7 +31,7 @@ public class LoginController(LoginService loginService, IConfiguration configura
       await Task.Delay(Random.Shared.Next(50, 150)); // timing noise
       return Unauthorized(new { message = "Invalid credentials" });
     }
-    Int32.TryParse(configuration.GetValue<string>("Jwt:RefreshTokenExpirationDays"), out int days);
+    int.TryParse(configuration.GetValue<string>("Jwt:RefreshTokenExpirationDays"), out int days);
     var options = new CookieOptions
     {
       HttpOnly = true,
