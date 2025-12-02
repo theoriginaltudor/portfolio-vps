@@ -1,6 +1,6 @@
-import { getApiUrl } from "./get-url";
-import { cookies } from "next/headers";
-import { paths } from "@/types/swagger-types";
+import { getApiUrl } from './get-url';
+import { getAccessToken, getAuthCookie } from './get-token';
+import { paths } from '@/types/swagger-types';
 
 // Type to filter paths that contain "/Login"
 export type AuthEndpoint = {
@@ -11,35 +11,33 @@ export type AuthEndpoint = {
 export const authApiCall = async (
   endpoint: AuthEndpoint,
   options?: {
-    method?: "GET" | "POST";
+    method?: 'GET' | 'POST';
     body?: { username: string; password: string };
     headers?: Record<string, string>;
   }
 ) => {
   const url = getApiUrl(endpoint);
-  
+
   try {
-    // Get auth cookie for authenticated requests
-    let authCookie = null;
-    try {
-      const cookieStore = await cookies();
-      authCookie = cookieStore.get("auth");
-    } catch {
-      // cookies() might not be available in all contexts
-    }
-    
+    const token = await getAccessToken();
+
+    const authCookie = await getAuthCookie();
+
     const requestOptions: RequestInit = {
-      method: options?.method || "POST",
+      method: options?.method || 'POST',
       credentials: 'include',
       headers: {
-        Accept: "application/json",
-        ...(options?.method !== "GET" && { "Content-Type": "application/json" }),
+        Accept: 'application/json',
+        ...(options?.method !== 'GET' && {
+          'Content-Type': 'application/json',
+        }),
+        ...(token && { Authorization: `Bearer ${token}` }),
         ...(authCookie && { Cookie: `auth=${authCookie.value}` }),
         ...options?.headers,
       },
     };
 
-    if (options?.body && options.method !== "GET") {
+    if (options?.body && options.method !== 'GET') {
       requestOptions.body = JSON.stringify(options.body);
     }
 
@@ -55,15 +53,15 @@ export const authApiCall = async (
 
     // Return response for cookie handling
     const data = response.status !== 204 ? await response.json() : null;
-    return { 
-      ok: true as const, 
-      data, 
-      response 
+    return {
+      ok: true as const,
+      data,
+      response,
     };
   } catch (error) {
     return {
       ok: false as const,
-      error: `${error instanceof Error ? error.message : "Unknown error"}`,
+      error: `${error instanceof Error ? error.message : 'Unknown error'}`,
       status: 0,
     };
   }

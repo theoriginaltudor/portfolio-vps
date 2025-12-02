@@ -17,5 +17,5 @@ public class Skill
 
   // Navigation properties
   [JsonIgnore]
-  public ICollection<ProjectSkill> ProjectSkills { get; set; } = new List<ProjectSkill>();
+  public virtual ICollection<ProjectSkill> ProjectSkills { get; set; } = new List<ProjectSkill>();
 }

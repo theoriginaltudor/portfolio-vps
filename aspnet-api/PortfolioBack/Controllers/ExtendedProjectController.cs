@@ -25,16 +25,20 @@ public class ExtendedProjectController : ControllerBase
   [HttpGet("{slug}")]
   public async Task<ActionResult<ExtendedProjectGetDto>> GetBySlug(string slug, [FromQuery(Name = "fields")] string? fields)
   {
-    var project = await _projectService.GetBySlugWithRelationsAsync(slug);
-    if (project == null) return NotFound();
-
     var requested = string.IsNullOrWhiteSpace(fields)
       ? Array.Empty<string>()
       : fields.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     var valid = DataShapingExtensions.ValidFieldsFor<Project>(requested);
 
-    // If no fields provided or none valid, return full base project fields plus related collections
-    if (requested.Length == 0 || valid.Count == 0)
+    if (requested.Length > 0 && valid.Count == 0)
+    {
+      return BadRequest("Invalid fields specified.");
+    }
+
+    var project = await _projectService.GetBySlugWithRelationsAsync(slug);
+    if (project == null) return NotFound();
+
+    if (requested.Length == 0)
     {
       return Ok(project.ToExtendedDto(Array.Empty<string>()));
     }

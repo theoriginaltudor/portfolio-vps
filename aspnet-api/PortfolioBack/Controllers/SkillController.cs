@@ -23,16 +23,23 @@ public class SkillController : ControllerBase
   [AllowAnonymous]
   public async Task<ActionResult<IEnumerable<SkillGetDto>>> GetAll([FromQuery(Name = "fields")] string? fields)
   {
-    var skills = await _service.GetAllAsync();
     var requested = string.IsNullOrWhiteSpace(fields)
       ? Array.Empty<string>()
       : fields.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     var valid = DataShapingExtensions.ValidFieldsFor<Skill>(requested);
-    if (requested.Length == 0 || valid.Count == 0)
+
+    if (requested.Length > 0 && valid.Count == 0)
+    {
+      return BadRequest("Invalid fields specified.");
+    }
+
+    var skills = await _service.GetAllAsync();
+    if (requested.Length == 0)
     {
       return Ok(skills.ToDto(Array.Empty<string>()));
     }
     return Ok(skills.ToDto(valid));
+
   }
 
   /// <summary>
@@ -44,13 +51,20 @@ public class SkillController : ControllerBase
   [AllowAnonymous]
   public async Task<ActionResult<SkillGetDto>> GetById(int id, [FromQuery(Name = "fields")] string? fields)
   {
-    var skill = await _service.GetByIdAsync(id);
-    if (skill == null) return NotFound();
     var requested = string.IsNullOrWhiteSpace(fields)
       ? Array.Empty<string>()
       : fields.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     var valid = DataShapingExtensions.ValidFieldsFor<Skill>(requested);
-    if (requested.Length == 0 || valid.Count == 0)
+
+    if (requested.Length > 0 && valid.Count == 0)
+    {
+      return BadRequest("Invalid fields specified.");
+    }
+
+    var skill = await _service.GetByIdAsync(id);
+    if (skill == null) return NotFound();
+
+    if (requested.Length == 0)
     {
       return Ok(skill.ToDto(Array.Empty<string>()));
     }

@@ -13,7 +13,7 @@ public class ProjectAsset
 
   public int ProjectId { get; set; }
   [JsonIgnore]
-  public Project Project { get; set; } = null!;
+  public virtual Project Project { get; set; } = null!;
 
   public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

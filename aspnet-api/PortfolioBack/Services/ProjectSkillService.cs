@@ -38,7 +38,7 @@ public class ProjectSkillService
       .ToListAsync();
   }
 
-  public async Task<ProjectSkill> CreateAsync(ProjectSkillGetDto projectSkill)
+  public async Task<ProjectSkill?> CreateAsync(ProjectSkillGetDto projectSkill)
   {
     var existingProject = await _context.Projects.FindAsync(projectSkill.ProjectId);
     var existingSkill = await _context.Skills.FindAsync(projectSkill.SkillId);

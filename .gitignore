@@ -7,4 +7,6 @@ aspnet-api/images
 aspnet-api/PortfolioBack/bin/
 aspnet-api/PortfolioBack/obj/
 aspnet-api/PortfolioBack/*.dll
-nginx/ssl
+.vscode/
+aspnet-api/PortfolioBack/appsettings.Development.json
+aspnet-api/Portfolio

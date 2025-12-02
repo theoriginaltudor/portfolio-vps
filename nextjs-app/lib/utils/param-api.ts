@@ -1,19 +1,17 @@
-import { paths } from "@/types/swagger-types";
-import { getApiUrl } from "./get-url";
-import { cookies } from "next/headers";
+import { paths } from '@/types/swagger-types';
+import { getApiUrl } from './get-url';
+import { getAccessToken } from './get-token';
 
 // Endpoints that contain path parameters (identified by having "/{" in the path)
 // Excludes Login endpoints which should use authApiCall
-export type ApiEndpoint = Extract<
-  keyof paths & string,
-  `${string}/{${string}}`
-> extends infer T
-  ? T extends `${string}/Login${string}`
-    ? never
-    : T
-  : never;
+export type ApiEndpoint =
+  Extract<keyof paths & string, `${string}/{${string}}`> extends infer T
+    ? T extends `${string}/Login${string}`
+      ? never
+      : T
+    : never;
 
-type MethodNames = "get" | "post" | "put" | "delete";
+type MethodNames = 'get' | 'post' | 'put' | 'delete';
 
 // Resolve the shape of a specific HTTP method if it exists on the endpoint
 type AnyMethod<
@@ -36,7 +34,7 @@ type ResponseData<TEndpoint extends ApiEndpoint, TMethod extends MethodNames> =
     responses: {
       200: {
         content: {
-          "application/json": infer T;
+          'application/json': infer T;
         };
       };
     };
@@ -46,7 +44,7 @@ type ResponseData<TEndpoint extends ApiEndpoint, TMethod extends MethodNames> =
           responses: {
             200: {
               content: {
-                "text/json": infer T;
+                'text/json': infer T;
               };
             };
           };
@@ -56,7 +54,7 @@ type ResponseData<TEndpoint extends ApiEndpoint, TMethod extends MethodNames> =
             responses: {
               200: {
                 content: {
-                  "text/plain": infer T;
+                  'text/plain': infer T;
                 };
               };
             };
@@ -87,51 +85,51 @@ function fillPathParams<TEndpoint extends ApiEndpoint>(
 export function paramApiCall<TEndpoint extends ApiEndpoint>(
   endpoint: TEndpoint,
   options: {
-    method: "GET";
+    method: 'GET';
     params: PathParams<TEndpoint>;
     query?: { fields?: string };
-  } & Omit<RequestInit, "method" | "body">
+  } & Omit<RequestInit, 'method' | 'body'>
 ): Promise<
-  | { ok: true; data: ResponseData<TEndpoint, "get"> }
-  | { ok: true; data?: undefined }
+  | { ok: true; data: ResponseData<TEndpoint, 'get'>; error: undefined }
+  | { ok: true; data?: undefined; error: undefined }
   | { ok: false; error: string; status: number }
 >;
 
 export function paramApiCall<TEndpoint extends ApiEndpoint>(
   endpoint: TEndpoint,
   options: {
-    method: "POST";
+    method: 'POST';
     params: PathParams<TEndpoint>;
     body?: unknown;
-  } & Omit<RequestInit, "method" | "body">
+  } & Omit<RequestInit, 'method' | 'body'>
 ): Promise<
-  | { ok: true; data: ResponseData<TEndpoint, "post"> }
-  | { ok: true; data?: undefined }
+  | { ok: true; data: ResponseData<TEndpoint, 'post'>; error: undefined }
+  | { ok: true; data?: undefined; error: undefined }
   | { ok: false; error: string; status: number }
 >;
 
 export function paramApiCall<TEndpoint extends ApiEndpoint>(
   endpoint: TEndpoint,
   options: {
-    method: "PUT";
+    method: 'PUT';
     params: PathParams<TEndpoint>;
     body?: unknown;
-  } & Omit<RequestInit, "method" | "body">
+  } & Omit<RequestInit, 'method' | 'body'>
 ): Promise<
-  | { ok: true; data: ResponseData<TEndpoint, "put"> }
-  | { ok: true; data?: undefined }
+  | { ok: true; data: ResponseData<TEndpoint, 'put'>; error: undefined }
+  | { ok: true; data?: undefined; error: undefined }
   | { ok: false; error: string; status: number }
 >;
 
 export function paramApiCall<TEndpoint extends ApiEndpoint>(
   endpoint: TEndpoint,
   options: {
-    method: "DELETE";
+    method: 'DELETE';
     params: PathParams<TEndpoint>;
-  } & Omit<RequestInit, "method" | "body">
+  } & Omit<RequestInit, 'method' | 'body'>
 ): Promise<
-  | { ok: true; data: ResponseData<TEndpoint, "delete"> }
-  | { ok: true; data?: undefined }
+  | { ok: true; data: ResponseData<TEndpoint, 'delete'>; error: undefined }
+  | { ok: true; data?: undefined; error: undefined }
   | { ok: false; error: string; status: number }
 >;
 
@@ -142,10 +140,10 @@ export function paramApiCall<TEndpoint extends ApiEndpoint>(
     params: PathParams<TEndpoint>;
     body?: unknown;
     query?: { fields?: string };
-  } & Omit<RequestInit, "method" | "body">
+  } & Omit<RequestInit, 'method' | 'body'>
 ): Promise<
-  | { ok: true; data: ResponseData<TEndpoint, "get"> }
-  | { ok: true; data?: undefined }
+  | { ok: true; data: ResponseData<TEndpoint, 'get'>; error: undefined }
+  | { ok: true; data?: undefined; error: undefined }
   | { ok: false; error: string; status: number }
 >;
 
@@ -153,21 +151,17 @@ export function paramApiCall<TEndpoint extends ApiEndpoint>(
 export async function paramApiCall<TEndpoint extends ApiEndpoint>(
   endpoint: TEndpoint,
   options: {
-    method?: "GET" | "POST" | "PUT" | "DELETE";
+    method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
     params: PathParams<TEndpoint>;
     body?: unknown;
     query?: { fields?: string };
-  } & Omit<RequestInit, "method" | "body">
-): Promise<
-  | { ok: true; data: unknown }
-  | { ok: true; data?: undefined }
-  | { ok: false; error: string; status: number }
-> {
+  } & Omit<RequestInit, 'method' | 'body'>
+) {
   const {
     params,
     body,
     headers,
-    method = "GET",
+    method = 'GET',
     query,
     ...restOptions
   } = options;
@@ -176,40 +170,31 @@ export async function paramApiCall<TEndpoint extends ApiEndpoint>(
   if (missing.length > 0) {
     return {
       ok: false as const,
-      error: `Missing path parameter(s): ${missing.join(", ")} (Endpoint: ${endpoint})`,
+      error: `Missing path parameter(s): ${missing.join(', ')} (Endpoint: ${endpoint})`,
       status: 0,
     };
   }
 
   const searchParams = new URLSearchParams();
-  if (method === "GET" && query?.fields) {
-    searchParams.set("fields", query.fields);
+  if (method === 'GET' && query?.fields) {
+    searchParams.set('fields', query.fields);
   }
   const queryString = searchParams.toString();
   const url = getApiUrl(
     (path as string) +
-      (method === "GET" && queryString
-        ? (String(path).includes("?") ? "&" : "?") + queryString
-        : "")
+      (method === 'GET' && queryString
+        ? (String(path).includes('?') ? '&' : '?') + queryString
+        : '')
   );
 
   try {
-    // Get auth cookie for authenticated requests when running server-side
-    let authCookie = null;
-    if (typeof window === "undefined") {
-      try {
-        const cookieStore = await cookies();
-        authCookie = cookieStore.get("auth");
-      } catch {
-        // cookies() might not be available in all contexts
-      }
-    }
+    const token = await getAccessToken();
 
     const requestOptions: RequestInit = {
       method,
       headers: {
-        Accept: "application/json",
-        ...(authCookie && { Cookie: `auth=${authCookie.value}` }),
+        Accept: 'application/json',
+        ...(token && { Authorization: `Bearer ${token}` }),
         ...headers,
       },
       credentials: 'include', // Include cookies automatically
@@ -219,13 +204,13 @@ export async function paramApiCall<TEndpoint extends ApiEndpoint>(
     if (body instanceof FormData) {
       requestOptions.body = body;
       // Let the browser set Content-Type for FormData
-    } else if (body && typeof body === "object" && method !== "GET") {
+    } else if (body && typeof body === 'object' && method !== 'GET') {
       requestOptions.body = JSON.stringify(body);
       requestOptions.headers = {
         ...(requestOptions.headers || {}),
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       };
-    } else if (typeof body === "string" && method !== "GET") {
+    } else if (typeof body === 'string' && method !== 'GET') {
       requestOptions.body = body;
     }
 
@@ -241,38 +226,50 @@ export async function paramApiCall<TEndpoint extends ApiEndpoint>(
 
     // Handle responses with or without content
     const contentType =
-      response.headers.get("content-type")?.toLowerCase() || "";
+      response.headers.get('content-type')?.toLowerCase() || '';
     const statusNoContent = response.status === 204;
 
     if (statusNoContent) {
-      return { ok: true as const };
+      return {
+        ok: true as const,
+        data: undefined,
+        error: undefined,
+      };
     }
 
-    if (contentType.includes("application/json")) {
+    if (contentType.includes('application/json')) {
       const data = (await response.json()) as unknown;
-      return { ok: true as const, data };
+      return { ok: true as const, data, error: undefined };
     }
 
     // Some APIs might return 200 with empty body or text
     const text = await response.text();
     if (!text || text.trim().length === 0) {
-      return { ok: true as const };
+      return {
+        ok: true as const,
+        data: undefined,
+        error: undefined,
+      };
     }
 
     // If text/plain but typed content exists, return raw text
-    if (contentType.startsWith("text/")) {
+    if (contentType.startsWith('text/')) {
       return {
         ok: true as const,
         data: text as unknown,
+        error: undefined,
       };
     }
 
     // Fallback: no parseable content
-    return { ok: true as const };
+    return {
+      ok: true as const,
+      error: undefined,
+    };
   } catch (error) {
     return {
       ok: false as const,
-      error: `${error instanceof Error ? error.message : "Unknown error"} (URL: ${getApiUrl(path as string)})`,
+      error: `${error instanceof Error ? error.message : 'Unknown error'} (URL: ${getApiUrl(path as string)})`,
       status: 0,
     };
   }

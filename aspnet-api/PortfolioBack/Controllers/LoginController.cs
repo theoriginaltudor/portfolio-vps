@@ -3,72 +3,55 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using PortfolioBack.Data;
 using PortfolioBack.DTOs;
-using PortfolioBack.Models;
 using PortfolioBack.Services;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Runtime.InteropServices.JavaScript;
 
 [ApiController]
 [Route("api/[controller]")]
-public class LoginController : ControllerBase
+public class LoginController(LoginService loginService, IConfiguration configuration) : ControllerBase
 {
-  private readonly PortfolioDbContext _db;
-  private readonly IPasswordHasher _hasher;
-
-  public LoginController(PortfolioDbContext db, IPasswordHasher hasher)
-  {
-    _db = db;
-    _hasher = hasher;
-  }
-
-  [HttpPost("signup")]
-  [AllowAnonymous]
-  public async Task<ActionResult<AuthUserDto>> Signup([FromBody] SignupRequestDto request)
-  {
-    var username = request.Username.Trim();
-    var exists = await _db.Users.AnyAsync(u => u.Username == username);
-    if (exists) return Conflict(new { message = "Username already exists" });
-
-    var (hash, salt, iterations) = _hasher.HashPassword(request.Password);
-    var user = new User
-    {
-      Username = username,
-      PasswordHash = hash,
-      PasswordSalt = salt,
-      PasswordIterations = iterations
-    };
-    _db.Users.Add(user);
-    await _db.SaveChangesAsync();
-
-    await SignInUserAsync(user);
-    return Ok(new AuthUserDto(user.Id, user.Username));
-  }
+  // [HttpPost("signup")]
+  // [AllowAnonymous]
+  // public async Task<ActionResult<AuthUserDto>> Signup([FromBody] SignupRequestDto request)
+  // {
+  //   var authUserDto = loginService.Signup(request);
+  //   if (authUserDto is null) return Conflict(new { message = "Username already exists" });
+  //   return Ok(authUserDto);
+  // }
 
   [HttpPost("login")]
   [AllowAnonymous]
   public async Task<ActionResult<AuthUserDto>> Login([FromBody] LoginRequestDto request)
   {
-    var username = request.Username.Trim();
-    var user = await _db.Users.SingleOrDefaultAsync(u => u.Username == username);
-    if (user == null)
+    var authUserDto = await loginService.Login(request);
+    if (authUserDto is null)
     {
       await Task.Delay(Random.Shared.Next(50, 150)); // timing noise
       return Unauthorized(new { message = "Invalid credentials" });
     }
+    int.TryParse(configuration.GetValue<string>("Jwt:RefreshTokenExpirationDays"), out int days);
+    var options = new CookieOptions
+    {
+      HttpOnly = true,
+      Secure = true,
+      SameSite = SameSiteMode.Strict,
+      Expires = DateTime.UtcNow.AddDays(days)
+    };
 
-    var valid = _hasher.Verify(request.Password, user.PasswordHash, user.PasswordSalt, user.PasswordIterations);
-    if (!valid) return Unauthorized(new { message = "Invalid credentials" });
+    // check if production and add Domain to cookie options
 
-    await SignInUserAsync(user);
-    return Ok(new AuthUserDto(user.Id, user.Username));
+    Response.Cookies.Append("auth", authUserDto.RefreshToken!, options);
+    authUserDto.RefreshToken = null;
+    return Ok(authUserDto);
   }
 
   [HttpPost("logout")]
   [Authorize]
   public async Task<IActionResult> Logout()
   {
-    await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+    Response.Cookies.Delete("auth");
     return NoContent();
   }
 
@@ -79,24 +62,20 @@ public class LoginController : ControllerBase
     var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
     var name = User.Identity?.Name ?? User.FindFirstValue(ClaimTypes.Name) ?? string.Empty;
     if (string.IsNullOrEmpty(id)) return Unauthorized();
-    return Ok(new AuthUserDto(int.Parse(id), name));
+    return Ok(new AuthUserDto
+    {
+      Id = int.Parse(id),
+      Username = name
+    });
   }
 
-  private async Task SignInUserAsync(User user)
+  [HttpGet("refresh")]
+  [AllowAnonymous]
+  public async Task<ActionResult<object>> Refresh()
   {
-    var claims = new List<Claim>
-    {
-      new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-      new Claim(ClaimTypes.Name, user.Username)
-    };
-    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-    var principal = new ClaimsPrincipal(identity);
-    var props = new AuthenticationProperties
-    {
-      IsPersistent = true,
-      ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
-    };
-    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, props);
+    var refreshToken = Request.Cookies.FirstOrDefault(cookie => string.Equals(cookie.Key, "auth"));
+    var accessToken = await loginService.RefreshToken(refreshToken.Value);
+    if (accessToken is null) return BadRequest();
+    return Ok(new { Token = accessToken });
   }
 }
-

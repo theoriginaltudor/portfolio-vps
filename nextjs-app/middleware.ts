@@ -1,17 +1,25 @@
-import { NextResponse, type NextRequest } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 
 // Middleware adds security headers and ensures restricted pages are noindexed
 // even if a crawler ignores robots.txt.
 
-const NOINDEX_PATHS = new Set(['/login', '/data-transfer', '/check-transfer']);
-const AUTH_REQUIRED_PATHS = new Set(['/data-transfer', '/check-transfer']);
+const AUTH_REQUIRED_PATHS = new Set([
+  '/data-transfer',
+  '/check-transfer',
+  '/new-article',
+]);
 
+const NOINDEX_PATHS = new Set(['/login', ...AUTH_REQUIRED_PATHS]);
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // Proceed normally for assets and api routes
-  if (pathname.startsWith('/_next') || pathname.startsWith('/api') || pathname.startsWith('/images')) {
+  if (
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/api') ||
+    pathname.startsWith('/images')
+  ) {
     return NextResponse.next();
   }
 

@@ -1,4 +1,3 @@
-
 ## TODOs for Portfolio (Next.js, TypeScript, Tailwind, Supabase)
 
 - [x] Fix tablet version of projects
@@ -6,18 +5,27 @@
 - [x] add supabase storage for image handling
 - [x] implement retrival augmented generationnto get better results from chat
 - [x] fix files and folders naming to use kebab-case
-- [x] authenticated mode edit text in articles
 - [x] change images to use server images, not supabase
 - [x] change DB queries to own API
 - [x] remove the signup functionality
 - [x] the nginx is not working with the domain
 - [x] update data for projects fails
-- [ ] add theme for the projects on hover and for the article
-- [ ] make a chat page where you can just talk with the LLM, asking questions and it will talk about the data in the articles plus give a link to them
+- [x] auth fails on live
+- [x] auth cookie is deleted when doing any navigation
+- [x] for proxy extraction you need to keep the api in the nginx config so it has the same site origin
+- [ ] add theme for the projects on hover and for the article (themes to the syte and apply different themes when hovering)
 - [ ] make the avatar in projects route clickable to navigate to the chat page
-- [/] authenticated mode edit pictures in articles
 - [ ] add Streaming functionality with suspense and use
-- [ ] add rate limiting to the API
 - [ ] update DB with new table for AI generated questions for the articles that have been embedded, which are connected to the articles table with an id
-- [ ] auth cookie is deleted when doing any navigation
-- [/] auth fails on live
+- [ ] improve system prompt to know more about you (Romanina, developer, companies I worked at, each project should have a company field and a client field)
+- [ ] to improve static site generation, move the article edit functionality in an admin dashboard
+- [ ] embeddings generation not working (fails with bad request from server)
+- [ ] add embedding route to middleware with authenticated request
+- [x] add indexing on slug for DB Project Table for select performance
+- [x] clear up configurations in PortfolioDbContext and use Entity Framework conventions
+- [ ] new article route fails to create new article
+- [ ] use children as props in some cases to optimise rerenders and which components can be server components (pass server components to client components as props) https://kentcdodds.com/blog/optimize-react-re-renders
+- [x] remove swagger from the backend since it's not needed for OpenAPI specs (update the script for types generation)
+- [ ] remove delete button from articles and log out button from navbar
+- [x] switch login to jwt
+- [x] remove edit from articles
