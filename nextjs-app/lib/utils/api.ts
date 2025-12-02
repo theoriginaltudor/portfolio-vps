@@ -1,6 +1,6 @@
 import { paths } from '@/types/swagger-types';
 import { getApiUrl } from './get-url';
-import { cookies } from 'next/headers';
+import { getAccessToken } from './get-token';
 
 export type ApiEndpoint = {
   [K in keyof paths]: K extends `${string}/{${string}`
@@ -94,23 +94,14 @@ export const apiCall = async <TEndpoint extends ApiEndpoint>(
       : (endpoint as string);
   const url = getApiUrl(endpointWithQs);
   try {
-    // Get auth cookie for authenticated requests when running server-side
-    let authCookie = null;
-    if (typeof window === 'undefined') {
-      try {
-        const cookieStore = await cookies();
-        authCookie = cookieStore.get('auth');
-      } catch {
-        // cookies() might not be available in all contexts
-      }
-    }
+    const token = await getAccessToken();
 
     const requestOptions: RequestInit = {
       method,
       credentials: 'include', // Include cookies automatically
       headers: {
         Accept: 'application/json',
-        ...(authCookie && { Cookie: `auth=${authCookie.value}` }),
+        ...(token && { Authorization: `Bearer ${token}` }),
         ...headers,
       },
       ...restOptions,
