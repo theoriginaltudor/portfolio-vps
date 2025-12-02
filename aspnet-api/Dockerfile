@@ -1,5 +1,5 @@
 # Stage 1: Build the application
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
 WORKDIR /src
 
 # Copy csproj and restore as distinct layers
@@ -11,12 +11,10 @@ COPY PortfolioBack/ ./PortfolioBack/
 RUN dotnet publish PortfolioBack/PortfolioBack.csproj -c Release -o /app
 
 ## Use SDK image for final stage to allow migrations at runtime
-FROM mcr.microsoft.com/dotnet/sdk:9.0
+FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine
 WORKDIR /app
 COPY --from=build /app ./
-# Copy source files needed for EF migrations
-COPY --from=build /src/PortfolioBack/ ./
-RUN dotnet restore PortfolioBack.csproj
+# No need to copy source or restore in final stage—entrypoint.sh handles migrations using the SDK
 
 # Copy entrypoint script
 COPY entrypoint.sh /app/entrypoint.sh
