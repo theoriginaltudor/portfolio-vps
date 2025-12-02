@@ -47,10 +47,13 @@ async function handleAuthCookie(response: Response) {
 }
 
 // Helper function for common auth flow after successful login/register
-async function completeAuthFlow(response?: Response, redirectTo = '/') {
+async function completeAuthFlow(
+  data: AuthUserDto,
+  response?: Response,
+  redirectTo = '/'
+) {
   if (response) {
     await handleAuthCookie(response);
-    const data: AuthUserDto = await response.json();
     if (data.accessToken) {
       const cookieStore = await cookies();
       cookieStore.set('accessToken', data.accessToken, {
@@ -77,7 +80,7 @@ export async function loginUser(formData: FormData) {
     redirect('/error?reason=missing-fields');
   }
 
-  const { error, response } = await authApiCall('/api/Login/login', {
+  const { error, response, data } = await authApiCall('/api/Login/login', {
     method: 'POST',
     body: { username, password },
   });
@@ -86,7 +89,7 @@ export async function loginUser(formData: FormData) {
     redirect('/error');
   }
 
-  await completeAuthFlow(response, redirectTo ?? '/');
+  await completeAuthFlow(data, response, redirectTo ?? '/');
 }
 
 export async function logoutUser(pathname: string) {
