@@ -223,6 +223,22 @@ export interface paths {
             };
         };
         put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Login/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
         post: {
             parameters: {
                 query?: never;
@@ -232,9 +248,9 @@ export interface paths {
             };
             requestBody: {
                 content: {
-                    "application/json": components["schemas"]["ProjectAsset"];
-                    "text/json": components["schemas"]["ProjectAsset"];
-                    "application/*+json": components["schemas"]["ProjectAsset"];
+                    "application/json": components["schemas"]["LoginRequestDto"];
+                    "text/json": components["schemas"]["LoginRequestDto"];
+                    "application/*+json": components["schemas"]["LoginRequestDto"];
                 };
             };
             responses: {
@@ -257,7 +273,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/ProjectAsset/{id}": {
+    "/api/Login/logout": {
         parameters: {
             query?: never;
             header?: never;
@@ -299,13 +315,7 @@ export interface paths {
                 };
                 cookie?: never;
             };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["ProjectAsset"];
-                    "text/json": components["schemas"]["ProjectAsset"];
-                    "application/*+json": components["schemas"]["ProjectAsset"];
-                };
-            };
+            requestBody?: never;
             responses: {
                 /** @description OK */
                 200: {
@@ -316,8 +326,20 @@ export interface paths {
                 };
             };
         };
-        post?: never;
-        delete: {
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/Login/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
             parameters: {
                 query?: never;
                 header?: never;
@@ -333,16 +355,23 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "text/plain": components["schemas"]["AuthUserDto"];
+                        "application/json": components["schemas"]["AuthUserDto"];
+                        "text/json": components["schemas"]["AuthUserDto"];
+                    };
                 };
             };
         };
+        put?: never;
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/ProjectAsset/batch": {
+    "/api/Login/refresh": {
         parameters: {
             query?: never;
             header?: never;
@@ -371,11 +400,7 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content: {
-                        "text/plain": components["schemas"]["ProjectAsset"][];
-                        "application/json": components["schemas"]["ProjectAsset"][];
-                        "text/json": components["schemas"]["ProjectAsset"][];
-                    };
+                    content?: never;
                 };
             };
         };
@@ -703,7 +728,50 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/DataTransfer/images": {
+    "/api/ProjectAsset/batch": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ProjectAsset"][];
+                    "text/json": components["schemas"]["ProjectAsset"][];
+                    "application/*+json": components["schemas"]["ProjectAsset"][];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ProjectAsset"][];
+                        "application/json": components["schemas"]["ProjectAsset"][];
+                        "text/json": components["schemas"]["ProjectAsset"][];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/ProjectSearch/search": {
         parameters: {
             query?: never;
             header?: never;
@@ -760,9 +828,9 @@ export interface paths {
             };
             requestBody: {
                 content: {
-                    "application/json": components["schemas"]["ProjectDto"][];
-                    "text/json": components["schemas"]["ProjectDto"][];
-                    "application/*+json": components["schemas"]["ProjectDto"][];
+                    "application/json": components["schemas"]["ProjectSkillGetDto"];
+                    "text/json": components["schemas"]["ProjectSkillGetDto"];
+                    "application/*+json": components["schemas"]["ProjectSkillGetDto"];
                 };
             };
             responses: {
@@ -1184,7 +1252,7 @@ export interface components {
         AuthUserDto: {
             /** Format: int32 */
             id?: number;
-            username?: string;
+            username?: string | null;
             accessToken?: string | null;
             refreshToken?: string | null;
         };
@@ -1307,6 +1375,17 @@ export interface components {
             matchThreshold?: number;
             /** Format: int32 */
             matchCount?: number;
+        };
+        SingleReadOnlyMemory: {
+            /** Format: int32 */
+            readonly length?: number;
+            readonly isEmpty?: boolean;
+            span?: components["schemas"]["SingleReadOnlySpan"];
+        };
+        SingleReadOnlySpan: {
+            /** Format: int32 */
+            readonly length?: number;
+            readonly isEmpty?: boolean;
         };
         Skill: {
             /** Format: int32 */

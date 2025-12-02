@@ -54,5 +54,6 @@ jobs:
             echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" >> nextjs-app/.env
             echo "NEXT_PUBLIC_IMAGE_URL=https://${{ vars.HOST_SITE }}/images" >> nextjs-app/.env
             sudo docker compose -f compose.yaml down
+            sudo docker system prune -a -f
             sudo docker compose -f compose.yaml up --build -d
           EOF
