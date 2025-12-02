@@ -25,6 +25,5 @@
 - [x] clear up configurations in PortfolioDbContext and use Entity Framework conventions
 - [ ] new article route fails to create new article
 - [ ] use children as props in some cases to optimise rerenders and which components can be server components (pass server components to client components as props) https://kentcdodds.com/blog/optimize-react-re-renders
-- [ ] remove swagger from the backend since it's not needed for OpenAPI specs (update the script for types generation)
+- [x] remove swagger from the backend since it's not needed for OpenAPI specs (update the script for types generation)
 - [ ] remove delete button from articles and log out button from navbar
-- [/] add anti-forgery token for cross site scripting
