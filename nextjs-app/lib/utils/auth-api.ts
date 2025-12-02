@@ -1,5 +1,5 @@
 import { getApiUrl } from './get-url';
-import { cookies } from 'next/headers';
+import { getAccessToken, getAuthCookie } from './get-token';
 import { paths } from '@/types/swagger-types';
 
 // Type to filter paths that contain "/Login"
@@ -19,14 +19,9 @@ export const authApiCall = async (
   const url = getApiUrl(endpoint);
 
   try {
-    // Get auth cookie for authenticated requests
-    let authCookie = null;
-    try {
-      const cookieStore = await cookies();
-      authCookie = cookieStore.get('auth');
-    } catch {
-      // cookies() might not be available in all contexts
-    }
+    const token = await getAccessToken();
+
+    const authCookie = await getAuthCookie();
 
     const requestOptions: RequestInit = {
       method: options?.method || 'POST',
@@ -36,6 +31,7 @@ export const authApiCall = async (
         ...(options?.method !== 'GET' && {
           'Content-Type': 'application/json',
         }),
+        ...(token && { Authorization: `Bearer ${token}` }),
         ...(authCookie && { Cookie: `auth=${authCookie.value}` }),
         ...options?.headers,
       },

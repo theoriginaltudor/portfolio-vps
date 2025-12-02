@@ -89,28 +89,8 @@ export async function loginUser(formData: FormData) {
   await completeAuthFlow(response, redirectTo ?? '/');
 }
 
-// export async function registerUser(formData: FormData) {
-//   const username = formData.get('username') as string | null;
-//   const password = formData.get('password') as string | null;
-
-//   if (!username || !password) {
-//     redirect('/error?reason=missing-fields');
-//   }
-
-//   const { error, response } = await authApiCall('/api/Login/signup', {
-//     method: 'POST',
-//     body: { username, password },
-//   });
-
-//   if (error) {
-//     redirect('/error');
-//   }
-
-//   await completeAuthFlow(response);
-// }
-
 export async function logoutUser(pathname: string) {
-  const { error, response } = await authApiCall('/api/Login/logout', {
+  const { error } = await authApiCall('/api/Login/logout', {
     method: 'POST',
   });
 
@@ -119,71 +99,7 @@ export async function logoutUser(pathname: string) {
   }
 
   const cookieStore = await cookies();
-
-  // Forward the backend's expired auth cookie ( SignOutAsync issues one )
-  if (response) {
-    const setCookies = getSetCookieStrings(response);
-    const expiredAuth = setCookies.find(c => /^auth=/i.test(c));
-    if (expiredAuth) {
-      // Attempt to capture attributes we care about (domain & path) for correct deletion
-      const domainMatch = expiredAuth.match(/domain=([^;]+)/i);
-      const pathMatch = expiredAuth.match(/path=([^;]+)/i);
-      // value after auth=
-      const valueMatch = expiredAuth.match(/auth=([^;]*)/i);
-      cookieStore.set('auth', valueMatch ? valueMatch[1] : '', {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-        path: pathMatch ? pathMatch[1] : '/',
-        domain: domainMatch
-          ? domainMatch[1]
-          : process.env.NODE_ENV === 'production'
-            ? '.tudor-dev.com'
-            : undefined,
-        maxAge: 0, // expire immediately
-      });
-      cookieStore.set('accessToken', '', {
-        httpOnly: false,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-        path: '/',
-        domain:
-          process.env.NODE_ENV === 'production' ? '.tudor-dev.com' : undefined,
-        maxAge: 0,
-      });
-    } else {
-      // Fallback: explicitly expire with matching settings
-      cookieStore.set('auth', '', {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-        path: '/',
-        domain:
-          process.env.NODE_ENV === 'production' ? '.tudor-dev.com' : undefined,
-        maxAge: 0,
-      });
-      cookieStore.set('accessToken', '', {
-        httpOnly: false,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-        path: '/',
-        domain:
-          process.env.NODE_ENV === 'production' ? '.tudor-dev.com' : undefined,
-        maxAge: 0,
-      });
-    }
-  } else {
-    // No response (shouldn't happen); still try to expire
-    cookieStore.set('auth', '', {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-      path: '/',
-      domain:
-        process.env.NODE_ENV === 'production' ? '.tudor-dev.com' : undefined,
-      maxAge: 0,
-    });
-  }
-
+  cookieStore.delete('auth');
+  cookieStore.delete('accessToken');
   redirect(pathname);
 }
