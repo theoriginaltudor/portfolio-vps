@@ -4,6 +4,9 @@ import { authApiCall } from '@/lib/utils/auth-api';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
+import type { components } from '@/types/swagger-types';
+
+type AuthUserDto = components['schemas']['AuthUserDto'];
 
 // Extract Set-Cookie headers safely (support multiple cookies & Next.js fetch impl)
 function getSetCookieStrings(response: Response): string[] {
@@ -47,6 +50,19 @@ async function handleAuthCookie(response: Response) {
 async function completeAuthFlow(response?: Response, redirectTo = '/') {
   if (response) {
     await handleAuthCookie(response);
+    const data: AuthUserDto = await response.json();
+    if (data.accessToken) {
+      const cookieStore = await cookies();
+      cookieStore.set('accessToken', data.accessToken, {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        path: '/',
+        domain:
+          process.env.NODE_ENV === 'production' ? '.tudor-dev.com' : undefined,
+        maxAge: 60 * 60, // 1 hour
+      });
+    }
   }
   revalidatePath('/', 'layout');
   redirect(redirectTo);
@@ -126,10 +142,28 @@ export async function logoutUser(pathname: string) {
             : undefined,
         maxAge: 0, // expire immediately
       });
+      cookieStore.set('accessToken', '', {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        path: '/',
+        domain:
+          process.env.NODE_ENV === 'production' ? '.tudor-dev.com' : undefined,
+        maxAge: 0,
+      });
     } else {
       // Fallback: explicitly expire with matching settings
       cookieStore.set('auth', '', {
         httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        path: '/',
+        domain:
+          process.env.NODE_ENV === 'production' ? '.tudor-dev.com' : undefined,
+        maxAge: 0,
+      });
+      cookieStore.set('accessToken', '', {
+        httpOnly: false,
         secure: process.env.NODE_ENV === 'production',
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         path: '/',
