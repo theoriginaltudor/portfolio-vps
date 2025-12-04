@@ -74,13 +74,11 @@ export async function createArticle(data: FormData) {
     imageFiles.forEach(file => {
       imageFormData.append('files', file);
     });
-    const { error: transferError, ok: transferOk } = await apiCall(
-      '/api/DataTransfer/images',
-      {
+    const { error: transferError, ok: transferOk } =
+      await apiCall<'/api/DataTransfer/images'>('/api/DataTransfer/images', {
         method: 'POST',
         body: imageFormData,
-      }
-    );
+      });
     if (transferError || !transferOk) {
       // Compensation: delete project assets, then project
       if (Array.isArray(createdAssets)) {
