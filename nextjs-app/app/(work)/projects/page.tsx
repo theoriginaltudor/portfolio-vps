@@ -1,4 +1,3 @@
-import * as React from 'react';
 import type { Metadata } from 'next';
 import { ArticlesCarousel } from '@/feature-components/work/articles-carousel';
 import { apiCall } from '@/lib/utils/api';
