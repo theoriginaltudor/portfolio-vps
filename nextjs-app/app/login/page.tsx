@@ -4,9 +4,12 @@ import { loginUser } from './actions';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { getUser } from '@/lib/utils/server';
-import { PageProps } from '../../.next/types/app/login/page';
 
-export default async function LoginPage({ searchParams }: PageProps) {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   const user = await getUser();
   if (user) {
     return (
