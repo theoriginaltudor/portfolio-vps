@@ -1,8 +1,7 @@
 'use client';
-
+import {ViewTransition} from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils/client';
-import { unstable_ViewTransition as ViewTransition } from 'react';
 import { useSubmittingStore } from '@/feature-components/chat-box/submitting-store';
 import { getImageUrl } from '@/lib/utils/get-url';
 
