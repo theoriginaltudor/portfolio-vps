@@ -11,7 +11,7 @@ const AUTH_REQUIRED_PATHS = new Set([
 
 const NOINDEX_PATHS = new Set(['/login', ...AUTH_REQUIRED_PATHS]);
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // Proceed normally for assets and api routes
