@@ -1,7 +1,6 @@
-import * as React from "react";
-import Image from "next/image";
-import { unstable_ViewTransition as ViewTransition } from "react";
-import { getImageUrl } from "@/lib/utils/get-url";
+import { ViewTransition } from 'react';
+import Image from 'next/image';
+import { getImageUrl } from '@/lib/utils/get-url';
 
 interface SlideProps {
   id: number;
@@ -22,24 +21,24 @@ export const Slide: React.FC<SlideProps> = async ({
   }
 
   return (
-    <div className="relative h-[70dvh] w-full md:w-96">
-      <div className="w-full h-full max-w-5xl rounded-xl overflow-hidden bg-card flex items-start justify-start mb-4 shrink-0 relative">
+    <div className='relative h-[70dvh] w-full md:w-96'>
+      <div className='bg-card relative mb-4 flex h-full w-full max-w-5xl shrink-0 items-start justify-start overflow-hidden rounded-xl'>
         {publicUrl && (
           <Image
             src={publicUrl}
             alt={title}
             fill
-            className="object-cover w-full h-full absolute inset-0 z-0"
+            className='absolute inset-0 z-0 h-full w-full object-cover'
             priority
           />
         )}
-        <div className="absolute inset-0 z-10 bg-gradient-to-r from-white dark:from-black to-transparent flex items-start">
-          <div className="p-6 w-1/2">
+        <div className='absolute inset-0 z-10 flex items-start bg-gradient-to-r from-white to-transparent dark:from-black'>
+          <div className='w-1/2 p-6'>
             <ViewTransition name={`slide-title-description-${id}`}>
-              <h2 className="text-xl font-semibold mb-1 text-black dark:text-white">
+              <h2 className='mb-1 text-xl font-semibold text-black dark:text-white'>
                 {title}
               </h2>
-              <p className="text-sm text-left text-black dark:text-white">
+              <p className='text-left text-sm text-black dark:text-white'>
                 {description}
               </p>
             </ViewTransition>

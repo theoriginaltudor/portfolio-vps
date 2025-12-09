@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Metadata } from 'next';
 import { fetchProjectData } from '@/feature-components/work/project-page/hooks/fetch-data';
 

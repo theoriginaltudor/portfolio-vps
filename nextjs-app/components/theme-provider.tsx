@@ -1,6 +1,6 @@
-"use client";
-import * as React from "react";
-import { ThemeProvider as NextThemesProvider } from "next-themes";
+'use client';
+
+import { ThemeProvider as NextThemesProvider } from 'next-themes';
 
 export function ThemeProvider({
   children,
@@ -10,8 +10,8 @@ export function ThemeProvider({
 }) {
   return (
     <NextThemesProvider
-      attribute="class"
-      defaultTheme="system"
+      attribute='class'
+      defaultTheme='system'
       enableSystem
       {...props}
     >
