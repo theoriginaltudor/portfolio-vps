@@ -21,6 +21,8 @@ services:
     environment:
       ConnectionStrings__DefaultConnection: "Host=postgres; Port=5432; Database=${POSTGRES_DB}; Username=${POSTGRES_USER}; Password=${POSTGRES_PASSWORD}"
       Jwt__Key: ${JWTKEY}
+      Jwt__Issuer: ${JWT__Issuer}
+      Jwt__Audience: ${JWT__Audience}
     restart: always
     volumes:
       - ./aspnet-api/images:/app/images
