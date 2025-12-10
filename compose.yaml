@@ -20,9 +20,12 @@ services:
       - postgres
     environment:
       ConnectionStrings__DefaultConnection: "Host=postgres; Port=5432; Database=${POSTGRES_DB}; Username=${POSTGRES_USER}; Password=${POSTGRES_PASSWORD}"
-      Jwt__Key: ${JWTKEY}
-      Jwt__Issuer: ${JWT__Issuer}
-      Jwt__Audience: ${JWT__Audience}
+      Jwt__Key: ${Jwt__Key}
+      Jwt__RefreshKey: ${Jwt__RefreshKey}
+      Jwt__Issuer: ${Jwt__Issuer}
+      Jwt__Audience: ${Jwt__Audience}
+      Jwt__AccessTokenExpirationMinutes: ${Jwt__AccessTokenExpirationMinutes}
+      Jwt__RefreshTokenExpirationDays: ${Jwt__RefreshTokenExpirationDays}
     restart: always
     volumes:
       - ./aspnet-api/images:/app/images

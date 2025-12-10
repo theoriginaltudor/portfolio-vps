@@ -46,9 +46,12 @@ jobs:
             echo "POSTGRES_DB=${{ vars.POSTGRES_DB }}" > .env
             echo "POSTGRES_USER=${{ vars.POSTGRES_USER }}" >> .env
             echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
-            echo "JWTKEY=${{ secrets.JWTKEY }}" >> .env
-            echo "JWT__Issuer=https://${{ vars.HOST_SITE }}" >> .env
-            echo "JWT__Audience=portfolio-api" >> .env
+            echo "Jwt__Key=${{ secrets.JWTKEY }}" >> .env
+            echo "Jwt__RefreshKey=${{ secrets.JWTKEY }}" >> .env
+            echo "Jwt__Issuer=https://${{ vars.HOST_SITE }}" >> .env
+            echo "Jwt__Audience=portfolio-api" >> .env
+            echo "Jwt__AccessTokenExpirationMinutes=15" >> .env
+            echo "Jwt__RefreshTokenExpirationDays=7" >> .env
             # Create nextjs-app/.env file
             echo "GOOGLE_GENERATIVE_AI_API_KEY=${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}" > nextjs-app/.env
             echo "NEXT_PUBLIC_SUPABASE_URL=${{ vars.NEXT_PUBLIC_SUPABASE_URL }}" >> nextjs-app/.env
