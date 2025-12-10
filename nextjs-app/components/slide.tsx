@@ -32,7 +32,7 @@ export const Slide: React.FC<SlideProps> = async ({
             priority
           />
         )}
-        <div className='absolute inset-0 z-10 flex items-start bg-gradient-to-r from-white to-transparent dark:from-black'>
+        <div className='absolute inset-0 z-10 flex items-start bg-linear-to-r from-white to-transparent dark:from-black'>
           <div className='w-1/2 p-6'>
             <ViewTransition name={`slide-title-description-${id}`}>
               <h2 className='mb-1 text-xl font-semibold text-black dark:text-white'>

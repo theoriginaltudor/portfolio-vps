@@ -32,7 +32,7 @@ export const AvatarWithShadow: React.FC<AvatarWithShadowProps> = ({
         <span
           aria-hidden
           className={cn(
-            "pointer-events-none absolute inset-0 z-[-1] rounded-full shadow-[0_0_0_8px_rgba(255,255,255,0.2)] before:absolute before:inset-[-8px] before:z-[-2] before:rounded-full before:bg-[conic-gradient(from_0deg_at_50%_50%,#ff0080_0%,#7928ca_25%,#0070f3_50%,#00ffb8_75%,#ff0080_100%)] before:opacity-60 before:blur-[12px] before:content-['']",
+            "pointer-events-none absolute inset-0 z-[-1] rounded-full shadow-[0_0_0_8px_rgba(255,255,255,0.2)] before:absolute before:-inset-2 before:z-[-2] before:rounded-full before:bg-[conic-gradient(from_0deg_at_50%_50%,#ff0080_0%,#7928ca_25%,#0070f3_50%,#00ffb8_75%,#ff0080_100%)] before:opacity-60 before:blur-md before:content-['']",
             loading && 'animate-pulse'
           )}
         />
