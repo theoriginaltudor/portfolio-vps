@@ -24,7 +24,6 @@ services:
     restart: always
     volumes:
       - ./aspnet-api/images:/app/images
-    entrypoint: ["/app/entrypoint.sh"]
     networks:
       default: {}
       shared_net:
