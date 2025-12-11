@@ -5,7 +5,7 @@ interface SubmittingStoreState {
   setLoading: (loading: boolean) => void;
 }
 
-export const useSubmittingStore = create<SubmittingStoreState>((set) => ({
+export const useSubmittingStore = create<SubmittingStoreState>(set => ({
   loading: false,
-  setLoading: (loading) => set({ loading }),
+  setLoading: loading => set({ loading }),
 }));

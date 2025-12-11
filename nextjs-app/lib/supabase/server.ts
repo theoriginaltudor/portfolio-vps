@@ -1,6 +1,6 @@
-import { Database } from "@/types/database.types";
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { Database } from '@/types/database.types';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -18,7 +18,7 @@ export const createClient = async () => {
             cookieStore.set(name, value, options)
           );
         } catch {
-          console.error("Error setting cookies in Supabase client creation");
+          console.error('Error setting cookies in Supabase client creation');
         }
       },
     },

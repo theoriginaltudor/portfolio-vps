@@ -1,9 +1,9 @@
-import { useRef, useState } from "react";
-import { redirectWithAI } from "@/feature-components/chat-box/server/redirect-with-ai";
+import { useRef, useState } from 'react';
+import { redirectWithAI } from '@/feature-components/chat-box/server/redirect-with-ai';
 
 export function useChatBox() {
   const formRef = useRef<HTMLFormElement>(null);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
   const [isEmpty, setIsEmpty] = useState(false);
 
   const isTooLong = message.length > 800;
