@@ -3,7 +3,7 @@ import { embed } from 'ai';
 import { apiCall } from '@/lib/utils/api';
 import { components } from '@/types/swagger-types';
 
-const embeddingModel = google.textEmbeddingModel('text-embedding-004');
+const embeddingModel = google.textEmbeddingModel('text-embedding-005');
 
 // Use the types from your swagger schema
 type ProjectSearchResult = components['schemas']['ProjectSearchResult'];

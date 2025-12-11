@@ -20,6 +20,7 @@
 - [x] ~~remove swagger from the backend since it's not needed for OpenAPI specs (update the script for types generation)~~ it's actually needed for multipart/formdata
 - [x] improve system prompt to know more about you (Romanina, developer, companies I worked at, each project should have a company field and a client field)
 - [x] add embedding route to middleware with authenticated request
+- [x] update embeddings model since it's being deprecated
 - [ ] add theme for the projects on hover and for the article (themes to the syte and apply different themes when hovering)
 - [ ] make the avatar in projects route clickable to navigate to the chat page
 - [ ] add Streaming functionality with suspense and use

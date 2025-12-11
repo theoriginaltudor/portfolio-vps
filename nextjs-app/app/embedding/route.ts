@@ -3,7 +3,7 @@ import { google } from '@ai-sdk/google';
 import { apiCall } from '@/lib/utils/api';
 import { paramApiCall } from '@/lib/utils/param-api';
 
-const model = google.textEmbeddingModel('text-embedding-004');
+const model = google.textEmbeddingModel('text-embedding-005');
 
 async function getProjects() {
   const { ok, data, error } = await apiCall('/api/Project', {

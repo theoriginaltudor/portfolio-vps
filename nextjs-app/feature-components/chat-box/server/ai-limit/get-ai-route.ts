@@ -4,7 +4,7 @@ import { getSimilarArticles } from './get-context';
 import { google } from '@ai-sdk/google';
 import { DAILY_TOKEN_LIMIT } from './constants';
 
-export const model = google('gemini-2.0-flash');
+export const model = google('gemini-2.5-flash-lite');
 
 export const schema = z.object({
   path: z
