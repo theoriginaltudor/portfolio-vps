@@ -1,7 +1,6 @@
 import { embed } from 'ai';
 import { google } from '@ai-sdk/google';
 import { apiCall } from '@/lib/utils/api';
-import { paramApiCall } from '@/lib/utils/param-api';
 
 const model = google.textEmbeddingModel('text-embedding-005');
 
@@ -19,9 +18,8 @@ async function getProjects() {
 }
 
 async function getProjectSkills(projectId: number) {
-  const result = await paramApiCall('/api/ProjectSkill/project/{projectId}', {
+  const result = await apiCall(`/api/ProjectSkill/project/${projectId}`, {
     method: 'GET',
-    params: { projectId },
   });
 
   if (!result.ok) {
@@ -38,9 +36,8 @@ async function getProjectSkills(projectId: number) {
 
   for (const ps of result.data) {
     if (ps.skillId) {
-      const skillResult = await paramApiCall('/api/Skill/{id}', {
+      const skillResult = await apiCall(`/api/Skill/${ps.skillId}`, {
         method: 'GET',
-        params: { id: ps.skillId },
       });
       if (skillResult.ok && skillResult.data) {
         if (skillResult.data.name) {
@@ -54,9 +51,8 @@ async function getProjectSkills(projectId: number) {
 }
 
 async function updateProjectEmbedding(projectId: number, embedding: number[]) {
-  const result = await paramApiCall('/api/Project/{id}', {
+  const result = await apiCall(`/api/Project/${projectId}`, {
     method: 'PUT',
-    params: { id: projectId },
     body: { embedding },
   });
 

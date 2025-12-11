@@ -1,7 +1,7 @@
 'use server';
 
 import { redirect } from 'next/navigation';
-import { paramApiCall } from '@/lib/utils/param-api';
+import { apiCall } from '../../../../lib/utils/api';
 
 export async function deleteProject(data: FormData) {
   const projectId = data.get('projectId')?.toString();
@@ -10,9 +10,8 @@ export async function deleteProject(data: FormData) {
     throw new Error('Missing project ID');
   }
 
-  const { ok, error } = await paramApiCall(`/api/Project/{id}`, {
+  const { ok, error } = await apiCall(`/api/Project/${projectId}`, {
     method: 'DELETE',
-    params: { id: projectId },
   });
 
   if (!ok) {
