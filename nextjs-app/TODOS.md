@@ -31,3 +31,5 @@
 - [ ] use children as props in some cases to optimise rerenders and which components can be server components (pass server components to client components as props) [this article](https://kentcdodds.com/blog/optimize-react-re-renders)
 - [ ] remove delete button from articles and log out button from navbar
 - [ ] make new frontpage with relevant informations (watch [this video](https://youtu.be/4xqNp6IVXPM?si=IA7Wygj_DXnv7iRr))
+
+- [ ] re-apply changes from stash
