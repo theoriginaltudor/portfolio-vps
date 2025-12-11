@@ -127,14 +127,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         image={imageUrls[0]}
       />
 
-      {skills.length > 0 && (
-        <Skills skills={skills} articleId={project.id ?? 0} />
-      )}
+      {skills.length > 0 && <Skills skills={skills} />}
 
-      <ArticleBody
-        className='mt-8 w-full max-w-2xl px-4 text-base'
-        projectId={project.id ?? 0}
-      >
+      <ArticleBody className='mt-8 w-full max-w-2xl px-4 text-base'>
         {project.longDescription ?? 'No description provided.'}
       </ArticleBody>
 
