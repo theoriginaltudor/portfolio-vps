@@ -19,13 +19,14 @@
 - [x] clear up configurations in PortfolioDbContext and use Entity Framework conventions
 - [x] ~~remove swagger from the backend since it's not needed for OpenAPI specs (update the script for types generation)~~ it's actually needed for multipart/formdata
 - [x] improve system prompt to know more about you (Romanina, developer, companies I worked at, each project should have a company field and a client field)
+- [x] add embedding route to middleware with authenticated request
 - [ ] add theme for the projects on hover and for the article (themes to the syte and apply different themes when hovering)
 - [ ] make the avatar in projects route clickable to navigate to the chat page
 - [ ] add Streaming functionality with suspense and use
 - [ ] update DB with new table for AI generated questions for the articles that have been embedded, which are connected to the articles table with an id
 - [ ] to improve static site generation, move the article edit functionality in an admin dashboard
 - [ ] embeddings generation not working (fails with bad request from server)
-- [ ] add embedding route to middleware with authenticated request
 - [ ] new article route fails to create new article
-- [ ] use children as props in some cases to optimise rerenders and which components can be server components (pass server components to client components as props) https://kentcdodds.com/blog/optimize-react-re-renders
+- [ ] use children as props in some cases to optimise rerenders and which components can be server components (pass server components to client components as props) [this article](https://kentcdodds.com/blog/optimize-react-re-renders)
 - [ ] remove delete button from articles and log out button from navbar
+- [ ] make new frontpage with relevant informations (watch [this video](https://youtu.be/4xqNp6IVXPM?si=IA7Wygj_DXnv7iRr))

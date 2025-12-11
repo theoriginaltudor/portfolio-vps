@@ -7,6 +7,7 @@ const AUTH_REQUIRED_PATHS = new Set([
   '/data-transfer',
   '/check-transfer',
   '/new-article',
+  '/embedding',
 ]);
 
 const NOINDEX_PATHS = new Set(['/login', ...AUTH_REQUIRED_PATHS]);
