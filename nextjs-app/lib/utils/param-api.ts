@@ -28,40 +28,6 @@ type PathParams<TEndpoint extends ApiEndpoint> = {
     : never;
 }[MethodNames];
 
-// Extract response data for a specific method
-type ResponseData<TEndpoint extends ApiEndpoint, TMethod extends MethodNames> =
-  AnyMethod<TEndpoint, TMethod> extends {
-    responses: {
-      200: {
-        content: {
-          'application/json': infer T;
-        };
-      };
-    };
-  }
-    ? T
-    : AnyMethod<TEndpoint, TMethod> extends {
-          responses: {
-            200: {
-              content: {
-                'text/json': infer T;
-              };
-            };
-          };
-        }
-      ? T
-      : AnyMethod<TEndpoint, TMethod> extends {
-            responses: {
-              200: {
-                content: {
-                  'text/plain': infer T;
-                };
-              };
-            };
-          }
-        ? T
-        : never;
-
 function fillPathParams<TEndpoint extends ApiEndpoint>(
   endpoint: TEndpoint,
   params: PathParams<TEndpoint>
@@ -80,72 +46,6 @@ function fillPathParams<TEndpoint extends ApiEndpoint>(
   );
   return { path: filled, missing };
 }
-
-// Function overloads for each method to get proper type inference
-export function paramApiCall<TEndpoint extends ApiEndpoint>(
-  endpoint: TEndpoint,
-  options: {
-    method: 'GET';
-    params: PathParams<TEndpoint>;
-    query?: { fields?: string };
-  } & Omit<RequestInit, 'method' | 'body'>
-): Promise<
-  | { ok: true; data: ResponseData<TEndpoint, 'get'>; error: undefined }
-  | { ok: true; data?: undefined; error: undefined }
-  | { ok: false; error: string; status: number }
->;
-
-export function paramApiCall<TEndpoint extends ApiEndpoint>(
-  endpoint: TEndpoint,
-  options: {
-    method: 'POST';
-    params: PathParams<TEndpoint>;
-    body?: unknown;
-  } & Omit<RequestInit, 'method' | 'body'>
-): Promise<
-  | { ok: true; data: ResponseData<TEndpoint, 'post'>; error: undefined }
-  | { ok: true; data?: undefined; error: undefined }
-  | { ok: false; error: string; status: number }
->;
-
-export function paramApiCall<TEndpoint extends ApiEndpoint>(
-  endpoint: TEndpoint,
-  options: {
-    method: 'PUT';
-    params: PathParams<TEndpoint>;
-    body?: unknown;
-  } & Omit<RequestInit, 'method' | 'body'>
-): Promise<
-  | { ok: true; data: ResponseData<TEndpoint, 'put'>; error: undefined }
-  | { ok: true; data?: undefined; error: undefined }
-  | { ok: false; error: string; status: number }
->;
-
-export function paramApiCall<TEndpoint extends ApiEndpoint>(
-  endpoint: TEndpoint,
-  options: {
-    method: 'DELETE';
-    params: PathParams<TEndpoint>;
-  } & Omit<RequestInit, 'method' | 'body'>
-): Promise<
-  | { ok: true; data: ResponseData<TEndpoint, 'delete'>; error: undefined }
-  | { ok: true; data?: undefined; error: undefined }
-  | { ok: false; error: string; status: number }
->;
-
-// Default overload when method is not specified (defaults to GET)
-export function paramApiCall<TEndpoint extends ApiEndpoint>(
-  endpoint: TEndpoint,
-  options: {
-    params: PathParams<TEndpoint>;
-    body?: unknown;
-    query?: { fields?: string };
-  } & Omit<RequestInit, 'method' | 'body'>
-): Promise<
-  | { ok: true; data: ResponseData<TEndpoint, 'get'>; error: undefined }
-  | { ok: true; data?: undefined; error: undefined }
-  | { ok: false; error: string; status: number }
->;
 
 // Implementation
 export async function paramApiCall<TEndpoint extends ApiEndpoint>(
