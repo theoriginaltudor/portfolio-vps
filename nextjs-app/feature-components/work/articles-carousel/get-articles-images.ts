@@ -1,7 +1,7 @@
-import { apiCall } from '@/lib/utils/api';
+import { getProjectAssets } from '@/lib/utils/api';
 
 export const getArticlesImage = async () => {
-  const { data, error } = await apiCall('/api/ProjectAsset');
+  const { data, error } = await getProjectAssets();
   if (error || !data) return [];
   // Use a reducer to filter out duplicate projectIds
   const uniqueAssets = data.reduce<

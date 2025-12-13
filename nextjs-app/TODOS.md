@@ -21,6 +21,8 @@
 - [x] improve system prompt to know more about you (Romanina, developer, companies I worked at, each project should have a company field and a client field)
 - [x] add embedding route to middleware with authenticated request
 - [x] update embeddings model since it's being deprecated
+- [x] remove old supabase implementations and data transfer functionality
+- [/] simplify api call logic at the expense of fully typed functions
 - [ ] add theme for the projects on hover and for the article (themes to the syte and apply different themes when hovering)
 - [ ] make the avatar in projects route clickable to navigate to the chat page
 - [ ] add Streaming functionality with suspense and use
@@ -31,5 +33,3 @@
 - [ ] use children as props in some cases to optimise rerenders and which components can be server components (pass server components to client components as props) [this article](https://kentcdodds.com/blog/optimize-react-re-renders)
 - [ ] remove delete button from articles and log out button from navbar
 - [ ] make new frontpage with relevant informations (watch [this video](https://youtu.be/4xqNp6IVXPM?si=IA7Wygj_DXnv7iRr))
-
-- [ ] re-apply changes from stash

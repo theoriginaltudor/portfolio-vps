@@ -1,13 +1,16 @@
 import { embed } from 'ai';
 import { google } from '@ai-sdk/google';
-import { apiCall } from '@/lib/utils/api';
+import {
+  getProjects as getApiProj,
+  getProjectSkills as getProjSkills,
+  getSkills,
+  updateProject,
+} from '@/lib/utils/api';
 
 const model = google.textEmbeddingModel('text-embedding-005');
 
 async function getProjects() {
-  const { ok, data, error } = await apiCall('/api/Project', {
-    method: 'GET',
-  });
+  const { ok, data, error } = await getApiProj();
 
   if (!ok || !data) {
     console.error('Error fetching projects:', error);
@@ -18,9 +21,7 @@ async function getProjects() {
 }
 
 async function getProjectSkills(projectId: number) {
-  const result = await apiCall(`/api/ProjectSkill/project/${projectId}`, {
-    method: 'GET',
-  });
+  const result = await getProjSkills(projectId);
 
   if (!result.ok) {
     console.error('Error fetching project skills:', result.error);
@@ -36,9 +37,7 @@ async function getProjectSkills(projectId: number) {
 
   for (const ps of result.data) {
     if (ps.skillId) {
-      const skillResult = await apiCall(`/api/Skill/${ps.skillId}`, {
-        method: 'GET',
-      });
+      const skillResult = await getSkills(ps.skillId);
       if (skillResult.ok && skillResult.data) {
         if (skillResult.data.name) {
           skills.push(skillResult.data.name);
@@ -51,10 +50,7 @@ async function getProjectSkills(projectId: number) {
 }
 
 async function updateProjectEmbedding(projectId: number, embedding: number[]) {
-  const result = await apiCall(`/api/Project/${projectId}`, {
-    method: 'PUT',
-    body: { embedding },
-  });
+  const result = await updateProject(projectId, { embedding });
 
   if (!result.ok) {
     throw new Error(

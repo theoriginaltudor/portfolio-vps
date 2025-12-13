@@ -1,6 +1,6 @@
 import { google } from '@ai-sdk/google';
 import { embed } from 'ai';
-import { apiCall } from '@/lib/utils/api';
+import { searchProject } from '@/lib/utils/api';
 import { components } from '@/types/swagger-types';
 
 const embeddingModel = google.textEmbeddingModel('text-embedding-005');
@@ -28,13 +28,10 @@ export const searchProjects = async (
     const tokens = searchTerm.usage?.tokens || 0;
 
     // Use your API call utility for the search endpoint
-    const result = await apiCall('/api/ProjectSearch/search', {
-      method: 'POST',
-      body: {
-        queryEmbedding: searchTerm.embedding,
-        matchThreshold: 0.4,
-        matchCount: 3,
-      },
+    const result = await searchProject({
+      queryEmbedding: searchTerm.embedding,
+      matchThreshold: 0.4,
+      matchCount: 3,
     });
 
     if (!result.ok) {
