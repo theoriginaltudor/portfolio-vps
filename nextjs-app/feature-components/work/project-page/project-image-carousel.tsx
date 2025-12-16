@@ -23,7 +23,7 @@ export const ProjectImageCarousel: React.FC<ProjectImageCarouselProps> = ({
   const hasDesktopMobile = desktopImages.length > 0 || mobileImages.length > 0;
 
   return (
-    <div className='my-12 w-10/12 max-w-[100rem]'>
+    <div className='my-12 w-10/12 max-w-400'>
       <Carousel className='w-full' opts={{ loop: true }}>
         <CarouselContent>
           {!hasDesktopMobile
