@@ -22,7 +22,7 @@
 - [x] add embedding route to middleware with authenticated request
 - [x] update embeddings model since it's being deprecated
 - [x] remove old supabase implementations and data transfer functionality
-- [/] simplify api call logic at the expense of fully typed functions
+- [x] simplify api call logic at the expense of fully typed functions
 - [ ] add theme for the projects on hover and for the article (themes to the syte and apply different themes when hovering)
 - [ ] make the avatar in projects route clickable to navigate to the chat page
 - [ ] add Streaming functionality with suspense and use
