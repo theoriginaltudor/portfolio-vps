@@ -151,21 +151,25 @@ interface SearchBody {
   matchCount: number;
 }
 export const searchProject = (body: SearchBody) =>
-  apiCall('/api/ProjectSearch/search', {
-    method: 'POST',
-    body: body,
-  });
+  castApiResponse<components['schemas']['ProjectSearchResult']>(
+    apiCall('/api/ProjectSearch/search', {
+      method: 'POST',
+      body: body,
+    })
+  );
 export const deleteProjectCall = (projectId: string) =>
   apiCall(`/api/Project/${projectId}`, {
     method: 'DELETE',
   });
-export const getExtendedProjects = (slug: string) =>
-  apiCall(`/api/ExtendedProject/${slug}`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-    },
-  });
+export const getExtendedProject = (slug: string) =>
+  castApiResponse<components['schemas']['ExtendedProjectGetDto']>(
+    apiCall(`/api/ExtendedProject/${slug}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+      },
+    })
+  );
 
 export const updateProject = (
   projectId: number,
