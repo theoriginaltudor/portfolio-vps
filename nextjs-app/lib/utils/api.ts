@@ -151,7 +151,7 @@ interface SearchBody {
   matchCount: number;
 }
 export const searchProject = (body: SearchBody) =>
-  castApiResponse<components['schemas']['ProjectSearchResult']>(
+  castApiResponse<components['schemas']['ProjectSearchResult'][]>(
     apiCall('/api/ProjectSearch/search', {
       method: 'POST',
       body: body,
