@@ -1,11 +1,12 @@
 import { getApiUrl } from './get-url';
 import { getAccessToken } from './get-token';
+import { components } from '../../types/swagger-types';
 
 type Options = Omit<RequestInit, 'body'> & {
   body?: FormData | Object | string | null;
 };
 
-export const apiCall = async (endpoint: string, options?: Options) => {
+const apiCall = async (endpoint: string, options?: Options) => {
   const { body, headers, method, ...restOptions } = options || {};
 
   const isGet = !method || method === 'GET';
@@ -94,13 +95,56 @@ export const apiCall = async (endpoint: string, options?: Options) => {
   }
 };
 
-export const getProjects = (projectSlug?: string) =>
-  apiCall('/api/Project' + (projectSlug ? `/${projectSlug}` : ''));
-export const getProjectAssets = () => apiCall('/api/ProjectAsset');
-export const getProjectSkills = (projectId?: number) =>
-  apiCall('/api/ProjectSkill' + (projectId ? `/project/${projectId}` : ''));
-export const getSkills = (skillId?: number) =>
-  apiCall('/api/Skill' + (skillId ? `/${skillId}` : ''));
+const castApiResponse = <T>(result: ReturnType<typeof apiCall>) =>
+  result as Promise<
+    | {
+        ok: false;
+        error: string;
+        status: number;
+        data?: undefined;
+      }
+    | {
+        ok: true;
+        error?: undefined;
+        status?: undefined;
+        data?: undefined;
+      }
+    | {
+        ok: true;
+        data: T;
+        error?: undefined;
+        status?: undefined;
+      }
+  >;
+
+export const getProjects = () =>
+  castApiResponse<components['schemas']['ProjectGetDto'][]>(
+    apiCall('/api/Project')
+  );
+
+export const getProject = (projectSlug: string) =>
+  castApiResponse<components['schemas']['ProjectGetDto']>(
+    apiCall('/api/Project' + `/${projectSlug}`)
+  );
+
+export const getProjectAssets = () =>
+  castApiResponse<components['schemas']['ProjectAssetGetDto'][]>(
+    apiCall('/api/ProjectAsset')
+  );
+
+export const getProjectSkills = (projectId: number) =>
+  castApiResponse<components['schemas']['ProjectSkill'][]>(
+    apiCall('/api/ProjectSkill' + `/project/${projectId}`)
+  );
+
+export const getSkills = () =>
+  castApiResponse<components['schemas']['Skill'][]>(apiCall('/api/Skill'));
+
+export const getSkill = (skillId?: number) =>
+  castApiResponse<components['schemas']['Skill']>(
+    apiCall('/api/Skill' + `/${skillId}`)
+  );
+
 interface SearchBody {
   queryEmbedding: number[];
   matchThreshold: number;

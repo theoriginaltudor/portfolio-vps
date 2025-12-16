@@ -3,7 +3,7 @@ import { google } from '@ai-sdk/google';
 import {
   getProjects as getApiProj,
   getProjectSkills as getProjSkills,
-  getSkills,
+  getSkill,
   updateProject,
 } from '@/lib/utils/api';
 
@@ -37,7 +37,7 @@ async function getProjectSkills(projectId: number) {
 
   for (const ps of result.data) {
     if (ps.skillId) {
-      const skillResult = await getSkills(ps.skillId);
+      const skillResult = await getSkill(ps.skillId);
       if (skillResult.ok && skillResult.data) {
         if (skillResult.data.name) {
           skills.push(skillResult.data.name);
