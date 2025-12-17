@@ -173,7 +173,7 @@ export const getExtendedProject = (slug: string) =>
 
 export const updateProject = (
   projectId: number,
-  body: { embedding: number[] }
+  body: components['schemas']['ProjectGetDto']
 ) =>
   apiCall(`/api/Project/${projectId}`, {
     method: 'PUT',

@@ -50,7 +50,7 @@ async function getProjectSkills(projectId: number) {
 }
 
 async function updateProjectEmbedding(projectId: number, embedding: number[]) {
-  const result = await updateProject(projectId, { embedding });
+  const result = await updateProject(projectId, { embedding, id: projectId });
 
   if (!result.ok) {
     throw new Error(
