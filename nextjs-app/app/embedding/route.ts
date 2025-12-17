@@ -7,7 +7,7 @@ import {
   updateProject,
 } from '@/lib/utils/api';
 
-const model = google.textEmbeddingModel('text-embedding-005');
+const model = google.textEmbeddingModel('text-embedding-004');
 
 async function getProjects() {
   const { ok, data, error } = await getApiProj();

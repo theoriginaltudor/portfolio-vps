@@ -23,12 +23,12 @@
 - [x] update embeddings model since it's being deprecated
 - [x] remove old supabase implementations and data transfer functionality
 - [x] simplify api call logic at the expense of fully typed functions
+- [/] embeddings generation not working (fails with bad request from server)
 - [ ] add theme for the projects on hover and for the article (themes to the syte and apply different themes when hovering)
 - [ ] make the avatar in projects route clickable to navigate to the chat page
 - [ ] add Streaming functionality with suspense and use
 - [ ] update DB with new table for AI generated questions for the articles that have been embedded, which are connected to the articles table with an id
 - [ ] to improve static site generation, move the article edit functionality in an admin dashboard
-- [ ] embeddings generation not working (fails with bad request from server)
 - [ ] new article route fails to create new article
 - [ ] use children as props in some cases to optimise rerenders and which components can be server components (pass server components to client components as props) [this article](https://kentcdodds.com/blog/optimize-react-re-renders)
 - [ ] remove delete button from articles and log out button from navbar

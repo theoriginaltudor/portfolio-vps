@@ -3,12 +3,7 @@ import { type NextRequest, NextResponse } from 'next/server';
 // Middleware adds security headers and ensures restricted pages are noindexed
 // even if a crawler ignores robots.txt.
 
-const AUTH_REQUIRED_PATHS = new Set([
-  '/data-transfer',
-  '/check-transfer',
-  '/new-article',
-  '/embedding',
-]);
+const AUTH_REQUIRED_PATHS = new Set(['/embedding']);
 
 const NOINDEX_PATHS = new Set(['/login', ...AUTH_REQUIRED_PATHS]);
 
