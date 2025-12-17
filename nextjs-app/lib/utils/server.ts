@@ -1,4 +1,3 @@
-import { cookies } from 'next/headers';
 import { authApiCall } from './auth-api';
 
 export const getUser = async () => {
@@ -7,9 +6,4 @@ export const getUser = async () => {
   });
   if (!ok) return null;
   return user;
-};
-
-export const checkAuth = async () => {
-  const cookieStore = await cookies();
-  return cookieStore.has('auth');
 };
