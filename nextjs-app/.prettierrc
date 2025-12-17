@@ -14,8 +14,5 @@
   "proseWrap": "preserve",
   "htmlWhitespaceSensitivity": "css",
   "embeddedLanguageFormatting": "auto",
-  "singleAttributePerLine": false,
-  "plugins": ["prettier-plugin-tailwindcss"],
-  "tailwindConfig": "./tailwind.config.js",
-  "tailwindFunctions": ["clsx", "cva", "cn"]
+  "singleAttributePerLine": false
 }

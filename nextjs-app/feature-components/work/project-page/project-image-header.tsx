@@ -1,5 +1,5 @@
 'use client';
-import {ViewTransition} from 'react';
+import { ViewTransition } from 'react';
 import Image from 'next/image';
 // Removed edit-mode update functionality; component is display-only now.
 

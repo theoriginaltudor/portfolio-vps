@@ -4,13 +4,9 @@ import { components } from '@/types/swagger-types';
 
 interface SkillsProps {
   skills: (components['schemas']['Skill'] | undefined)[];
-  articleId: number;
 }
 
-export const Skills: React.FC<SkillsProps> = ({
-  skills,
-  articleId: _articleId,
-}) => {
+export const Skills: React.FC<SkillsProps> = ({ skills }) => {
   const list = (skills || []).filter(
     (s): s is NonNullable<(typeof skills)[number]> => Boolean(s)
   );

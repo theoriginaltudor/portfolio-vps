@@ -1,17 +1,12 @@
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-import { FlatCompat } from '@eslint/eslintrc';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  resolvePluginsRelativeTo: __dirname,
-});
+import js from '@eslint/js';
+import reactPlugin from 'eslint-plugin-react';
+import reactHooksPlugin from 'eslint-plugin-react-hooks';
+import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
+import typescriptPlugin from '@typescript-eslint/eslint-plugin';
+import typescriptParser from '@typescript-eslint/parser';
 
 const eslintConfig = [
-  // Ignore patterns (replaces .eslintignore)
+  // Ignore patterns
   {
     ignores: [
       'node_modules/**',
@@ -34,19 +29,47 @@ const eslintConfig = [
       '.DS_Store',
     ],
   },
-  ...compat.extends('next/core-web-vitals', 'next/typescript'),
+  // Recommended base config
+  js.configs.recommended,
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
+    languageOptions: {
+      parser: typescriptParser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+        ecmaFeatures: {
+          jsx: true,
+        },
+        project: './tsconfig.json',
+      },
+      globals: {
+        window: 'readonly',
+        document: 'readonly',
+        navigator: 'readonly',
+        console: 'readonly',
+        process: 'readonly',
+        global: 'readonly',
+        React: 'readonly',
+        fetch: 'readonly',
+      },
+    },
+    plugins: {
+      react: reactPlugin,
+      'react-hooks': reactHooksPlugin,
+      'jsx-a11y': jsxA11yPlugin,
+      '@typescript-eslint': typescriptPlugin,
+    },
     rules: {
       // React specific rules
       'react/jsx-no-duplicate-props': 'error',
       'react/jsx-no-undef': 'error',
-      'react/jsx-uses-react': 'off', // Not needed in React 17+
+      'react/jsx-uses-react': 'off',
       'react/jsx-uses-vars': 'error',
       'react/no-deprecated': 'warn',
       'react/no-unsafe': 'warn',
-      'react/prop-types': 'off', // Using TypeScript instead
-      'react/react-in-jsx-scope': 'off', // Not needed in Next.js
+      'react/prop-types': 'off',
+      'react/react-in-jsx-scope': 'off',
 
       // React Hooks rules
       'react-hooks/rules-of-hooks': 'error',
@@ -90,11 +113,6 @@ const eslintConfig = [
       'prefer-const': 'error',
       'no-var': 'error',
 
-      // Next.js specific rules (already included in next/core-web-vitals but being explicit)
-      '@next/next/no-img-element': 'warn',
-      '@next/next/no-page-custom-font': 'error',
-      '@next/next/no-unwanted-polyfillio': 'error',
-
       // Import organization
       'sort-imports': [
         'error',
@@ -111,7 +129,6 @@ const eslintConfig = [
   {
     files: ['**/*.{js,jsx}'],
     rules: {
-      // Disable TypeScript-specific rules for JavaScript files
       '@typescript-eslint/no-unused-vars': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-inferrable-types': 'off',

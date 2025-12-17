@@ -6,19 +6,15 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import Link from 'next/link';
-import { PlusCircleIcon } from 'lucide-react';
 import { components } from '@/types/swagger-types';
 import { Slide } from '@/components/slide';
 import { getArticlesImage } from './get-articles-images';
-import { checkAuth } from '../../../lib/utils/server';
 
 interface ArticlesCarouselProps {
   articles: components['schemas']['ExtendedProjectGetDto'][];
 }
 
 export const ArticlesCarousel = async ({ articles }: ArticlesCarouselProps) => {
-  const editMode = await checkAuth();
-
   let imagePaths: Pick<
     components['schemas']['ProjectAsset'],
     'path' | 'projectId'
@@ -60,18 +56,6 @@ export const ArticlesCarousel = async ({ articles }: ArticlesCarouselProps) => {
             </CarouselItem>
           );
         })}
-        {editMode && (
-          <CarouselItem className='md:basis-1/2 xl:basis-1/3'>
-            <div className='flex h-full w-full items-center justify-center'>
-              <Link
-                href='/new-article'
-                className='flex h-96 w-96 cursor-pointer items-center justify-center rounded-3xl bg-gray-600 transition-colors hover:bg-gray-700'
-              >
-                <PlusCircleIcon className='h-20 w-20 text-white' />
-              </Link>
-            </div>
-          </CarouselItem>
-        )}
       </CarouselContent>
       <CarouselPrevious className='hidden md:flex' />
       <CarouselNext className='hidden md:flex' />

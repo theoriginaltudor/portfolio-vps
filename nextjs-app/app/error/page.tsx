@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "Error",
-  description: "An error occurred while processing your request.",
-  robots: { index: false }
+  title: 'Error',
+  description: 'An error occurred while processing your request.',
+  robots: { index: false },
 };
 
 export default async function ErrorPage({
@@ -13,7 +13,7 @@ export default async function ErrorPage({
 }) {
   const { reason } = await params;
   return (
-    <p className="text-center text-red-600 mt-8">
+    <p className='text-center text-red-600 mt-8'>
       Sorry, something went wrong: {reason}
     </p>
   );

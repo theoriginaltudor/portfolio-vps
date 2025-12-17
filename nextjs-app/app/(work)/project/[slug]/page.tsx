@@ -7,9 +7,6 @@ import { ProjectImageCarousel } from '@/feature-components/work/project-page/pro
 import { buildImageUrls } from '@/feature-components/work/project-page/hooks/build-urls';
 import { Skills } from '@/feature-components/work/project-page/skills';
 import { ArticleBody } from '@/feature-components/work/project-page/article-body';
-import { checkAuth } from '@/lib/utils/server';
-
-import { DeleteButton } from '@/feature-components/work/project-page/delete-button';
 
 interface ProjectPageProps {
   params: Promise<{
@@ -117,8 +114,6 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     console.warn('No skills found for project:', project.id);
   }
 
-  const editMode = await checkAuth();
-
   return (
     <main className='flex w-full flex-1 flex-col items-center'>
       <ProjectImageHeader
@@ -127,20 +122,13 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         image={imageUrls[0]}
       />
 
-      {skills.length > 0 && (
-        <Skills skills={skills} articleId={project.id ?? 0} />
-      )}
+      {skills.length > 0 && <Skills skills={skills} />}
 
-      <ArticleBody
-        className='mt-8 w-full max-w-2xl px-4 text-base'
-        projectId={project.id ?? 0}
-      >
+      <ArticleBody className='mt-8 w-full max-w-2xl px-4 text-base'>
         {project.longDescription ?? 'No description provided.'}
       </ArticleBody>
 
       {imageUrls.length > 0 && <ProjectImageCarousel images={imageUrls} />}
-
-      {editMode && project.id && <DeleteButton projectId={project.id} />}
     </main>
   );
 }

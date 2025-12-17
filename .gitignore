@@ -10,3 +10,4 @@ aspnet-api/PortfolioBack/*.dll
 .vscode/
 aspnet-api/PortfolioBack/appsettings.Development.json
 aspnet-api/Portfolio
+aspnet-api/PortfolioBack/appsettings.json

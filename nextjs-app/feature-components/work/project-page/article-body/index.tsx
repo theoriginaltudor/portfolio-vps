@@ -6,7 +6,6 @@ import rehypeSanitize from 'rehype-sanitize';
 
 export interface ArticleProps extends React.HTMLAttributes<HTMLElement> {
   children: string;
-  projectId?: number;
 }
 
 const markdownComponents = {
@@ -67,11 +66,7 @@ const markdownComponents = {
   ),
 };
 
-export function ArticleBody({
-  children,
-  projectId: _projectId,
-  ...props
-}: ArticleProps) {
+export function ArticleBody({ children, ...props }: ArticleProps) {
   return (
     <article {...props}>
       <ReactMarkdown
