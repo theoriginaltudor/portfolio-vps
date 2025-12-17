@@ -20,7 +20,7 @@ export const ChatBox: React.FC = () => {
   return (
     <form
       ref={formRef}
-      className='relative w-[90vw] max-w-[90vw] md:w-[32rem] md:max-w-[32rem]'
+      className='relative w-[90vw] max-w-[90vw] md:w-lg md:max-w-lg'
       action={formAction}
     >
       <ChatTextArea
