@@ -26,16 +26,16 @@ jobs:
             --exclude '.git/' \
             --exclude '.github/' \
             --exclude '.env' \
-            --exclude 'nextjs-app/.env' \
-            --exclude 'nextjs-app/node_modules/' \
-            --exclude 'nextjs-app/.next/' \
-            --exclude 'nextjs-app/package-lock.json' \
+            --exclude 'react-app/.env' \
+            --exclude 'react-app/node_modules/' \
+            --exclude 'react-app/dist/' \
+            --exclude 'react-app/package-lock.json' \
             --exclude 'aspnet-api/images' \
             --exclude 'aspnet-api/PortfolioBack/bin/' \
             --exclude 'aspnet-api/PortfolioBack/obj/' \
             --exclude 'aspnet-api/PortfolioBack/*.dll' \
-            compose.yaml portfolio-vps.sln \
-            aspnet-api nextjs-app \
+            .dockerignore compose.yaml portfolio-vps.sln \
+            aspnet-api react-app \
             ${{ vars.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ vars.DEPLOY_PATH }}
 
       - name: Execute remote commands
@@ -52,14 +52,6 @@ jobs:
             echo "Jwt__Audience=portfolio-api" >> .env
             echo "Jwt__AccessTokenExpirationMinutes=15" >> .env
             echo "Jwt__RefreshTokenExpirationDays=7" >> .env
-            # Create nextjs-app/.env file
-            echo "GOOGLE_GENERATIVE_AI_API_KEY=${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}" > nextjs-app/.env
-            echo "NEXT_PUBLIC_SUPABASE_URL=${{ vars.NEXT_PUBLIC_SUPABASE_URL }}" >> nextjs-app/.env
-            echo "NEXT_PUBLIC_SUPABASE_PROJECT_ID=${{ vars.NEXT_PUBLIC_SUPABASE_PROJECT_ID }}" >> nextjs-app/.env
-            echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" >> nextjs-app/.env
-            echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" >> nextjs-app/.env
-            echo "NEXT_PUBLIC_IMAGE_URL=https://${{ vars.HOST_SITE }}/images" >> nextjs-app/.env
-            sudo docker compose -f compose.yaml down
-            sudo docker system prune -a -f
-            sudo docker compose -f compose.yaml up --build -d
+            sudo docker compose -f compose.yaml down --remove-orphans
+            sudo docker compose -f compose.yaml up --build --remove-orphans -d
           EOF

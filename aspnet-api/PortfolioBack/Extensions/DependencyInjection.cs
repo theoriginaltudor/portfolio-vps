@@ -35,7 +35,6 @@ public static class DependencyInjection
 
     public static IServiceCollection AddCustom(this IServiceCollection services)
     {
-        services.AddScoped<IProjectSearchService, ProjectSearchService>();
         services.AddScoped<DataTransferService>();
         services.AddScoped<LoginService>();
         services.AddScoped<ProjectService>();

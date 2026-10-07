@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   postgres:
     image: ankane/pgvector:latest
@@ -14,11 +12,13 @@ services:
 
   aspnet-api:
     build:
-      context: ./aspnet-api
+      context: .
+      dockerfile: aspnet-api/Dockerfile
     container_name: aspnet_api
     depends_on:
       - postgres
     environment:
+      ASPNETCORE_URLS: "http://+:5000;http://+:3000;http://+:8000"
       ConnectionStrings__DefaultConnection: "Host=postgres; Port=5432; Database=${POSTGRES_DB}; Username=${POSTGRES_USER}; Password=${POSTGRES_PASSWORD}"
       Jwt__Key: ${Jwt__Key}
       Jwt__RefreshKey: ${Jwt__RefreshKey}
@@ -29,27 +29,18 @@ services:
     restart: always
     volumes:
       - ./aspnet-api/images:/app/images
+    user: "1654:1654"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    read_only: true
+    tmpfs: [/tmp]
     networks:
       default: {}
       shared_net:
         aliases:
           - api
-
-  nextjs-app:
-    build:
-      context: ./nextjs-app
-    container_name: nextjs_frontend
-    depends_on:
-      - aspnet-api
-    environment:
-      SERVER_API_URL: "http://aspnet-api:8000"
-      NODE_ENV: "production"
-    restart: always
-    networks:
-      default: {}
-      shared_net:
-        aliases:
           - frontend
+
 
 volumes:
   pg_data:

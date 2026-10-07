@@ -1,0 +1,13 @@
+**/node_modules
+**/.pnpm-store
+**/.next
+**/dist
+**/bin
+**/obj
+**/.env
+**/.env.*
+**/appsettings*.json
+**/*.tsbuildinfo
+.git
+aspnet-api/images
+aspnet-api/Portfolio

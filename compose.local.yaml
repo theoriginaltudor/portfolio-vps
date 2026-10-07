@@ -1,0 +1,49 @@
+name: portfolio-local
+services:
+  postgres:
+    image: ankane/pgvector:latest
+    environment:
+      POSTGRES_DB: portfolio_local
+      POSTGRES_USER: portfolio_local
+      POSTGRES_PASSWORD: local-development-only
+    volumes:
+      - local_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U portfolio_local -d portfolio_local"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks: [database]
+  aspnet-api:
+    build:
+      context: .
+      dockerfile: aspnet-api/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports: ["127.0.0.1:8000:5000"]
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      Database__ApplyMigrations: true
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=portfolio_local;Username=portfolio_local;Password=local-development-only"
+      Jwt__Key: local-development-access-key-at-least-32-bytes
+      Jwt__RefreshKey: local-development-refresh-key-at-least-32-bytes
+      Jwt__Issuer: http://localhost:8000
+      Jwt__Audience: portfolio-api
+      Jwt__AccessTokenExpirationMinutes: 15
+      Jwt__RefreshTokenExpirationDays: 7
+    volumes:
+      - ./aspnet-api/images:/app/images:ro
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    read_only: true
+    tmpfs: [/tmp]
+    pids_limit: 256
+    mem_limit: 1g
+    networks: [app, database]
+volumes:
+  local_pg_data:
+networks:
+  database:
+    internal: true
+  app:

@@ -1,0 +1,191 @@
+import { getApiUrl } from './get-url';
+import { getAccessToken, setAccessToken } from './get-token';
+import { components } from '../../types/swagger-types';
+
+type Options = Omit<RequestInit, 'body'> & {
+  body?: FormData | object | string | null;
+};
+
+const apiCall = async (endpoint: string, options?: Options) => {
+  const { body, headers, method, ...restOptions } = options || {};
+
+  const isGet = !method || method === 'GET';
+  const query =
+    isGet && options && typeof options === 'object' && 'query' in options
+      ? (options as { query?: { fields?: string } }).query
+      : undefined;
+  const searchParams = new URLSearchParams();
+  if (isGet && query?.fields) searchParams.set('fields', query.fields);
+  const queryString = searchParams.toString();
+  const endpointWithQs =
+    isGet && queryString
+      ? (endpoint as string) +
+        (String(endpoint).includes('?') ? '&' : '?') +
+        queryString
+      : (endpoint as string);
+  const url = getApiUrl(endpointWithQs);
+  try {
+    const token = endpoint.startsWith('/api/Login/login') ? null : await getAccessToken();
+
+    const requestOptions: RequestInit = {
+      method,
+      credentials: 'include', // Include cookies automatically
+      headers: {
+        Accept: 'application/json',
+        ...(token && { Authorization: `Bearer ${token}` }),
+        ...headers,
+      },
+      ...restOptions,
+    };
+
+    // Only attach a body for non-GET requests
+    if (method && method !== 'GET') {
+      if (body instanceof FormData) {
+        requestOptions.body = body;
+      } else if (body && typeof body === 'object') {
+        requestOptions.body = JSON.stringify(body);
+        requestOptions.headers = {
+          ...requestOptions.headers,
+          'Content-Type': 'application/json',
+        };
+      } else if (typeof body === 'string') {
+        requestOptions.body = body;
+      }
+    }
+
+    const response = await fetch(url, requestOptions);
+
+    if (!response.ok) {
+      return {
+        ok: false as const,
+        error: `HTTP ${response.status}: ${response.statusText} (URL: ${url})`,
+        status: response.status,
+      };
+    }
+
+    // Gracefully handle no-content responses or non-JSON payloads
+    const contentType =
+      response.headers.get('content-type')?.toLowerCase() || '';
+    if (response.status === 204) {
+      return { ok: true as const };
+    }
+
+    if (contentType.includes('application/json')) {
+      const data = (await response.json()) as unknown;
+      return { ok: true as const, data };
+    }
+
+    const text = await response.text();
+    if (!text || text.trim().length === 0) {
+      return { ok: true as const };
+    }
+    if (contentType.startsWith('text/')) {
+      return {
+        ok: true as const,
+        data: text as unknown,
+      };
+    }
+    return { ok: true as const };
+  } catch (error) {
+    return {
+      ok: false as const,
+      error: `${error instanceof Error ? error.message : 'Unknown error'} (URL: ${url})`,
+      status: 0,
+    };
+  }
+};
+
+export { apiCall };
+
+const castApiResponse = <T>(result: ReturnType<typeof apiCall>) =>
+  result as Promise<
+    | {
+        ok: false;
+        error: string;
+        status: number;
+        data?: undefined;
+      }
+    | {
+        ok: true;
+        error?: undefined;
+        status?: undefined;
+        data?: undefined;
+      }
+    | {
+        ok: true;
+        data: T;
+        error?: undefined;
+        status?: undefined;
+      }
+  >;
+
+export const getProjects = () =>
+  castApiResponse<components['schemas']['ProjectGetDto'][]>(
+    apiCall('/api/Project')
+  );
+
+export const getProject = (projectSlug: string) =>
+  castApiResponse<components['schemas']['ProjectGetDto']>(
+    apiCall('/api/Project' + `/${projectSlug}`)
+  );
+
+export const getProjectAssets = () =>
+  castApiResponse<components['schemas']['ProjectAssetGetDto'][]>(
+    apiCall('/api/ProjectAsset')
+  );
+
+export const getProjectSkills = (projectId: number) =>
+  castApiResponse<components['schemas']['ProjectSkill'][]>(
+    apiCall('/api/ProjectSkill' + `/project/${projectId}`)
+  );
+
+export const getSkills = () =>
+  castApiResponse<components['schemas']['Skill'][]>(apiCall('/api/Skill'));
+
+export const getSkill = (skillId?: number) =>
+  castApiResponse<components['schemas']['Skill']>(
+    apiCall('/api/Skill' + `/${skillId}`)
+  );
+
+export const deleteProjectCall = (projectId: string) =>
+  apiCall(`/api/Project/${projectId}`, {
+    method: 'DELETE',
+  });
+export const getExtendedProject = (slug: string) =>
+  castApiResponse<components['schemas']['ExtendedProjectGetDto']>(
+    apiCall(`/api/ExtendedProject/${slug}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+      },
+    })
+  );
+
+export const updateProject = (
+  projectId: number,
+  body: components['schemas']['ProjectGetDto']
+) =>
+  apiCall(`/api/Project/${projectId}`, {
+    method: 'PUT',
+    body,
+  });
+
+export const login = async (username: string, password: string) => {
+  const result = await castApiResponse<components['schemas']['AuthUserDto']>(
+    apiCall('/api/Login/login', { method: 'POST', body: { username, password } })
+  );
+  if (result.ok && result.data?.accessToken) setAccessToken(result.data.accessToken);
+  return result;
+};
+export const logout = async () => {
+  const result = await apiCall('/api/Login/logout', { method: 'POST' });
+  if (result.ok) setAccessToken(null);
+  return result;
+};
+
+export const getCurrentUser = () =>
+  castApiResponse<components['schemas']['AuthUserDto']>(
+    apiCall('/api/Login/me', {
+      method: 'GET',
+    })
+  );

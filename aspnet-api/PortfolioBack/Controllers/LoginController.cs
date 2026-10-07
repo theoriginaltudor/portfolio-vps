@@ -35,9 +35,10 @@ public class LoginController(LoginService loginService, IConfiguration configura
     var options = new CookieOptions
     {
       HttpOnly = true,
-      Secure = true,
+      Secure = Request.IsHttps,
       SameSite = SameSiteMode.Strict,
-      Expires = DateTime.UtcNow.AddDays(days)
+      Path = "/api/Login",
+      Expires = DateTime.UtcNow.AddDays(days > 0 ? days : 7)
     };
 
     // check if production and add Domain to cookie options
@@ -48,10 +49,11 @@ public class LoginController(LoginService loginService, IConfiguration configura
   }
 
   [HttpPost("logout")]
-  [Authorize]
-  public async Task<IActionResult> Logout()
+  [AllowAnonymous]
+  public IActionResult Logout()
   {
-    Response.Cookies.Delete("auth");
+    Response.Cookies.Delete("auth", new CookieOptions { Path = "/", Secure = Request.IsHttps, SameSite = SameSiteMode.Strict });
+    Response.Cookies.Delete("auth", new CookieOptions { Path = "/api/Login", Secure = Request.IsHttps, SameSite = SameSiteMode.Strict });
     return NoContent();
   }
 
@@ -74,8 +76,9 @@ public class LoginController(LoginService loginService, IConfiguration configura
   public async Task<ActionResult<object>> Refresh()
   {
     var refreshToken = Request.Cookies.FirstOrDefault(cookie => string.Equals(cookie.Key, "auth"));
+    if (string.IsNullOrEmpty(refreshToken.Value)) return Unauthorized();
     var accessToken = await loginService.RefreshToken(refreshToken.Value);
-    if (accessToken is null) return BadRequest();
+    if (accessToken is null) return Unauthorized();
     return Ok(new { Token = accessToken });
   }
 }
